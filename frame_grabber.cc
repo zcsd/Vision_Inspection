@@ -75,8 +75,8 @@ void FrameGrabber::configureCamera()
         pylonCamera->Width.SetValue(2048);
         pylonCamera->Height.SetValue(1536);
 
-        //pylonCamera.CenterX.SetValue(true);
-        //pylonCamera.CenterY.SetValue(true);
+        pylonCamera->CenterX.SetValue(true);
+        pylonCamera->CenterY.SetValue(true);
         // Warm up camera for 0.2s
         usleep(200000);
     }

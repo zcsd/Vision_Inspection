@@ -20,8 +20,8 @@ all: $(TARGET)
 $(TARGET): $(OBJECTS)
 	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
-main.o: main.cc
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
+main.o: main.cc cvui.h
+	$(CXX) -std=c++11 $(CXXFLAGS) -c -o $@ $<
 
 frame_grabber.o: frame_grabber.cc frame_grabber.h
 	$(CXX) $(CXXFLAGS) -c -o $@ $<

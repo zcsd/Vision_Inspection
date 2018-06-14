@@ -6,6 +6,9 @@
 #include "opencv2/imgproc.hpp"
 #include "opencv2/highgui.hpp"
 
+#define CVUI_IMPLEMENTATION
+#include "cvui.h"
+
 #include "frame_grabber.h"
 
 using namespace cv;
@@ -20,12 +23,14 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
-    cv::namedWindow("Display", CV_WINDOW_NORMAL);
+    cvui::init("Display");
+    //cv::namedWindow("Display", CV_WINDOW_NORMAL);
     cv::Mat originalFrame, displayedFrame;
 
     while (frameGrabber.getCurrentFrame(originalFrame)) {
         cv::resize(originalFrame, displayedFrame, Size(), 0.5, 0.5, INTER_LINEAR);
-        cv::imshow("Display", displayedFrame);
+        //cv::imshow("Display", displayedFrame);
+        cvui::imshow("Display", displayedFrame);
 
         if ( (cv::waitKey(1) & 0xFF) == 'q' ) break;
     }
