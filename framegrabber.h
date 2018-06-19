@@ -44,13 +44,13 @@ private:
     Camera_t *pylonCamera;
     char grabMode;
     cv::Mat cvFrame;
-    QImage readFrame();
+    cv::Mat readFrame();
     void initCamera();
     void configureCamera();
 
 signals:
-    void sendCaptureFrame(QImage qFrameToSend);
-    void sendFrame(QImage qFrameToSendm);
+    void sendCaptureFrame(cv::Mat cvFrameToSend);
+    void sendFrame(cv::Mat cvFrameToSend);
 
 public slots:
     void receiveConnectCamera();

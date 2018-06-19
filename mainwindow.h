@@ -15,9 +15,13 @@
 #include <QTime>
 #include <QString>
 
+#include "opencv2/opencv.hpp"
+#include "opencv2/imgproc.hpp"
+
 #include "framegrabber.h"
 
 using namespace std;
+using namespace cv;
 
 class FrameGrabber;
 
@@ -48,13 +52,19 @@ private slots:
     void on_pushButtonStream_clicked();
     void on_pushButtonStop_clicked();
     void on_pushButtonScanDevices_clicked();
-    void receiveShowFrame(QImage qShowFrame);
+    void receiveRawFrame(cv::Mat cvRawFrame);
+    void on_pushButtonSaveCapture_clicked();
 
 private:
     Ui::MainWindow *ui;
     char grabMode;
+    cv::Mat cvRawFrame;
+    cv::Mat cvRawFrameCopy;
+    cv::Mat cvResizedFrame;
+    QImage qDisplayedFrame;
     QTimer *streamTrigger;
     void initialSetup();
+    void displayFrame(cv::Mat cvDisplayFrame);
 };
 
 #endif // MAINWINDOW_H

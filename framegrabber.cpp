@@ -11,7 +11,6 @@ FrameGrabber::~FrameGrabber()
         if (pylonCamera->IsGrabbing())  pylonCamera->StopGrabbing();
         pylonCamera->Close();
         cameraConnected = false;
-        qDebug() << "Camera Released.";
     }
 
     delete pylonCamera;
@@ -74,13 +73,13 @@ void FrameGrabber::configureCamera()
         pylonCamera->ExposureTime.SetValue(15000); // us
 
         pylonCamera->AcquisitionFrameRateEnable.SetValue(true);
-        pylonCamera->AcquisitionFrameRate.SetValue(30.0);
+        pylonCamera->AcquisitionFrameRate.SetValue(35.0);
 
         pylonCamera->Width.SetValue(2048);
         pylonCamera->Height.SetValue(1536);
 
-        pylonCamera->CenterX.SetValue(true);
-        pylonCamera->CenterY.SetValue(true);
+        //pylonCamera->CenterX.SetValue(true);
+        //pylonCamera->CenterY.SetValue(true);
         // Warm up camera for 0.1s
         usleep(100000);
     }
@@ -97,17 +96,19 @@ void FrameGrabber::receiveDisconnectCamera()
         if (pylonCamera->IsGrabbing())  pylonCamera->StopGrabbing();
         pylonCamera->Close();
         cameraConnected = false;
+        grabMode = 'N';
+        startGrabbing = false;
     }
     pylonCamera->DetachDevice();
 }
 
 void FrameGrabber::receiveStartCaptureMode()
 {
+    grabMode = 'C';
     if (!startGrabbing) {
         try {
             pylonCamera->StartGrabbing(GrabStrategy_LatestImageOnly);
             startGrabbing = true;
-            grabMode = 'C';
         }
         catch (GenICam::GenericException &e) {
             // Error handling.
@@ -121,11 +122,11 @@ void FrameGrabber::receiveStartCaptureMode()
 
 void FrameGrabber::receiveStartStreamMode()
 {
+    grabMode = 'S';
     if (!startGrabbing) {
         try {
             pylonCamera->StartGrabbing(GrabStrategy_LatestImageOnly);
             startGrabbing = true;
-            grabMode = 'S';
         }
         catch (GenICam::GenericException &e) {
             // Error handling.
@@ -142,7 +143,7 @@ void FrameGrabber::receiveSendFrame()
     }
 }
 
-QImage FrameGrabber::readFrame()
+cv::Mat FrameGrabber::readFrame()
 {
     try {
         CPylonImage pylonFrame;
@@ -160,12 +161,8 @@ QImage FrameGrabber::readFrame()
             cv::Mat tempFrame = cv::Mat(ptrGrabResult->GetHeight(), ptrGrabResult->GetWidth(),
                                         CV_8UC3, (uint8_t *) pylonFrame.GetBuffer());
             cvFrame = tempFrame.clone();
-            cv::resize(cvFrame,cvFrame,cv::Size(1024, 768));
-            cv::cvtColor(cvFrame, cvFrame, cv::COLOR_BGR2RGB);
 
-            QImage qFrame((uchar*)cvFrame.data, cvFrame.cols, cvFrame.rows, cvFrame.step, QImage::Format_RGB888);
-
-            return qFrame;
+            return cvFrame;
         }
         else {
             qDebug() << "Fail to Grab Frame.";
