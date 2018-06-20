@@ -14,16 +14,19 @@
 #include <QTimer>
 #include <QTime>
 #include <QString>
+#include <QFileDialog>
 
 #include "opencv2/opencv.hpp"
 #include "opencv2/imgproc.hpp"
 
 #include "framegrabber.h"
+#include "cameracalibrator.h"
 
 using namespace std;
 using namespace cv;
 
 class FrameGrabber;
+class CameraCalibrator;
 
 namespace Ui {
 class MainWindow;
@@ -37,6 +40,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     FrameGrabber *frameGrabber;
+    CameraCalibrator *cameraCalibrator;
 
 signals:
     void sendConnect();
@@ -55,16 +59,29 @@ private slots:
     void receiveRawFrame(cv::Mat cvRawFrame);
     void on_pushButtonSaveCapture_clicked();
 
+    void on_pushButtonCalibrate_clicked();
+
+    void on_actionChangeSavePath_triggered();
+
+    void on_actionZoomIn_triggered();
+
+    void on_actionZoomToFit_triggered();
+
+    void on_actionZoomOut_triggered();
+
+    void on_actionZoomToRaw_triggered();
+
 private:
     Ui::MainWindow *ui;
+    QString defaultSavePath = "../images";
     char grabMode;
-    cv::Mat cvRawFrame;
+    double scaleFactor = 1.0;
     cv::Mat cvRawFrameCopy;
-    cv::Mat cvResizedFrame;
+    cv::Mat cvRGBFrame;
     QImage qDisplayedFrame;
     QTimer *streamTrigger;
     void initialSetup();
-    void displayFrame(cv::Mat cvDisplayFrame);
+    void displayFrame();
 };
 
 #endif // MAINWINDOW_H

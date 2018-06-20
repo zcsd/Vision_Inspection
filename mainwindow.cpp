@@ -18,7 +18,14 @@ MainWindow::~MainWindow()
 
 void MainWindow::initialSetup()
 {
-    ui->labelShowFrame->setStyleSheet("background-color: rgb(253, 253, 253);");
+    ui->labelShowFrame->setScaledContents(true);
+    ui->scrollArea->setBackgroundRole(QPalette::Dark);
+    ui->scrollArea->setWidget(ui->labelShowFrame);
+    ui->scrollArea->setVisible(true);
+
+    QPixmap whiteBackground = QPixmap(1024, 786);
+    whiteBackground.fill(Qt::white);
+    ui->labelShowFrame->setPixmap(whiteBackground);
     // N means No Grabbing
     grabMode = 'N';
     // Set button initial status and color
@@ -37,6 +44,7 @@ void MainWindow::initialSetup()
     ui->pushButtonScanDevices->setStyleSheet("background-color: rgb(225, 225, 225);");
     ui->pushButtonSaveCapture->setStyleSheet("background-color: rgb(225, 225, 225);");
     // Interation between UI and frameGrabber
+    connect(ui->listWidgetMessageLog->model(), SIGNAL(rowsInserted(QModelIndex,int,int)), ui->listWidgetMessageLog, SLOT(scrollToBottom()));
     connect(this, SIGNAL(sendConnect()), frameGrabber, SLOT(receiveConnectCamera()));
     connect(this, SIGNAL(sendDisconnect()), frameGrabber, SLOT(receiveDisconnectCamera()));
     connect(this, SIGNAL(sendCaptureMode()), frameGrabber, SLOT(receiveStartCaptureMode()));
@@ -69,6 +77,7 @@ void MainWindow::on_pushButtonConnect_clicked()
 
 void MainWindow::on_pushButtonDisconnect_clicked()
 {
+
     if (grabMode == 'N') {
         emit sendDisconnect();
         usleep(5000);
@@ -122,6 +131,9 @@ void MainWindow::on_pushButtonDisconnect_clicked()
             ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Camera is close.");
         }
     }
+    QPixmap whiteBackground = QPixmap(1024, 786);
+    whiteBackground.fill(Qt::white);
+    ui->labelShowFrame->setPixmap(whiteBackground);
 }
 
 void MainWindow::on_pushButtonCapture_clicked()
@@ -137,7 +149,8 @@ void MainWindow::on_pushButtonCapture_clicked()
 
 void MainWindow::on_pushButtonSaveCapture_clicked()
 {
-    QString filePath = "../images/" + QDateTime::currentDateTime().toString("yyyy-MM-dd_hh-mm-ss") + ".jpg";
+
+    QString filePath = defaultSavePath + "/" + QDateTime::currentDateTime().toString("yyyy-MM-dd_hh-mm-ss") + ".jpg";
     QByteArray ba = filePath.toLatin1();
     const char *fileName = ba.data();
 
@@ -211,13 +224,52 @@ void MainWindow::on_pushButtonScanDevices_clicked()
 void MainWindow::receiveRawFrame(cv::Mat cvRawFrame)
 {
     cvRawFrameCopy = cvRawFrame.clone();
-    displayFrame(cvRawFrame);
+    displayFrame();
 }
 
-void MainWindow::displayFrame(cv::Mat cvDisplayFrame)
+void MainWindow::displayFrame()
 {
-    cv::cvtColor(cvDisplayFrame, cvDisplayFrame, cv::COLOR_BGR2RGB);
-    cv::resize(cvDisplayFrame, cvResizedFrame, cv::Size(1024, 768));
-    qDisplayedFrame = QImage((uchar*)cvResizedFrame.data, cvResizedFrame.cols, cvResizedFrame.rows, cvResizedFrame.step, QImage::Format_RGB888);
+    cv::resize(cvRawFrameCopy, cvRGBFrame, cv::Size(), scaleFactor, scaleFactor);
+    cv::cvtColor(cvRGBFrame, cvRGBFrame, cv::COLOR_BGR2RGB);
+    qDisplayedFrame = QImage((uchar*)cvRGBFrame.data, cvRGBFrame.cols, cvRGBFrame.rows, cvRGBFrame.step, QImage::Format_RGB888);
     ui->labelShowFrame->setPixmap(QPixmap::fromImage(qDisplayedFrame));
+}
+
+void MainWindow::on_pushButtonCalibrate_clicked()
+{
+    cameraCalibrator = new CameraCalibrator();
+}
+
+void MainWindow::on_actionChangeSavePath_triggered()
+{
+    defaultSavePath = QFileDialog::getExistingDirectory();
+    ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Image save path changed to: " + defaultSavePath);
+}
+
+void MainWindow::on_actionZoomIn_triggered()
+{
+    scaleFactor = scaleFactor * 1.25;
+    ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Scaling factor: " + QString::number(scaleFactor));
+    if (grabMode == 'C')  displayFrame();
+}
+
+void MainWindow::on_actionZoomToFit_triggered()
+{
+    scaleFactor = 0.5;
+    ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Scaling factor: " + QString::number(scaleFactor));
+    if (grabMode == 'C')  displayFrame();
+}
+
+void MainWindow::on_actionZoomOut_triggered()
+{
+    scaleFactor = scaleFactor * 0.8;
+    ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Scaling factor: " + QString::number(scaleFactor));
+    if (grabMode == 'C')  displayFrame();
+}
+
+void MainWindow::on_actionZoomToRaw_triggered()
+{
+    scaleFactor = 1.0;
+    ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Scaling factor: " + QString::number(scaleFactor));
+    if (grabMode == 'C')  displayFrame();
 }

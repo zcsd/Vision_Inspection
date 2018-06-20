@@ -45,11 +45,14 @@ LIBS += -lXmlParser_gcc_v3_0_Basler_pylon_v5_0
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    framegrabber.cpp
+    framegrabber.cpp \
+    cameracalibrator.cpp
 
 HEADERS += \
         mainwindow.h \
-    framegrabber.h
+    framegrabber.h \
+    cameracalibrator.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    cameracalibrator.ui
