@@ -51,6 +51,7 @@ void MainWindow::initialSetup()
     connect(this, SIGNAL(sendStreamMode()), frameGrabber, SLOT(receiveStartStreamMode()));
     connect(this, SIGNAL(sendStopGrabbing()), frameGrabber, SLOT(receiveStopGrabbing()));
     connect(frameGrabber, SIGNAL(sendCaptureFrame(cv::Mat)), this, SLOT(receiveRawFrame(cv::Mat)));
+    connect(ui->labelShowFrame, SIGNAL(sendMousePosition(QPoint&)), this, SLOT(receiveShowMousePosition(QPoint&)));
 
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    System started.");
 }
@@ -149,7 +150,6 @@ void MainWindow::on_pushButtonCapture_clicked()
 
 void MainWindow::on_pushButtonSaveCapture_clicked()
 {
-
     QString filePath = defaultSavePath + "/" + QDateTime::currentDateTime().toString("yyyy-MM-dd_hh-mm-ss") + ".jpg";
     QByteArray ba = filePath.toLatin1();
     const char *fileName = ba.data();
@@ -272,4 +272,10 @@ void MainWindow::on_actionZoomToRaw_triggered()
     scaleFactor = 1.0;
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Scaling factor: " + QString::number(scaleFactor));
     if (grabMode == 'C')  displayFrame();
+}
+
+void MainWindow::receiveShowMousePosition(QPoint &pos)
+{
+    ui->labelShowPos->setAlignment(Qt::AlignCenter);
+    ui->labelShowPos->setText("(" + QString::number(pos.x()) + ", " + QString::number((pos.y())) + ")");
 }

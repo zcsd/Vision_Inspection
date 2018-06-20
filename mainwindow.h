@@ -1,3 +1,4 @@
+// MainWindow class
 // Author: @zichun-SAT
 // Date: created on 18 Jun 2018
 #ifndef MAINWINDOW_H
@@ -58,18 +59,14 @@ private slots:
     void on_pushButtonScanDevices_clicked();
     void receiveRawFrame(cv::Mat cvRawFrame);
     void on_pushButtonSaveCapture_clicked();
-
     void on_pushButtonCalibrate_clicked();
-
     void on_actionChangeSavePath_triggered();
-
     void on_actionZoomIn_triggered();
-
     void on_actionZoomToFit_triggered();
-
     void on_actionZoomOut_triggered();
-
     void on_actionZoomToRaw_triggered();
+public slots:
+    void receiveShowMousePosition(QPoint& pos);
 
 private:
     Ui::MainWindow *ui;

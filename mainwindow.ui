@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1294</width>
-    <height>982</height>
+    <width>1316</width>
+    <height>1033</height>
    </rect>
   </property>
   <property name="font">
@@ -24,7 +24,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>780</y>
+      <y>800</y>
       <width>101</width>
       <height>17</height>
      </rect>
@@ -37,7 +37,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>800</y>
+      <y>830</y>
       <width>1261</width>
       <height>131</height>
      </rect>
@@ -173,6 +173,60 @@
      </item>
     </layout>
    </widget>
+   <widget class="QLabel" name="labelShowRes">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>800</y>
+      <width>91</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelShowPos">
+    <property name="geometry">
+     <rect>
+      <x>340</x>
+      <y>800</y>
+      <width>91</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+    <property name="margin">
+     <number>0</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelShowRGB">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>800</y>
+      <width>121</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
    <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
@@ -212,7 +266,7 @@
       </widget>
      </item>
      <item row="0" column="0" colspan="2">
-      <widget class="QLabel" name="labelShowFrame">
+      <widget class="LabelDisplayer" name="labelShowFrame">
        <property name="text">
         <string/>
        </property>
@@ -235,7 +289,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1294</width>
+     <width>1316</width>
      <height>22</height>
     </rect>
    </property>
@@ -392,6 +446,13 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>LabelDisplayer</class>
+   <extends>QLabel</extends>
+   <header location="global">labeldisplayer.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

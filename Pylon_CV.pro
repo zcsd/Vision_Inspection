@@ -46,12 +46,14 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     framegrabber.cpp \
-    cameracalibrator.cpp
+    cameracalibrator.cpp \
+    labeldisplayer.cpp
 
 HEADERS += \
         mainwindow.h \
     framegrabber.h \
-    cameracalibrator.h
+    cameracalibrator.h \
+    labeldisplayer.h
 
 FORMS += \
         mainwindow.ui \
