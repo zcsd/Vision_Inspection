@@ -324,5 +324,16 @@ void MainWindow::receiveShowMousePosition(QPoint &pos)
 
 void MainWindow::on_actionMCalibrate_triggered()
 {
+    manualCalibration = true;
+}
 
+void MainWindow::on_pushButtonLine1_clicked()
+{
+    ui->labelShowFrame->startLine1 = true;
+}
+
+void MainWindow::on_actionOpenImage_triggered()
+{
+    cv::Mat openImage = imread("../images/example.jpg", 1);
+    receiveRawFrame(openImage);
 }

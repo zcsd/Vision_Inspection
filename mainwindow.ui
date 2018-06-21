@@ -434,6 +434,7 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionOpenImage"/>
     <addaction name="actionSaveImage"/>
     <addaction name="actionChangeSavePath"/>
     <addaction name="actionExit"/>
@@ -585,6 +586,11 @@
   <action name="actionSetting">
    <property name="text">
     <string>Setting</string>
+   </property>
+  </action>
+  <action name="actionOpenImage">
+   <property name="text">
+    <string>Open</string>
    </property>
   </action>
  </widget>

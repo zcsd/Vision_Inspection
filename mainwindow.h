@@ -67,6 +67,10 @@ private slots:
     void on_actionZoomToRaw_triggered();
     void on_actionMCalibrate_triggered();
 
+    void on_pushButtonLine1_clicked();
+
+    void on_actionOpenImage_triggered();
+
 public slots:
     void receiveShowMousePosition(QPoint& pos);
 
@@ -74,6 +78,7 @@ private:
     Ui::MainWindow *ui;
     QString defaultSavePath = "../images";
     char grabMode;
+    bool manualCalibration = false;
     double scaleFactor = 1.0;
     cv::Mat cvRawFrameCopy;
     cv::Mat cvRGBFrame;
