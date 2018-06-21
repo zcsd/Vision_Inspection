@@ -1,5 +1,5 @@
 // FrameGrabber class for Basler USB3.0 camera
-// Author: @zichun-SAT
+// Author: @zichun
 // Date: created on 18 Jun 2018
 #ifndef FRAMEGRABBER_H
 #define FRAMEGRABBER_H

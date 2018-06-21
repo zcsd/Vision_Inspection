@@ -132,6 +132,7 @@ void MainWindow::on_pushButtonDisconnect_clicked()
             ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Camera is close.");
         }
     }
+    ui->labelShowFrame->setMouseTracking(false);
     QPixmap whiteBackground = QPixmap(1024, 786);
     whiteBackground.fill(Qt::white);
     ui->labelShowFrame->setPixmap(whiteBackground);
@@ -146,6 +147,7 @@ void MainWindow::on_pushButtonCapture_clicked()
     ui->pushButtonStream->setEnabled(true);
     ui->pushButtonStop->setEnabled(false);
     ui->pushButtonSaveCapture->setEnabled(true);
+    ui->labelShowFrame->setMouseTracking(true);
 }
 
 void MainWindow::on_pushButtonSaveCapture_clicked()
@@ -178,6 +180,7 @@ void MainWindow::on_pushButtonStream_clicked()
     connect(frameGrabber, SIGNAL(sendFrame(cv::Mat)), this, SLOT(receiveRawFrame(cv::Mat)));
 
     streamTrigger->start();
+    ui->labelShowFrame->setMouseTracking(true);
 
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Start streaming mode.");
 }
@@ -187,6 +190,7 @@ void MainWindow::on_pushButtonStop_clicked()
     if ( grabMode == 'S' ) {
         delete streamTrigger;
         emit sendStopGrabbing();
+        ui->labelShowFrame->setMouseTracking(false);
         usleep(5000);
 
         if (!frameGrabber->startGrabbing) {
@@ -248,7 +252,16 @@ void MainWindow::on_actionChangeSavePath_triggered()
 
 void MainWindow::on_actionZoomIn_triggered()
 {
-    scaleFactor = scaleFactor * 1.25;
+    if (scaleFactor >= 1.0) {
+        scaleFactor += 1.0;
+        if (scaleFactor > 5.0)  scaleFactor = 5.0;
+    } else if (scaleFactor < 1.0) {
+        scaleFactor *= 1.3333;
+        if (scaleFactor > 0.4 && scaleFactor < 0.6)
+            scaleFactor = 0.5;
+        if (scaleFactor > 0.85 && scaleFactor < 1.1)
+            scaleFactor = 1.0;
+    }
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Scaling factor: " + QString::number(scaleFactor));
     if (grabMode == 'C')  displayFrame();
 }
@@ -262,7 +275,16 @@ void MainWindow::on_actionZoomToFit_triggered()
 
 void MainWindow::on_actionZoomOut_triggered()
 {
-    scaleFactor = scaleFactor * 0.8;
+    // TODO: Scaling factor not smart, can not below 0.5, scaling method+
+    if (scaleFactor > 1.0) {
+        scaleFactor -= 1.0;
+    } else if (scaleFactor <= 1.0) {
+        scaleFactor *= 0.6667;
+        if (scaleFactor > 0.4 && scaleFactor < 0.6)
+            scaleFactor = 0.5;
+        if (scaleFactor < 0.5)
+            scaleFactor = 0.5;
+    }
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Scaling factor: " + QString::number(scaleFactor));
     if (grabMode == 'C')  displayFrame();
 }
@@ -277,5 +299,5 @@ void MainWindow::on_actionZoomToRaw_triggered()
 void MainWindow::receiveShowMousePosition(QPoint &pos)
 {
     ui->labelShowPos->setAlignment(Qt::AlignCenter);
-    ui->labelShowPos->setText("(" + QString::number(pos.x()) + ", " + QString::number((pos.y())) + ")");
+    ui->labelShowPos->setText(QString::number(pos.x()) + ", " + QString::number((pos.y())) );
 }

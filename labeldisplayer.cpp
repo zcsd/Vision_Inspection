@@ -2,7 +2,7 @@
 
 LabelDisplayer::LabelDisplayer(QWidget* parent) : QLabel(parent)
 {
-    this->setMouseTracking(true);
+
 }
 
 LabelDisplayer::~LabelDisplayer()
@@ -18,6 +18,5 @@ void LabelDisplayer::mouseMoveEvent(QMouseEvent *mouseEvent)
         if (mousePos.x() > 0 && mousePos.y() > 0) {
             emit sendMousePosition(mousePos);
         }
-
     }
 }

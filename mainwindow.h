@@ -1,5 +1,5 @@
 // MainWindow class
-// Author: @zichun-SAT
+// Author: @zichun
 // Date: created on 18 Jun 2018
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
