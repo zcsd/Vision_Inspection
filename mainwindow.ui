@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1316</width>
-    <height>1033</height>
+    <width>1559</width>
+    <height>1023</height>
    </rect>
   </property>
   <property name="font">
@@ -160,14 +160,7 @@
      <item>
       <widget class="QPushButton" name="pushButtonCalibrate">
        <property name="text">
-        <string>Calibrate</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButtonMeasure">
-       <property name="text">
-        <string>Measure</string>
+        <string>XXX</string>
        </property>
       </widget>
      </item>
@@ -302,6 +295,122 @@
      <number>0</number>
     </property>
    </widget>
+   <widget class="QLabel" name="labelMCaliName">
+    <property name="geometry">
+     <rect>
+      <x>1301</x>
+      <y>7</y>
+      <width>129</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Manual Calibration</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>1301</x>
+      <y>30</y>
+      <width>221</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_6">
+     <item>
+      <widget class="QPushButton" name="pushButtonLine1">
+       <property name="text">
+        <string>Line 1</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonLine2">
+       <property name="text">
+        <string>Line 2</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>1300</x>
+      <y>96</y>
+      <width>221</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_8">
+     <item>
+      <widget class="QPushButton" name="pushButtonCalculate">
+       <property name="text">
+        <string>Calculate:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="labelCalResult">
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(255, 255, 255);</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>1301</x>
+      <y>63</y>
+      <width>219</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_7">
+     <item>
+      <widget class="QLabel" name="labelRealDisName">
+       <property name="text">
+        <string>Real Distance(mm):</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="lineEditRealDistance"/>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>1300</x>
+      <y>136</y>
+      <width>221</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_9">
+     <item>
+      <widget class="QPushButton" name="pushButtonRedo">
+       <property name="text">
+        <string>Redo</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonConfirm">
+       <property name="text">
+        <string>Confirm</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -317,7 +426,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1316</width>
+     <width>1559</width>
      <height>22</height>
     </rect>
    </property>
@@ -325,9 +434,9 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionSaveImage"/>
     <addaction name="actionChangeSavePath"/>
-    <addaction name="actionB"/>
-    <addaction name="actionC"/>
+    <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -342,27 +451,28 @@
     <property name="title">
      <string>Camera</string>
     </property>
-    <addaction name="actiona"/>
-    <addaction name="actionb"/>
-    <addaction name="actionc"/>
-    <addaction name="actiond"/>
+    <addaction name="actionScanNewCamera"/>
+    <addaction name="actionConnect"/>
+    <addaction name="actionDisconnect"/>
+    <addaction name="actionCapture"/>
+    <addaction name="actionStream"/>
+    <addaction name="actionStopStream"/>
+    <addaction name="actionSetting"/>
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
      <string>Tools</string>
     </property>
-    <addaction name="actionx"/>
-    <addaction name="actiony"/>
-    <addaction name="actionz"/>
+    <addaction name="actionMCalibrate"/>
+    <addaction name="actionACalibrate"/>
+    <addaction name="actionROI"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
      <string>Help</string>
     </property>
-    <addaction name="actionP"/>
-    <addaction name="actionQ"/>
-    <addaction name="actionR"/>
-    <addaction name="actionS"/>
+    <addaction name="actionAbout"/>
+    <addaction name="actionQuestion"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
@@ -375,19 +485,19 @@
     <string>Change Save Path</string>
    </property>
   </action>
-  <action name="actionB">
+  <action name="actionSaveImage">
    <property name="text">
-    <string>B</string>
+    <string>Save Image</string>
    </property>
   </action>
-  <action name="actionC">
+  <action name="actionExit">
    <property name="text">
-    <string>C</string>
+    <string>Exit</string>
    </property>
   </action>
   <action name="actionZoomIn">
    <property name="text">
-    <string>Zoom In +25%</string>
+    <string>Zoom In       +</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+=</string>
@@ -395,7 +505,7 @@
   </action>
   <action name="actionZoomOut">
    <property name="text">
-    <string>Zoon Out -20%</string>
+    <string>Zoon Out     -</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+-</string>
@@ -417,59 +527,64 @@
     <string>Ctrl+R</string>
    </property>
   </action>
-  <action name="actiona">
+  <action name="actionConnect">
    <property name="text">
-    <string>a</string>
+    <string>Connect</string>
    </property>
   </action>
-  <action name="actionb">
+  <action name="actionDisconnect">
    <property name="text">
-    <string>b</string>
+    <string>Disconnect</string>
    </property>
   </action>
-  <action name="actionc">
+  <action name="actionCapture">
    <property name="text">
-    <string>c</string>
+    <string>Capture</string>
    </property>
   </action>
-  <action name="actiond">
+  <action name="actionStream">
    <property name="text">
-    <string>d</string>
+    <string>Stream</string>
    </property>
   </action>
-  <action name="actionx">
+  <action name="actionMCalibrate">
    <property name="text">
-    <string>x</string>
+    <string>Manual Calibrate</string>
    </property>
   </action>
-  <action name="actiony">
+  <action name="actionACalibrate">
    <property name="text">
-    <string>y</string>
+    <string>Auto Calibrate</string>
    </property>
   </action>
-  <action name="actionz">
+  <action name="actionROI">
    <property name="text">
-    <string>z</string>
+    <string>ROI Select</string>
    </property>
   </action>
-  <action name="actionP">
+  <action name="actionAbout">
    <property name="text">
-    <string>P</string>
+    <string>About</string>
    </property>
   </action>
-  <action name="actionQ">
+  <action name="actionQuestion">
    <property name="text">
-    <string>Q</string>
+    <string>?</string>
    </property>
   </action>
-  <action name="actionR">
+  <action name="actionStopStream">
    <property name="text">
-    <string>R</string>
+    <string>Stop Stream</string>
    </property>
   </action>
-  <action name="actionS">
+  <action name="actionScanNewCamera">
    <property name="text">
-    <string>S</string>
+    <string>Scan New Camera</string>
+   </property>
+  </action>
+  <action name="actionSetting">
+   <property name="text">
+    <string>Setting</string>
    </property>
   </action>
  </widget>

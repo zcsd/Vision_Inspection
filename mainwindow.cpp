@@ -321,3 +321,8 @@ void MainWindow::receiveShowMousePosition(QPoint &pos)
 
     ui->labelShowPos->setText(QString::number(pos.x()) + ", " + QString::number((pos.y())) );
 }
+
+void MainWindow::on_actionMCalibrate_triggered()
+{
+
+}

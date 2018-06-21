@@ -8,6 +8,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QMouseEvent>
+#include <QPainter>
 
 class LabelDisplayer : public QLabel
 {
@@ -18,7 +19,8 @@ public:
     ~LabelDisplayer();
 
 protected:
-    void mouseMoveEvent(QMouseEvent *mouseEvent);
+    void mouseMoveEvent(QMouseEvent *mouseQEvent);
+    void paintEvent(QPaintEvent *paintQEvent);
 
 signals:
     void sendMousePosition(QPoint&);

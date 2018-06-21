@@ -65,6 +65,8 @@ private slots:
     void on_actionZoomToFit_triggered();
     void on_actionZoomOut_triggered();
     void on_actionZoomToRaw_triggered();
+    void on_actionMCalibrate_triggered();
+
 public slots:
     void receiveShowMousePosition(QPoint& pos);
 
