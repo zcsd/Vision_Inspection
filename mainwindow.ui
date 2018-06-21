@@ -176,10 +176,10 @@
    <widget class="QLabel" name="labelShowRes">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>1090</x>
       <y>800</y>
       <width>91</width>
-      <height>20</height>
+      <height>16</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -192,10 +192,10 @@
    <widget class="QLabel" name="labelShowPos">
     <property name="geometry">
      <rect>
-      <x>340</x>
+      <x>990</x>
       <y>800</y>
       <width>91</width>
-      <height>20</height>
+      <height>16</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -211,23 +211,7 @@
      <number>0</number>
     </property>
    </widget>
-   <widget class="QLabel" name="labelShowRGB">
-    <property name="geometry">
-     <rect>
-      <x>440</x>
-      <y>800</y>
-      <width>121</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>230</x>
@@ -238,7 +222,7 @@
     </property>
     <layout class="QGridLayout" name="gridLayout"/>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>240</x>
@@ -273,6 +257,50 @@
       </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QLabel" name="labelShowScale">
+    <property name="geometry">
+     <rect>
+      <x>1190</x>
+      <y>800</y>
+      <width>71</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+    <property name="margin">
+     <number>0</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelShowRGB">
+    <property name="geometry">
+     <rect>
+      <x>860</x>
+      <y>800</y>
+      <width>101</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+    <property name="margin">
+     <number>0</number>
+    </property>
    </widget>
   </widget>
   <widget class="QToolBar" name="mainToolBar">

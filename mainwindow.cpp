@@ -28,6 +28,10 @@ void MainWindow::initialSetup()
     ui->labelShowFrame->setPixmap(whiteBackground);
     // N means No Grabbing
     grabMode = 'N';
+    ui->labelShowPos->setAlignment(Qt::AlignCenter);
+    ui->labelShowRes->setAlignment(Qt::AlignCenter);
+    ui->labelShowScale->setAlignment(Qt::AlignCenter);
+    ui->labelShowRGB->setAlignment(Qt::AlignCenter);
     // Set button initial status and color
     ui->pushButtonConnect->setEnabled(false);
     ui->pushButtonDisconnect->setEnabled(false);
@@ -136,11 +140,17 @@ void MainWindow::on_pushButtonDisconnect_clicked()
     QPixmap whiteBackground = QPixmap(1024, 786);
     whiteBackground.fill(Qt::white);
     ui->labelShowFrame->setPixmap(whiteBackground);
+    ui->labelShowRes->setText("");
+    ui->labelShowPos->setText("");
+    ui->labelShowRGB->setText("");
+    ui->labelShowScale->setText("");
 }
 
 void MainWindow::on_pushButtonCapture_clicked()
 {
     emit sendCaptureMode();
+    ui->labelShowRes->setText("2048x1536");
+    ui->labelShowScale->setText(QString::number(scaleFactor*100, 'f', 0)+"%");
 
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Capture one image.");
     grabMode = 'C';
@@ -181,6 +191,8 @@ void MainWindow::on_pushButtonStream_clicked()
 
     streamTrigger->start();
     ui->labelShowFrame->setMouseTracking(true);
+    ui->labelShowRes->setText("2048x1536");
+    ui->labelShowScale->setText(QString::number(scaleFactor*100, 'f', 0)+"%");
 
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Start streaming mode.");
 }
@@ -200,6 +212,10 @@ void MainWindow::on_pushButtonStop_clicked()
             ui->pushButtonStream->setStyleSheet("background-color: rgb(225, 225, 225);");
             ui->pushButtonStop->setStyleSheet("background-color: rgb(225 225, 225);");
             ui->pushButtonStop->setEnabled(false);
+            ui->labelShowRes->setText("");
+            ui->labelShowPos->setText("");
+            ui->labelShowRGB->setText("");
+            ui->labelShowScale->setText("");
             ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Quit streaming mode.");
         }
     }
@@ -263,6 +279,7 @@ void MainWindow::on_actionZoomIn_triggered()
             scaleFactor = 1.0;
     }
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Scaling factor: " + QString::number(scaleFactor));
+    ui->labelShowScale->setText(QString::number(scaleFactor*100, 'f', 0)+"%");
     if (grabMode == 'C')  displayFrame();
 }
 
@@ -270,6 +287,7 @@ void MainWindow::on_actionZoomToFit_triggered()
 {
     scaleFactor = 0.5;
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Scaling factor: " + QString::number(scaleFactor));
+    ui->labelShowScale->setText(QString::number(scaleFactor*100, 'f', 0)+"%");
     if (grabMode == 'C')  displayFrame();
 }
 
@@ -286,6 +304,7 @@ void MainWindow::on_actionZoomOut_triggered()
             scaleFactor = 0.5;
     }
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Scaling factor: " + QString::number(scaleFactor));
+    ui->labelShowScale->setText(QString::number(scaleFactor*100, 'f', 0)+"%");
     if (grabMode == 'C')  displayFrame();
 }
 
@@ -293,11 +312,12 @@ void MainWindow::on_actionZoomToRaw_triggered()
 {
     scaleFactor = 1.0;
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Scaling factor: " + QString::number(scaleFactor));
+    ui->labelShowScale->setText(QString::number(scaleFactor*100, 'f', 0)+"%");
     if (grabMode == 'C')  displayFrame();
 }
 
 void MainWindow::receiveShowMousePosition(QPoint &pos)
 {
-    ui->labelShowPos->setAlignment(Qt::AlignCenter);
+
     ui->labelShowPos->setText(QString::number(pos.x()) + ", " + QString::number((pos.y())) );
 }
