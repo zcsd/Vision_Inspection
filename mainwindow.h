@@ -84,6 +84,7 @@ private:
     bool manualCalibration = false;
     double scaleFactor = 1.0;
     double pixelPerMM;
+    double currentPPMM;
     cv::Mat cvRawFrameCopy;
     cv::Mat cvRGBFrame;
     QImage qDisplayedFrame;
@@ -92,6 +93,7 @@ private:
     void displayFrame();
     void setMCaliVisible(bool showMCali);
     void writeCaliConf();
+    void readCaliConf();
 };
 
 #endif // MAINWINDOW_H

@@ -60,6 +60,7 @@ void MainWindow::initialSetup()
     connect(ui->labelShowFrame, SIGNAL(sendMousePosition(QPoint&)), this, SLOT(receiveShowMousePosition(QPoint&)));
 
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    System started.");
+    readCaliConf();
 }
 
 void MainWindow::on_pushButtonConnect_clicked()
@@ -164,7 +165,7 @@ void MainWindow::on_pushButtonCapture_clicked()
 
 void MainWindow::on_pushButtonSaveCapture_clicked()
 {
-    QString filePath = defaultSavePath + "/" + QDateTime::currentDateTime().toString("yyyy-MM-dd_hh-mm-ss") + ".jpg";
+    QString filePath = defaultSavePath + "/" + QDateTime::currentDateTime().toString("yyyy-MM-dd_hh-mm-ss") + ".bmp";
     QByteArray ba = filePath.toLatin1();
     const char *fileName = ba.data();
 
@@ -339,7 +340,11 @@ void MainWindow::on_actionMCalibrate_triggered()
 
 void MainWindow::on_actionOpenImage_triggered()
 {
-    cv::Mat openImage = imread("../images/example.jpg", 1);
+    grabMode = 'C';
+    ui->labelShowRes->setText("2048x1536");
+    ui->labelShowFrame->setMouseTracking(true);
+    ui->labelShowScale->setText(QString::number(scaleFactor*100, 'f', 0)+"%");
+    cv::Mat openImage = imread("../images/c1.bmp", 1);
     receiveRawFrame(openImage);
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Opened an image.");
 }
@@ -400,13 +405,30 @@ void MainWindow::on_pushButtonCalculate_clicked()
 void MainWindow::writeCaliConf()
 {
     QFile caliConfFile("../conf/calibration.conf");
-    if(!caliConfFile.open(QIODevice::ReadWrite|QIODevice::Text|QIODevice::Truncate)) {
+    if(!caliConfFile.open(QIODevice::WriteOnly|QIODevice::Text|QIODevice::Truncate)) {
          QMessageBox::warning(this,"File Write Error","Conf file can't open",QMessageBox::Yes);
     } else {
         QTextStream in(&caliConfFile);
         in << QString::number(pixelPerMM, 'f', 2) << "\n";
     }
-    ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Calibration results wrote to conf file.");
+    ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Calibration results updated to conf file.");
+    caliConfFile.close();
+}
+
+void MainWindow::readCaliConf()
+{
+    QFile caliConfFile("../conf/calibration.conf");
+
+    if(!caliConfFile.open(QIODevice::ReadOnly)) {
+         QMessageBox::warning(this,"File Write Error","Conf file can't open",QMessageBox::Yes);
+    } else {
+        QTextStream in(&caliConfFile);
+        QString line;
+        line = in.readLine();
+        currentPPMM = line.toDouble();
+        ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Loaded configuration: " + line + " pixel/mm");
+    }
+
     caliConfFile.close();
 }
 
@@ -415,8 +437,15 @@ void MainWindow::on_pushButtonConfirm_clicked()
     if (manualCalibration) {
         ui->labelShowFrame->finishMCalibration();
         setMCaliVisible(false);
-        ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Confirm calibration results.");
-        writeCaliConf();
+        //ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Confirm calibration results.");
+        QMessageBox::StandardButton updateConfReply;
+        updateConfReply = QMessageBox::question(this, "Update Configuration",
+                                                "Do you want to update configuration file?",
+                                                QMessageBox::Yes|QMessageBox::No);
+        if (updateConfReply == QMessageBox::Yes) {
+            writeCaliConf();
+            currentPPMM = pixelPerMM;
+        }
     }
     manualCalibration = false;
 }
