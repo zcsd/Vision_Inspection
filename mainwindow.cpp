@@ -258,11 +258,6 @@ void MainWindow::displayFrame()
     ui->labelShowFrame->setPixmap(QPixmap::fromImage(qDisplayedFrame));
 }
 
-void MainWindow::on_pushButtonCalibrate_clicked()
-{
-    cameraCalibrator = new CameraCalibrator();
-}
-
 void MainWindow::on_actionChangeSavePath_triggered()
 {
     defaultSavePath = QFileDialog::getExistingDirectory();
@@ -344,7 +339,12 @@ void MainWindow::on_actionOpenImage_triggered()
     ui->labelShowRes->setText("2048x1536");
     ui->labelShowFrame->setMouseTracking(true);
     ui->labelShowScale->setText(QString::number(scaleFactor*100, 'f', 0)+"%");
-    cv::Mat openImage = imread("../images/c1.bmp", 1);
+    QString openFilePath = QFileDialog::getOpenFileName(this, "Open an image", "../");
+    QByteArray ba = openFilePath.toLatin1();
+    const char *imagePath = ba.data();
+    if (openFilePath.isEmpty())
+        imagePath = "../images/c1.bmp";
+    cv::Mat openImage = imread(imagePath, 1);
     receiveRawFrame(openImage);
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Opened an image.");
 }

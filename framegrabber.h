@@ -29,6 +29,7 @@ using namespace Basler_UsbCameraParams;
 using namespace cv;
 using namespace std;
 
+
 class FrameGrabber : public QObject
 {
     Q_OBJECT

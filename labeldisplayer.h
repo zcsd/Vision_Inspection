@@ -13,6 +13,7 @@
 #include <QLineF>
 #include <QDebug>
 
+
 class LabelDisplayer : public QLabel
 {
     Q_OBJECT

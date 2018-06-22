@@ -23,13 +23,13 @@
 #include "opencv2/imgproc.hpp"
 
 #include "framegrabber.h"
-#include "cameracalibrator.h"
+#include "rulercalibrator.h"
 
 using namespace std;
 using namespace cv;
 
 class FrameGrabber;
-class CameraCalibrator;
+
 
 namespace Ui {
 class MainWindow;
@@ -43,7 +43,6 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     FrameGrabber *frameGrabber;
-    CameraCalibrator *cameraCalibrator;
 
 signals:
     void sendConnect();
@@ -61,7 +60,6 @@ private slots:
     void on_pushButtonScanDevices_clicked();
     void receiveRawFrame(cv::Mat cvRawFrame);
     void on_pushButtonSaveCapture_clicked();
-    void on_pushButtonCalibrate_clicked();
     void on_actionChangeSavePath_triggered();
     void on_actionZoomIn_triggered();
     void on_actionZoomToFit_triggered();
