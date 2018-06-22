@@ -16,6 +16,8 @@
 #include <QTime>
 #include <QString>
 #include <QFileDialog>
+#include <QFile>
+#include <QTextStream>
 
 #include "opencv2/opencv.hpp"
 #include "opencv2/imgproc.hpp"
@@ -67,13 +69,9 @@ private slots:
     void on_actionZoomToRaw_triggered();
     void on_actionMCalibrate_triggered();
     void on_actionOpenImage_triggered();
-
     void on_pushButtonStartCali_clicked();
-
     void on_pushButtonRedoCali_clicked();
-
     void on_pushButtonConfirm_clicked();
-
     void on_pushButtonCalculate_clicked();
 
 public slots:
@@ -92,6 +90,8 @@ private:
     QTimer *streamTrigger;
     void initialSetup();
     void displayFrame();
+    void setMCaliVisible(bool showMCali);
+    void writeCaliConf();
 };
 
 #endif // MAINWINDOW_H
