@@ -66,10 +66,15 @@ private slots:
     void on_actionZoomOut_triggered();
     void on_actionZoomToRaw_triggered();
     void on_actionMCalibrate_triggered();
-
-    void on_pushButtonLine1_clicked();
-
     void on_actionOpenImage_triggered();
+
+    void on_pushButtonStartCali_clicked();
+
+    void on_pushButtonRedoCali_clicked();
+
+    void on_pushButtonConfirm_clicked();
+
+    void on_pushButtonCalculate_clicked();
 
 public slots:
     void receiveShowMousePosition(QPoint& pos);
@@ -80,6 +85,7 @@ private:
     char grabMode;
     bool manualCalibration = false;
     double scaleFactor = 1.0;
+    double pixelPerMM;
     cv::Mat cvRawFrameCopy;
     cv::Mat cvRGBFrame;
     QImage qDisplayedFrame;

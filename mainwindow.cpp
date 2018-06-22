@@ -28,6 +28,7 @@ void MainWindow::initialSetup()
     ui->labelShowFrame->setPixmap(whiteBackground);
     // N means No Grabbing
     grabMode = 'N';
+    ui->labelCalResult->setAlignment(Qt::AlignCenter);
     ui->labelShowPos->setAlignment(Qt::AlignCenter);
     ui->labelShowRes->setAlignment(Qt::AlignCenter);
     ui->labelShowScale->setAlignment(Qt::AlignCenter);
@@ -327,13 +328,40 @@ void MainWindow::on_actionMCalibrate_triggered()
     manualCalibration = true;
 }
 
-void MainWindow::on_pushButtonLine1_clicked()
-{
-    ui->labelShowFrame->startLine1 = true;
-}
-
 void MainWindow::on_actionOpenImage_triggered()
 {
     cv::Mat openImage = imread("../images/example.jpg", 1);
     receiveRawFrame(openImage);
+}
+
+void MainWindow::on_pushButtonStartCali_clicked()
+{
+    if (manualCalibration) {
+        ui->labelShowFrame->startMCalibration();
+    }
+}
+
+void MainWindow::on_pushButtonRedoCali_clicked()
+{
+    if (manualCalibration) {
+        ui->labelShowFrame->redoMCalibration();
+    }
+}
+
+void MainWindow::on_pushButtonCalculate_clicked()
+{
+    if (manualCalibration) {
+        QString  distance = ui->lineEditRealDistance->text();
+        double realDistance = distance.toDouble();
+        double pixelDistance = ui->labelShowFrame->getAverageDistance();
+        pixelPerMM = pixelDistance / realDistance;
+        ui->labelCalResult->setText(QString::number(pixelPerMM, 'f', 2) + " pixel/mm");
+    }
+}
+
+void MainWindow::on_pushButtonConfirm_clicked()
+{
+    if (manualCalibration) {
+        ui->labelShowFrame->finishMCalibration();
+    }
 }

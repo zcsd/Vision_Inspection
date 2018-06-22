@@ -26,40 +26,49 @@ void LabelDisplayer::paintEvent(QPaintEvent *paintQEvent)
     // MUST call paintEvent of QLabel parent to display image(background)
     QLabel::paintEvent(paintQEvent);
     QPainter painter(this);
-    painter.setPen(QPen(Qt::blue, 2, Qt::SolidLine));
-    if ( (!firstPointSaved || !secondPointSaved || !thirdPointSaved) && startDrawing ) {
-        painter.drawEllipse(tempPoint, 15, 15);
-        painter.drawEllipse(tempPoint, 1, 1);
-    }
-    painter.setPen(QPen(Qt::red, 2, Qt::SolidLine));
-    if (firstPointSaved) {
-        painter.drawEllipse(firstPoint, 10, 10);
-        painter.drawEllipse(firstPoint, 1, 1);
-    }
-    if (secondPointSaved && firstPointSaved) {
-        painter.drawEllipse(secondPoint, 10, 10);
-        painter.drawEllipse(secondPoint, 1, 1);
-        painter.setPen(QPen(Qt::green, 2, Qt::DotLine));
-        painter.drawLine(firstPoint, secondPoint);
-    }
-    painter.setPen(QPen(Qt::red, 2, Qt::SolidLine));
-    if (thirdPointSaved && secondPointSaved) {
-        painter.drawEllipse(thirdPoint, 10, 10);
-        painter.drawEllipse(thirdPoint, 1, 1);
-        painter.setPen(QPen(Qt::green, 2, Qt::DotLine));
-        painter.drawLine(secondPoint, thirdPoint);
-    }
-    qDebug() << "paint";
-}
 
-void LabelDisplayer::drawLineTo(const QPoint &endPoint)
-{
-    qDebug() << "draw";
-
-    //lastPoint = endPoint;
-    //secondPoint = lastPoint;
-
-    //update();
+    if (startManuCalibration && !finishManuCalibration) {
+        if (!firstPointSaved || !secondPointSaved || !thirdPointSaved) {
+            painter.setPen(QPen(Qt::blue, 2, Qt::SolidLine));
+            painter.drawEllipse(tempPoint, 15, 15);
+            painter.setPen(QPen(Qt::blue, 1, Qt::SolidLine));
+            painter.drawLine(QPoint(tempPoint.x()-5, tempPoint.y()), QPoint(tempPoint.x()+5, tempPoint.y()));
+            painter.drawLine(QPoint(tempPoint.x(), tempPoint.y()-5), QPoint(tempPoint.x(), tempPoint.y()+5));
+            //painter.drawEllipse(tempPoint, 1, 1);
+        }
+        if (firstPointSaved) {
+            painter.setPen(QPen(Qt::red, 2, Qt::SolidLine));
+            painter.drawEllipse(firstPoint, 10, 10);
+            painter.setPen(QPen(Qt::red, 1, Qt::SolidLine));
+            painter.drawLine(QPoint(firstPoint.x()-4, firstPoint.y()), QPoint(firstPoint.x()+4, firstPoint.y()));
+            painter.drawLine(QPoint(firstPoint.x(), firstPoint.y()-4), QPoint(firstPoint.x(), firstPoint.y()+4));
+            //painter.drawEllipse(firstPoint, 1, 1);
+        }
+        if (secondPointSaved && firstPointSaved) {
+            painter.setPen(QPen(Qt::red, 2, Qt::SolidLine));
+            painter.drawEllipse(secondPoint, 10, 10);
+            painter.setPen(QPen(Qt::red, 1, Qt::SolidLine));
+            painter.drawLine(QPoint(secondPoint.x()-4, secondPoint.y()), QPoint(secondPoint.x()+4, secondPoint.y()));
+            painter.drawLine(QPoint(secondPoint.x(), secondPoint.y()-4), QPoint(secondPoint.x(), secondPoint.y()+4));
+            painter.setPen(QPen(Qt::green, 2, Qt::DotLine));
+            painter.drawLine(firstPoint, secondPoint);
+            painter.setPen(QPen(Qt::magenta, 2, Qt::DotLine));
+            painter.drawText(QLineF(firstPoint, secondPoint).center(), QString::number(QLineF(firstPoint, secondPoint).length(), 'f', 1));
+            //painter.drawEllipse(secondPoint, 1, 1);
+        }
+        if (thirdPointSaved && secondPointSaved) {
+            painter.setPen(QPen(Qt::red, 2, Qt::SolidLine));
+            painter.drawEllipse(thirdPoint, 10, 10);
+            painter.setPen(QPen(Qt::red, 1, Qt::SolidLine));
+            painter.drawLine(QPoint(thirdPoint.x()-4, thirdPoint.y()), QPoint(thirdPoint.x()+4, thirdPoint.y()));
+            painter.drawLine(QPoint(thirdPoint.x(), thirdPoint.y()-4), QPoint(thirdPoint.x(), thirdPoint.y()+4));
+            painter.setPen(QPen(Qt::green, 2, Qt::DotLine));
+            painter.drawLine(secondPoint, thirdPoint);
+            painter.setPen(QPen(Qt::magenta, 2, Qt::DotLine));
+            painter.drawText(QLineF(secondPoint, thirdPoint).center(), QString::number(QLineF(secondPoint, thirdPoint).length(), 'f', 1));
+            //painter.drawEllipse(thirdPoint, 1, 1);
+        }
+    }
 }
 
 void LabelDisplayer::mousePressEvent(QMouseEvent *mouseQEvent)
@@ -67,8 +76,6 @@ void LabelDisplayer::mousePressEvent(QMouseEvent *mouseQEvent)
     if (mouseQEvent->button() == Qt::LeftButton) {
         setFocus();
         tempPoint = mouseQEvent->pos();
-        startDrawing = true;
-        qDebug() << "Left press" << tempPoint;
     }
 }
 
@@ -86,7 +93,6 @@ void LabelDisplayer::keyPressEvent(QKeyEvent *keyQEvent)
             thirdPointSaved = true;
         }
         update();
-        qDebug() << "Enter press" << firstPoint;
     }
 }
 
@@ -94,6 +100,38 @@ void LabelDisplayer::mouseReleaseEvent(QMouseEvent *mouseQEvent)
 {
     if (mouseQEvent->button() == Qt::LeftButton) {
         update();
-        qDebug() << "release";
     }
+}
+
+void LabelDisplayer::startMCalibration()
+{
+    startManuCalibration = true;
+    finishManuCalibration = false;
+    firstPointSaved = false;
+    secondPointSaved = false;
+    thirdPointSaved = false;
+}
+
+void LabelDisplayer::redoMCalibration()
+{
+    startManuCalibration = true;
+    finishManuCalibration = false;
+    firstPointSaved = false;
+    secondPointSaved = false;
+    thirdPointSaved = false;
+    update();
+}
+
+void LabelDisplayer::finishMCalibration()
+{
+    startManuCalibration = false;
+    finishManuCalibration = true;
+    update();
+}
+
+double LabelDisplayer::getAverageDistance()
+{
+    double d1 = QLineF(firstPoint, secondPoint).length();
+    double d2 = QLineF(secondPoint, thirdPoint).length();
+    return ( (d1+d2)/2 );
 }

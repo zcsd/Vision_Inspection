@@ -308,33 +308,7 @@
      <string>Manual Calibration</string>
     </property>
    </widget>
-   <widget class="QWidget" name="">
-    <property name="geometry">
-     <rect>
-      <x>1301</x>
-      <y>30</y>
-      <width>221</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_6">
-     <item>
-      <widget class="QPushButton" name="pushButtonLine1">
-       <property name="text">
-        <string>Line 1</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButtonLine2">
-       <property name="text">
-        <string>Line 2</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>1300</x>
@@ -363,12 +337,12 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>1301</x>
       <y>63</y>
-      <width>219</width>
+      <width>221</width>
       <height>27</height>
      </rect>
     </property>
@@ -385,27 +359,40 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QPushButton" name="pushButtonConfirm">
     <property name="geometry">
      <rect>
       <x>1300</x>
-      <y>136</y>
+      <y>130</y>
+      <width>111</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Confirm</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>1302</x>
+      <y>31</y>
       <width>221</width>
       <height>27</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_9">
+    <layout class="QHBoxLayout" name="horizontalLayout_6">
      <item>
-      <widget class="QPushButton" name="pushButtonRedo">
+      <widget class="QPushButton" name="pushButtonStartCali">
        <property name="text">
-        <string>Redo</string>
+        <string>Start</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButtonConfirm">
+      <widget class="QPushButton" name="pushButtonRedoCali">
        <property name="text">
-        <string>Confirm</string>
+        <string>Redo</string>
        </property>
       </widget>
      </item>

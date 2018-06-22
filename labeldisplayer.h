@@ -10,6 +10,7 @@
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include <QPainter>
+#include <QLineF>
 #include <QDebug>
 
 class LabelDisplayer : public QLabel
@@ -19,24 +20,25 @@ class LabelDisplayer : public QLabel
 public:
     LabelDisplayer(QWidget *parent = 0);
     ~LabelDisplayer();
-    bool startLine1 = false;
-    bool startLine2 = false;
+    void startMCalibration();
+    void redoMCalibration();
+    void finishMCalibration();
+    double getAverageDistance();
 
 protected:
     void mouseMoveEvent(QMouseEvent *mouseQEvent);
     void paintEvent(QPaintEvent *paintQEvent);
     void mousePressEvent(QMouseEvent *mouseQEvent);
     void keyPressEvent(QKeyEvent *keyQEvent);
-    void drawLineTo(const QPoint &endPoint);
     void mouseReleaseEvent(QMouseEvent *mouseQEvent);
 
 signals:
     void sendMousePosition(QPoint&);
 
 private:
+    bool startManuCalibration = false, finishManuCalibration = false;
     QPoint tempPoint, firstPoint, secondPoint, thirdPoint;
     bool firstPointSaved=false, secondPointSaved=false, thirdPointSaved=false;
-    bool startDrawing = false;
 
 };
 
