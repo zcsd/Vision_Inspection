@@ -18,6 +18,15 @@ MainWindow::~MainWindow()
 
 void MainWindow::initialSetup()
 {
+    /////////////TEST AREA//////////////
+    cv::Mat test = cv::imread("../images/c1.bmp", 1);
+    double rd = 25;
+    double pm = 0;
+    RulerCalibrator rulerCalibrator(test, rd, pm);
+    qDebug() << pm;
+    cv::imwrite("ff.bmp", test);
+    /////////////END////////////////////
+
     ui->labelShowFrame->setScaledContents(true);
     ui->scrollArea->setBackgroundRole(QPalette::Dark);
     ui->scrollArea->setWidget(ui->labelShowFrame);

@@ -25,7 +25,7 @@ TEMPLATE = app
 INCLUDEPATH += /opt/pylon5/include
 INCLUDEPATH += /usr/local/include/opencv
 
-LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgproc -lopencv_imgcodecs
+LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui
 QMAKE_LFLAGS += -Wl,--enable-new-dtags -Wl,-rpath,/opt/pylon5/lib64
 LIBS += -L/opt/pylon5/lib64
 LIBS += -Wl,-E

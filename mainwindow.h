@@ -4,8 +4,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <iostream>
-
 #include <QMainWindow>
 #include <QPushButton>
 #include <QMessageBox>
@@ -25,11 +23,10 @@
 #include "framegrabber.h"
 #include "rulercalibrator.h"
 
-using namespace std;
 using namespace cv;
 
 class FrameGrabber;
-
+class RulerCalibrator;
 
 namespace Ui {
 class MainWindow;
