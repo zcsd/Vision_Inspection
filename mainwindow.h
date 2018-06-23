@@ -69,6 +69,8 @@ private slots:
     void on_pushButtonConfirm_clicked();
     void on_pushButtonCalculate_clicked();
 
+    void on_actionACalibrate_triggered();
+
 public slots:
     void receiveShowMousePosition(QPoint& pos);
 
@@ -77,10 +79,13 @@ private:
     QString defaultSavePath = "../images";
     char grabMode;
     bool manualCalibration = false;
+    bool autoCalibration = false;
     double scaleFactor = 1.0;
     double pixelPerMM;
     double currentPPMM;
+    double pixelDistanceAC = 0.0;
     cv::Mat cvRawFrameCopy;
+    cv::Mat frameToCali;
     cv::Mat cvRGBFrame;
     QImage qDisplayedFrame;
     QTimer *streamTrigger;

@@ -1,19 +1,18 @@
 #include "rulercalibrator.h"
 
-RulerCalibrator::RulerCalibrator(cv::Mat& inputFrame, const double& realDistance, double& autoPPMM)
+RulerCalibrator::RulerCalibrator(cv::Mat& inputFrame, double& pixelDistance)
 {
     frame = inputFrame.clone();
-    distanceInMM = realDistance;
     preprocessing();
     thresholding();
     getContours();
-    autoPPMM = PPMM;
+    pixelDistance = pixDis;
     inputFrame = frame;
 }
 
 void RulerCalibrator::preprocessing()
 {
-    cv::Rect ROI = Rect(400, 400, 1150, 750);
+    cv::Rect ROI = Rect(400, 350, 1190, 850);
     roiFrame = frame(ROI);
     cv::cvtColor(roiFrame, grayFrame, COLOR_BGR2GRAY);
     cv::GaussianBlur(grayFrame, grayFrame, Size(3, 3), 0);
@@ -42,8 +41,8 @@ void RulerCalibrator::getContours()
         cv::approxPolyDP(Mat(contours[i]), contours_poly[i], 3, true);
         //boundRect[i] = boundingRect( Mat(contours_poly[i]) );
         cv::minEnclosingCircle(contours_poly[i], center[i], radius[i]);
-        cv::circle(roiFrame, center[i], (int)radius[i], Scalar(0, 255, 0), 2, 8, 0 );
-        cv::line(roiFrame, Point(center[i].x-radius[i], center[i].y), Point(center[i].x+radius[i], center[i].y), Scalar(255, 0, 0), 1, 8);
+        cv::circle(roiFrame, center[i], (int)radius[i], Scalar(0, 0, 255), 2, 8, 0 );
+        cv::line(roiFrame, Point(center[i].x-radius[i], center[i].y), Point(center[i].x+radius[i], center[i].y), Scalar(255, 0, 0), 2, 8);
         cv::circle(roiFrame, center[i], 1, Scalar(0, 0, 255), 3, 8, 0 );
 
         // Create an output string stream
@@ -57,19 +56,13 @@ void RulerCalibrator::getContours()
         // Get string from output string stream
         std::string strObj3 = streamObj3.str();
         string printDistance = "R:" + strObj3;
-        cv::putText(roiFrame, printDistance, center[i], 1, 1, Scalar(0, 155, 255), 1, 8);
+        cv::putText(roiFrame, printDistance, center[i], 1, 1, Scalar(0, 255, 0), 2, 8);
         //boundRect[i] = boundingRect(contours[i]);
-        PPMM += radius[i];
+        pixDis += radius[i];
     }
-    PPMM /= int(contours.size());
-    PPMM /= distanceInMM;
+    pixDis /= int(contours.size());
 
-    cv::namedWindow("test", 1);
-    cv::imshow("test", frame);
-    cv::waitKey(0);
-}
-
-void RulerCalibrator::drawContours()
-{
-
+    //cv::namedWindow("test", 1);
+    //cv::imshow("test", frame);
+    //cv::waitKey(0);
 }

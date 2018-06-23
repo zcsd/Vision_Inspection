@@ -18,15 +18,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::initialSetup()
 {
-    /////////////TEST AREA//////////////
-    cv::Mat test = cv::imread("../images/c1.bmp", 1);
-    double rd = 25;
-    double pm = 0;
-    RulerCalibrator rulerCalibrator(test, rd, pm);
-    qDebug() << pm;
-    cv::imwrite("ff.bmp", test);
-    /////////////END////////////////////
-
     ui->labelShowFrame->setScaledContents(true);
     ui->scrollArea->setBackgroundRole(QPalette::Dark);
     ui->scrollArea->setWidget(ui->labelShowFrame);
@@ -261,7 +252,13 @@ void MainWindow::receiveRawFrame(cv::Mat cvRawFrame)
 
 void MainWindow::displayFrame()
 {
-    cv::resize(cvRawFrameCopy, cvRGBFrame, cv::Size(), scaleFactor, scaleFactor);
+    cv::Mat tempFrame;
+    if (autoCalibration) {
+        tempFrame = frameToCali.clone();
+    } else {
+        tempFrame = cvRawFrameCopy.clone();
+    }
+    cv::resize(tempFrame, cvRGBFrame, cv::Size(), scaleFactor, scaleFactor);
     cv::cvtColor(cvRGBFrame, cvRGBFrame, cv::COLOR_BGR2RGB);
     qDisplayedFrame = QImage((uchar*)cvRGBFrame.data, cvRGBFrame.cols, cvRGBFrame.rows, cvRGBFrame.step, QImage::Format_RGB888);
     ui->labelShowFrame->setPixmap(QPixmap::fromImage(qDisplayedFrame));
@@ -331,6 +328,7 @@ void MainWindow::receiveShowMousePosition(QPoint &pos)
 void MainWindow::on_actionMCalibrate_triggered()
 {
     manualCalibration = true;
+    autoCalibration = false;
     ui->pushButtonStartCali->setEnabled(true);
     ui->pushButtonRedoCali->setEnabled(false);
     ui->pushButtonConfirm->setEnabled(false);
@@ -373,7 +371,28 @@ void MainWindow::on_pushButtonStartCali_clicked()
         ui->labelCalResult->clear();
         QDoubleValidator *validator = new QDoubleValidator(0.00, 9999.99, 2);;
         ui->lineEditRealDistance->setValidator(validator);
-        ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Manual calibration started.");
+        ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "     Manual calibration started.");
+    }
+    if (autoCalibration) {
+        ui->pushButtonRedoCali->setEnabled(true);
+        ui->pushButtonStartCali->setEnabled(false);
+        ui->pushButtonCalculate->setEnabled(true);
+        ui->lineEditRealDistance->setEnabled(true);
+        ui->labelRealDisName->setEnabled(true);
+        ui->labelCalResult->setEnabled(true);
+        ui->pushButtonConfirm->setEnabled(false);
+        ui->lineEditRealDistance->clear();
+        ui->labelCalResult->clear();
+        QDoubleValidator *validator = new QDoubleValidator(0.00, 9999.99, 2);;
+        ui->lineEditRealDistance->setValidator(validator);
+        ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Auto Calibration started.");
+
+        frameToCali = cvRawFrameCopy.clone();
+        RulerCalibrator rulerCalibrator(frameToCali, pixelDistanceAC);
+        cv::resize(frameToCali, cvRGBFrame, cv::Size(), scaleFactor, scaleFactor);
+        cv::cvtColor(cvRGBFrame, cvRGBFrame, cv::COLOR_BGR2RGB);
+        qDisplayedFrame = QImage((uchar*)cvRGBFrame.data, cvRGBFrame.cols, cvRGBFrame.rows, cvRGBFrame.step, QImage::Format_RGB888);
+        ui->labelShowFrame->setPixmap(QPixmap::fromImage(qDisplayedFrame));
     }
 }
 
@@ -392,6 +411,27 @@ void MainWindow::on_pushButtonRedoCali_clicked()
         ui->labelCalResult->clear();
         ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Manual calibration restarted.");
     }
+    if (autoCalibration) {
+        ui->pushButtonRedoCali->setEnabled(true);
+        ui->pushButtonStartCali->setEnabled(false);
+        ui->pushButtonCalculate->setEnabled(true);
+        ui->lineEditRealDistance->setEnabled(true);
+        ui->labelRealDisName->setEnabled(true);
+        ui->labelCalResult->setEnabled(true);
+        ui->pushButtonConfirm->setEnabled(false);
+        ui->lineEditRealDistance->clear();
+        ui->labelCalResult->clear();
+        QDoubleValidator *validator = new QDoubleValidator(0.00, 9999.99, 2);;
+        ui->lineEditRealDistance->setValidator(validator);
+        ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Auto Calibration started.");
+
+        frameToCali = cvRawFrameCopy.clone();
+        RulerCalibrator rulerCalibrator(frameToCali, pixelDistanceAC);
+        cv::resize(frameToCali, cvRGBFrame, cv::Size(), scaleFactor, scaleFactor);
+        cv::cvtColor(cvRGBFrame, cvRGBFrame, cv::COLOR_BGR2RGB);
+        qDisplayedFrame = QImage((uchar*)cvRGBFrame.data, cvRGBFrame.cols, cvRGBFrame.rows, cvRGBFrame.step, QImage::Format_RGB888);
+        ui->labelShowFrame->setPixmap(QPixmap::fromImage(qDisplayedFrame));
+    }
 }
 
 void MainWindow::on_pushButtonCalculate_clicked()
@@ -405,6 +445,18 @@ void MainWindow::on_pushButtonCalculate_clicked()
             double realDistance = distance.toDouble();
             double pixelDistance = ui->labelShowFrame->getAverageDistance();
             pixelPerMM = pixelDistance / realDistance;
+            ui->labelCalResult->setText(QString::number(pixelPerMM, 'f', 2) + " pixel/mm");
+            ui->pushButtonConfirm->setEnabled(true);
+        }
+    }
+    if (autoCalibration) {
+        if (ui->lineEditRealDistance->text().isEmpty()) {
+            QMessageBox::information(this, "No Input", "Please fill in number only.");
+        } else {
+            ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Calculate calibration results.");
+            QString  distance = ui->lineEditRealDistance->text();
+            double realDistance = distance.toDouble();
+            pixelPerMM = pixelDistanceAC / realDistance;
             ui->labelCalResult->setText(QString::number(pixelPerMM, 'f', 2) + " pixel/mm");
             ui->pushButtonConfirm->setEnabled(true);
         }
@@ -443,7 +495,7 @@ void MainWindow::readCaliConf()
 
 void MainWindow::on_pushButtonConfirm_clicked()
 {
-    if (manualCalibration) {
+    if (manualCalibration || autoCalibration) {
         ui->labelShowFrame->finishMCalibration();
         setMCaliVisible(false);
         //ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Confirm calibration results.");
@@ -457,6 +509,7 @@ void MainWindow::on_pushButtonConfirm_clicked()
         }
     }
     manualCalibration = false;
+    autoCalibration = false;
 }
 
 void MainWindow::setMCaliVisible(bool showMCali)
@@ -469,4 +522,20 @@ void MainWindow::setMCaliVisible(bool showMCali)
     ui->labelRealDisName->setVisible(showMCali);
     ui->labelCalResult->setVisible(showMCali);
     ui->labelMCaliName->setVisible(showMCali);
+}
+
+void MainWindow::on_actionACalibrate_triggered()
+{
+    manualCalibration = false;
+    autoCalibration = true;
+    ui->pushButtonStartCali->setEnabled(true);
+    ui->pushButtonRedoCali->setEnabled(false);
+    ui->pushButtonConfirm->setEnabled(false);
+    ui->pushButtonCalculate->setEnabled(false);
+    ui->lineEditRealDistance->setEnabled(false);
+    ui->labelRealDisName->setEnabled(false);
+    ui->labelCalResult->setEnabled(false);
+    setMCaliVisible(true);
+    ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Auto calibration selected.");
+
 }

@@ -21,16 +21,14 @@ using namespace std;
 class RulerCalibrator
 {
 public:
-    RulerCalibrator(cv::Mat& inputFrame, const double& realDistance, double& autoPPMM);
+    RulerCalibrator(cv::Mat& inputFrame, double &pixelDistance);
 
 private:
     cv::Mat frame, roiFrame, grayFrame, thresholdImage;
-    double distanceInMM;
-    double PPMM = 0.0;
+    double pixDis = 0.0;
     void preprocessing();
     void thresholding();
     void getContours();
-    void drawContours();
 };
 
 #endif // RULERCALIBRATOR_H

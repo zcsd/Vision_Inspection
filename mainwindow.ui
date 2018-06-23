@@ -286,7 +286,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Manual Calibration</string>
+     <string>Calibration</string>
     </property>
    </widget>
    <widget class="QWidget" name="layoutWidget">
@@ -378,6 +378,19 @@
       </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QLabel" name="labelShowThImage">
+    <property name="geometry">
+     <rect>
+      <x>1290</x>
+      <y>270</y>
+      <width>251</width>
+      <height>171</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
    </widget>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
