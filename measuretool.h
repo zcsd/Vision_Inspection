@@ -1,17 +1,33 @@
 #ifndef MEASURETOOL_H
 #define MEASURETOOL_H
 
-#include <QObject>
+#include <iostream>
+#include <string>
+#include <iomanip>
+#include <QDebug>
 
-class MeasureTool : public QObject
+#include "opencv2/opencv.hpp"
+#include "opencv2/imgproc.hpp"
+#include "opencv2/core/core.hpp"
+#include "opencv2/highgui.hpp" // temp using
+
+using namespace cv;
+using namespace std;
+
+class MeasureTool
 {
-    Q_OBJECT
+
 public:
-    explicit MeasureTool(QObject *parent = nullptr);
+    MeasureTool(cv::Mat& inputFrame, const double ppmm);
 
-signals:
+private:
+    cv::Mat frame, roiFrame, grayFrame, thresholdImage;
+    double newPPMM;
+    void preprocessing();
+    void thresholding();
+    void getContours();
 
-public slots:
+
 };
 
 #endif // MEASURETOOL_H

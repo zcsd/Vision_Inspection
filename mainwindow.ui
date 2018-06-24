@@ -445,11 +445,18 @@
     <property name="title">
      <string>Tools</string>
     </property>
+    <widget class="QMenu" name="menuAuto_Ruler">
+     <property name="title">
+      <string>Auto Ruler</string>
+     </property>
+     <addaction name="actionAutoRulerStart"/>
+     <addaction name="actionAutoRulerStop"/>
+    </widget>
     <addaction name="actionMCalibrate"/>
     <addaction name="actionACalibrate"/>
     <addaction name="actionROI"/>
     <addaction name="actionManualRuler"/>
-    <addaction name="actionAutoRuler"/>
+    <addaction name="menuAuto_Ruler"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -581,9 +588,14 @@
     <string>Manual Ruler</string>
    </property>
   </action>
-  <action name="actionAutoRuler">
+  <action name="actionAutoRulerStart">
    <property name="text">
-    <string>Auto Ruler</string>
+    <string>Start</string>
+   </property>
+  </action>
+  <action name="actionAutoRulerStop">
+   <property name="text">
+    <string>Stop</string>
    </property>
   </action>
  </widget>

@@ -255,7 +255,10 @@ void MainWindow::displayFrame()
     cv::Mat tempFrame;
     if (autoCalibration) {
         tempFrame = frameToCali.clone();
-    } else {
+    } else if (autoMeasure) {
+        tempFrame = frameToMeasure.clone();
+    }
+    else {
         tempFrame = cvRawFrameCopy.clone();
     }
     cv::resize(tempFrame, cvRGBFrame, cv::Size(), scaleFactor, scaleFactor);
@@ -543,4 +546,21 @@ void MainWindow::on_actionACalibrate_triggered()
 void MainWindow::on_actionManualRuler_triggered()
 {
     ui->labelShowFrame->startManualRuler(currentPPMM);
+}
+
+void MainWindow::on_actionAutoRulerStart_triggered()
+{
+    autoMeasure = true;
+    frameToMeasure = cvRawFrameCopy.clone();
+    MeasureTool measureTool(frameToMeasure, currentPPMM);
+
+    cv::resize(frameToMeasure, cvRGBFrame, cv::Size(), scaleFactor, scaleFactor);
+    cv::cvtColor(cvRGBFrame, cvRGBFrame, cv::COLOR_BGR2RGB);
+    qDisplayedFrame = QImage((uchar*)cvRGBFrame.data, cvRGBFrame.cols, cvRGBFrame.rows, cvRGBFrame.step, QImage::Format_RGB888);
+    ui->labelShowFrame->setPixmap(QPixmap::fromImage(qDisplayedFrame));
+}
+
+void MainWindow::on_actionAutoRulerStop_triggered()
+{
+    autoMeasure = false;
 }

@@ -22,11 +22,13 @@
 
 #include "framegrabber.h"
 #include "rulercalibrator.h"
+#include "measuretool.h"
 
 using namespace cv;
 
 class FrameGrabber;
 class RulerCalibrator;
+class MeasureTool;
 
 namespace Ui {
 class MainWindow;
@@ -68,10 +70,10 @@ private slots:
     void on_pushButtonRedoCali_clicked();
     void on_pushButtonConfirm_clicked();
     void on_pushButtonCalculate_clicked();
-
     void on_actionACalibrate_triggered();
-
     void on_actionManualRuler_triggered();
+    void on_actionAutoRulerStart_triggered();
+    void on_actionAutoRulerStop_triggered();
 
 public slots:
     void receiveShowMousePosition(QPoint& pos);
@@ -82,12 +84,14 @@ private:
     char grabMode;
     bool manualCalibration = false;
     bool autoCalibration = false;
+    bool autoMeasure = false;
     double scaleFactor = 1.0;
     double pixelPerMM;
     double currentPPMM;
     double pixelDistanceAC = 0.0;
     cv::Mat cvRawFrameCopy;
     cv::Mat frameToCali;
+    cv::Mat frameToMeasure;
     cv::Mat cvRGBFrame;
     QImage qDisplayedFrame;
     QTimer *streamTrigger;
