@@ -47,13 +47,15 @@ SOURCES += \
         mainwindow.cpp \
     framegrabber.cpp \
     labeldisplayer.cpp \
-    rulercalibrator.cpp
+    rulercalibrator.cpp \
+    measuretool.cpp
 
 HEADERS += \
         mainwindow.h \
     framegrabber.h \
     labeldisplayer.h \
-    rulercalibrator.h
+    rulercalibrator.h \
+    measuretool.h
 
 FORMS += \
         mainwindow.ui

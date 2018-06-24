@@ -448,6 +448,8 @@
     <addaction name="actionMCalibrate"/>
     <addaction name="actionACalibrate"/>
     <addaction name="actionROI"/>
+    <addaction name="actionManualRuler"/>
+    <addaction name="actionAutoRuler"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -572,6 +574,16 @@
   <action name="actionOpenImage">
    <property name="text">
     <string>Open</string>
+   </property>
+  </action>
+  <action name="actionManualRuler">
+   <property name="text">
+    <string>Manual Ruler</string>
+   </property>
+  </action>
+  <action name="actionAutoRuler">
+   <property name="text">
+    <string>Auto Ruler</string>
    </property>
   </action>
  </widget>

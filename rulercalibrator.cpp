@@ -61,8 +61,9 @@ void RulerCalibrator::getContours()
         pixDis += radius[i];
     }
     pixDis /= int(contours.size());
+    //cv::imwrite("../images/aa.bmp", thresholdImage);
 
     //cv::namedWindow("test", 1);
-    //cv::imshow("test", frame);
+    //cv::imshow("test", thresholdImage);
     //cv::waitKey(0);
 }

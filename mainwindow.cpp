@@ -539,3 +539,8 @@ void MainWindow::on_actionACalibrate_triggered()
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Auto calibration selected.");
 
 }
+
+void MainWindow::on_actionManualRuler_triggered()
+{
+    ui->labelShowFrame->startManualRuler(currentPPMM);
+}

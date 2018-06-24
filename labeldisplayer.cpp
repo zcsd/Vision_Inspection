@@ -26,6 +26,12 @@ void LabelDisplayer::paintEvent(QPaintEvent *paintQEvent)
     // MUST call paintEvent of QLabel parent to display image(background)
     QLabel::paintEvent(paintQEvent);
     QPainter painter(this);
+    double realDistance = QLineF(firstPoint, secondPoint).length() / newPPMM;
+    QFont font = painter.font() ;
+    /* twice the size than the current font size */
+    font.setPointSize(15);
+    /* set the modified font to the painter */
+    painter.setFont(font);
 
     if (startManuCalibration && !finishManuCalibration) {
         if (!firstPointSaved || !secondPointSaved || !thirdPointSaved) {
@@ -52,9 +58,15 @@ void LabelDisplayer::paintEvent(QPaintEvent *paintQEvent)
             painter.drawLine(QPoint(secondPoint.x(), secondPoint.y()-4), QPoint(secondPoint.x(), secondPoint.y()+4));
             painter.setPen(QPen(Qt::green, 2, Qt::DotLine));
             painter.drawLine(firstPoint, secondPoint);
-            painter.setPen(QPen(Qt::magenta, 2, Qt::DotLine));
-            painter.drawText(QLineF(firstPoint, secondPoint).center(), QString::number(QLineF(firstPoint, secondPoint).length(), 'f', 1));
+            painter.setPen(QPen(Qt::magenta, 2, Qt::SolidLine));
+            if (!startManualRulerFlag)
+                painter.drawText(QLineF(firstPoint, secondPoint).center(), QString::number(QLineF(firstPoint, secondPoint).length(), 'f', 1));
             //painter.drawEllipse(secondPoint, 1, 1);
+            if (startManualRulerFlag) {
+                //startManualRulerFlag = false;
+                //finishManualRulerFlag = true;
+                painter.drawText(QLineF(firstPoint, secondPoint).center(), QString::number(realDistance, 'f', 2)+"mm");
+            }
         }
         if (thirdPointSaved && secondPointSaved) {
             painter.setPen(QPen(Qt::red, 2, Qt::SolidLine));
@@ -64,8 +76,17 @@ void LabelDisplayer::paintEvent(QPaintEvent *paintQEvent)
             painter.drawLine(QPoint(thirdPoint.x(), thirdPoint.y()-4), QPoint(thirdPoint.x(), thirdPoint.y()+4));
             painter.setPen(QPen(Qt::green, 2, Qt::DotLine));
             painter.drawLine(secondPoint, thirdPoint);
-            painter.setPen(QPen(Qt::magenta, 2, Qt::DotLine));
-            painter.drawText(QLineF(secondPoint, thirdPoint).center(), QString::number(QLineF(secondPoint, thirdPoint).length(), 'f', 1));
+            painter.setPen(QPen(Qt::magenta, 2, Qt::SolidLine));
+            //painter.drawText(QLineF(secondPoint, thirdPoint).center(), QString::number(QLineF(secondPoint, thirdPoint).length(), 'f', 1));
+            if (!startManualRulerFlag)
+                painter.drawText(QLineF(secondPoint, thirdPoint).center(), QString::number(QLineF(secondPoint, thirdPoint).length(), 'f', 1));
+            //painter.drawEllipse(secondPoint, 1, 1);
+            if (startManualRulerFlag) {
+                //startManualRulerFlag = false;
+                //finishManualRulerFlag = true;
+                double realDistance = QLineF(secondPoint, thirdPoint).length() / newPPMM;
+                painter.drawText(QLineF(secondPoint, thirdPoint).center(), QString::number(realDistance, 'f', 2)+"mm");
+            }
             //painter.drawEllipse(thirdPoint, 1, 1);
         }
     }
@@ -110,6 +131,8 @@ void LabelDisplayer::startMCalibration()
     firstPointSaved = false;
     secondPointSaved = false;
     thirdPointSaved = false;
+    finishManualRulerFlag = true;
+    startManualRulerFlag = false;
 }
 
 void LabelDisplayer::redoMCalibration()
@@ -134,4 +157,14 @@ double LabelDisplayer::getAverageDistance()
     double d1 = QLineF(firstPoint, secondPoint).length();
     double d2 = QLineF(secondPoint, thirdPoint).length();
     return ( (d1+d2)/2 );
+}
+
+void LabelDisplayer::startManualRuler(double& ppmm)
+{
+    update();
+
+    newPPMM = ppmm;
+    startMCalibration();
+    finishManualRulerFlag = false;
+    startManualRulerFlag = true;
 }

@@ -71,6 +71,8 @@ private slots:
 
     void on_actionACalibrate_triggered();
 
+    void on_actionManualRuler_triggered();
+
 public slots:
     void receiveShowMousePosition(QPoint& pos);
 
