@@ -71,9 +71,11 @@ private slots:
     void on_pushButtonConfirm_clicked();
     void on_pushButtonCalculate_clicked();
     void on_actionACalibrate_triggered();
-    void on_actionManualRuler_triggered();
     void on_actionAutoRulerStart_triggered();
     void on_actionAutoRulerStop_triggered();
+    void on_actionManualRulerStart_triggered();
+
+    void on_actionManualRulerStop_triggered();
 
 public slots:
     void receiveShowMousePosition(QPoint& pos);

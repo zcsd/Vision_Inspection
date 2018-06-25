@@ -33,7 +33,7 @@ void LabelDisplayer::paintEvent(QPaintEvent *paintQEvent)
     /* set the modified font to the painter */
     painter.setFont(font);
 
-    if (startManuCalibration && !finishManuCalibration) {
+    if ( (startManuCalibration && !finishManuCalibration) || startManualRulerFlag) {
         if (!firstPointSaved || !secondPointSaved || !thirdPointSaved) {
             painter.setPen(QPen(Qt::blue, 2, Qt::SolidLine));
             painter.drawEllipse(tempPoint, 15, 15);
@@ -90,6 +90,7 @@ void LabelDisplayer::paintEvent(QPaintEvent *paintQEvent)
             //painter.drawEllipse(thirdPoint, 1, 1);
         }
     }
+
 }
 
 void LabelDisplayer::mousePressEvent(QMouseEvent *mouseQEvent)
@@ -167,4 +168,16 @@ void LabelDisplayer::startManualRuler(double& ppmm)
     startMCalibration();
     finishManualRulerFlag = false;
     startManualRulerFlag = true;
+}
+
+void LabelDisplayer::stopManualRuler()
+{
+    finishManualRulerFlag = true;
+    startManualRulerFlag = false;
+    firstPointSaved = false;
+    secondPointSaved = false;
+    thirdPointSaved = false;
+    startManuCalibration = false;
+    finishManuCalibration = true;
+    update();
 }

@@ -26,6 +26,7 @@ public:
     void finishMCalibration();
     double getAverageDistance();
     void startManualRuler(double& ppmm);
+    void stopManualRuler();
 
 protected:
     void mouseMoveEvent(QMouseEvent *mouseQEvent);
@@ -39,7 +40,7 @@ signals:
 
 private:
     double newPPMM = 0.0;
-    bool startManualRulerFlag = false, finishManualRulerFlag = false;
+    bool startManualRulerFlag = false, finishManualRulerFlag = true;
     bool startManuCalibration = false, finishManuCalibration = false;
     QPoint tempPoint, firstPoint, secondPoint, thirdPoint;
     bool firstPointSaved=false, secondPointSaved=false, thirdPointSaved=false;

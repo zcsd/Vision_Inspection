@@ -513,6 +513,7 @@ void MainWindow::on_pushButtonConfirm_clicked()
     }
     manualCalibration = false;
     autoCalibration = false;
+    displayFrame();
 }
 
 void MainWindow::setMCaliVisible(bool showMCali)
@@ -543,11 +544,6 @@ void MainWindow::on_actionACalibrate_triggered()
 
 }
 
-void MainWindow::on_actionManualRuler_triggered()
-{
-    ui->labelShowFrame->startManualRuler(currentPPMM);
-}
-
 void MainWindow::on_actionAutoRulerStart_triggered()
 {
     autoMeasure = true;
@@ -563,4 +559,15 @@ void MainWindow::on_actionAutoRulerStart_triggered()
 void MainWindow::on_actionAutoRulerStop_triggered()
 {
     autoMeasure = false;
+    displayFrame();
+}
+
+void MainWindow::on_actionManualRulerStart_triggered()
+{
+    ui->labelShowFrame->startManualRuler(currentPPMM);
+}
+
+void MainWindow::on_actionManualRulerStop_triggered()
+{
+    ui->labelShowFrame->stopManualRuler();
 }

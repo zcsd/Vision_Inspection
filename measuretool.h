@@ -1,3 +1,6 @@
+// MeasureTool class: measureing tool
+// Author: @zichun
+// Date: created on 24 Jun 2018
 #ifndef MEASURETOOL_H
 #define MEASURETOOL_H
 
@@ -26,7 +29,6 @@ private:
     void preprocessing();
     void thresholding();
     void getContours();
-
 
 };
 

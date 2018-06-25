@@ -452,10 +452,17 @@
      <addaction name="actionAutoRulerStart"/>
      <addaction name="actionAutoRulerStop"/>
     </widget>
+    <widget class="QMenu" name="menuManual_Ruler">
+     <property name="title">
+      <string>Manual Ruler</string>
+     </property>
+     <addaction name="actionManualRulerStart"/>
+     <addaction name="actionManualRulerStop"/>
+    </widget>
     <addaction name="actionMCalibrate"/>
     <addaction name="actionACalibrate"/>
     <addaction name="actionROI"/>
-    <addaction name="actionManualRuler"/>
+    <addaction name="menuManual_Ruler"/>
     <addaction name="menuAuto_Ruler"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -583,17 +590,22 @@
     <string>Open</string>
    </property>
   </action>
-  <action name="actionManualRuler">
-   <property name="text">
-    <string>Manual Ruler</string>
-   </property>
-  </action>
   <action name="actionAutoRulerStart">
    <property name="text">
     <string>Start</string>
    </property>
   </action>
   <action name="actionAutoRulerStop">
+   <property name="text">
+    <string>Stop</string>
+   </property>
+  </action>
+  <action name="actionManualRulerStart">
+   <property name="text">
+    <string>Start</string>
+   </property>
+  </action>
+  <action name="actionManualRulerStop">
    <property name="text">
     <string>Stop</string>
    </property>
