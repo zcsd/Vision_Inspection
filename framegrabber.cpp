@@ -70,7 +70,7 @@ void FrameGrabber::configureCamera()
 
         pylonCamera->ExposureAuto.SetValue(ExposureAuto_Off);
         pylonCamera->ExposureMode.SetValue(ExposureMode_Timed);
-        pylonCamera->ExposureTime.SetValue(15000); // us
+        pylonCamera->ExposureTime.SetValue(25000); // us
 
         pylonCamera->AcquisitionFrameRateEnable.SetValue(true);
         pylonCamera->AcquisitionFrameRate.SetValue(35.0);

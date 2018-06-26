@@ -1,5 +1,5 @@
 // RulerCalibrator class for ruler calibration automatically
-// Author: @zichun
+// Author: @ZC
 // Date: created on 22 Jun 2018
 #ifndef RULERCALIBRATOR_H
 #define RULERCALIBRATOR_H

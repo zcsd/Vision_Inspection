@@ -1,5 +1,5 @@
 // MeasureTool class: measureing tool
-// Author: @zichun
+// Author: @ZC
 // Date: created on 24 Jun 2018
 #ifndef MEASURETOOL_H
 #define MEASURETOOL_H
