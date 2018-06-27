@@ -17,7 +17,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Display Panel</string>
+   <string>Vision Inspection</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QLabel" name="labelMessageLog">
@@ -439,7 +439,7 @@
     <addaction name="actionCapture"/>
     <addaction name="actionStream"/>
     <addaction name="actionStopStream"/>
-    <addaction name="actionSetting"/>
+    <addaction name="actionCameraSetting"/>
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
@@ -580,7 +580,7 @@
     <string>Scan New Camera</string>
    </property>
   </action>
-  <action name="actionSetting">
+  <action name="actionCameraSetting">
    <property name="text">
     <string>Setting</string>
    </property>

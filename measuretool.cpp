@@ -13,7 +13,7 @@ MeasureTool::MeasureTool(cv::Mat& inputFrame, const double ppmm)
 void MeasureTool::preprocessing()
 {
     cv::Rect ROI = Rect(100, 100, 1800, 1300);
-    roiFrame = frame(            //cv::rectangle(roiFrame, boundRect[i], Scalar(0, 0, 255), 2, 8);ROI);
+    roiFrame = frame(ROI);
     cv::cvtColor(roiFrame, grayFrame, COLOR_BGR2GRAY);
     cv::GaussianBlur(grayFrame, grayFrame, Size(3, 3), 0);
 }

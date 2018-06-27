@@ -571,3 +571,9 @@ void MainWindow::on_actionManualRulerStop_triggered()
 {
     ui->labelShowFrame->stopManualRuler();
 }
+
+void MainWindow::on_actionCameraSetting_triggered()
+{
+    SettingDialog *settingDialog = new SettingDialog(this);
+    settingDialog->show();
+}

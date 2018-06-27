@@ -23,12 +23,14 @@
 #include "framegrabber.h"
 #include "rulercalibrator.h"
 #include "measuretool.h"
+#include "settingdialog.h"
 
 using namespace cv;
 
 class FrameGrabber;
 class RulerCalibrator;
 class MeasureTool;
+class SettingDialog;
 
 namespace Ui {
 class MainWindow;
@@ -76,6 +78,8 @@ private slots:
     void on_actionManualRulerStart_triggered();
 
     void on_actionManualRulerStop_triggered();
+
+    void on_actionCameraSetting_triggered();
 
 public slots:
     void receiveShowMousePosition(QPoint& pos);
