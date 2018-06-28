@@ -58,16 +58,16 @@ void FrameGrabber::configureCamera()
     try {
         // Method 1:
         // Load pfs file into the camera's node map with enabled validation.
-        //const char cameraParaFile[] = "../conf/acA2040-55uc_22095198.pfs";
+        const char cameraParaFile[] = "../conf/acA2040-55uc_22095198.pfs";
         //CFeaturePersistence::Save(cameraParaFile, &pylonCamera->GetNodeMap());
-        //CFeaturePersistence::Load(cameraParaFile, &pylonCamera->GetNodeMap(), true);
+        CFeaturePersistence::Load(cameraParaFile, &pylonCamera->GetNodeMap(), true);
 
         // Method 2:
         // The parameter MaxNumBuffer can be used to control the count of buffers
         // allocated for grabbing. The default value of this parameter is 10.
 
         //pylonCamera->MaxNumBuffer = 10;
-
+        /*
         pylonCamera->ExposureAuto.SetValue(ExposureAuto_Off);
         pylonCamera->ExposureMode.SetValue(ExposureMode_Timed);
         pylonCamera->ExposureTime.SetValue(25000); // us
@@ -77,7 +77,7 @@ void FrameGrabber::configureCamera()
 
         pylonCamera->Width.SetValue(2048);
         pylonCamera->Height.SetValue(1536);
-
+        */
         //pylonCamera->CenterX.SetValue(true);
         //pylonCamera->CenterY.SetValue(true);
         // Warm up camera for 0.1s

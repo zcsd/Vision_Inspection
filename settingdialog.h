@@ -6,6 +6,7 @@
 
 #include <QDialog>
 #include <QtWidgets>
+#include <QStringList>
 #include <QDebug>
 
 namespace Ui {
@@ -22,6 +23,8 @@ public:
 
 private:
     Ui::SettingDialog *ui;
+    void initSetup();
+    void readConf();
 };
 
 #endif // SETTINGDIALOG_H
