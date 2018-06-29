@@ -21,10 +21,18 @@ public:
     explicit SettingDialog(QWidget *parent = 0);
     ~SettingDialog();
 
+private slots:
+    void on_pushButtonCancel_clicked();
+    void on_pushButtonOK_clicked();
+
 private:
     Ui::SettingDialog *ui;
+    QMap<QString, QString> cameraParaMap;
     void initSetup();
     void readConf();
+    void updateConf();
+    QString getParameters(QString nameParameter);
+
 };
 
 #endif // SETTINGDIALOG_H

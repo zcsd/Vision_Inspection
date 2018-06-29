@@ -21,7 +21,7 @@ BlackLevelSelector	All
 BlackLevel	0.00000
 BlackLevelSelector	All
 Gamma	1.00000
-DigitalShift	1
+DigitalShift	0
 RemoveParameterLimitSelector	Gain
 RemoveParameterLimit	0
 RemoveParameterLimitSelector	Gain
@@ -81,7 +81,7 @@ ColorTransformationValue	1.37500
 ColorTransformationSelector	RGBtoRGB
 ColorTransformationValueSelector	Gain00
 ExposureMode	Timed
-ExposureTime	8000.0
+ExposureTime	10000.0
 AcquisitionBurstFrameCount	1
 TriggerSelector	FrameBurstStart
 TriggerMode	Off
@@ -135,7 +135,7 @@ AutoFunctionROISelector	ROI2
 AutoFunctionROIWidth	2048
 AutoFunctionROISelector	ROI1
 AutoFunctionROISelector	ROI1
-AutoFunctionROIHeight	1535
+AutoFunctionROIHeight	1536
 AutoFunctionROISelector	ROI2
 AutoFunctionROIHeight	1536
 AutoFunctionROISelector	ROI1

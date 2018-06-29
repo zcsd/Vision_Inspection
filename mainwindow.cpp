@@ -575,5 +575,20 @@ void MainWindow::on_actionManualRulerStop_triggered()
 void MainWindow::on_actionCameraSetting_triggered()
 {
     SettingDialog *settingDialog = new SettingDialog(this);
-    settingDialog->show();
+    int r = settingDialog->exec();
+    if (r == QDialog::Accepted) {
+        ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Camera Parameters Updated.");
+        if (ui->pushButtonDisconnect->isEnabled()) {
+            if (!ui->pushButtonStream->isEnabled()) {
+                on_pushButtonStop_clicked();
+                on_pushButtonDisconnect_clicked();
+                on_pushButtonConnect_clicked();
+                on_pushButtonStream_clicked();
+            } else {
+                on_pushButtonDisconnect_clicked();
+                on_pushButtonConnect_clicked();
+                on_pushButtonCapture_clicked();
+            }
+        }
+    }
 }
