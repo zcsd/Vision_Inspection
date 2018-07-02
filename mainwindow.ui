@@ -379,18 +379,31 @@
      </item>
     </layout>
    </widget>
-   <widget class="QLabel" name="labelShowThImage">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>1290</x>
-      <y>270</y>
-      <width>251</width>
-      <height>171</height>
+      <x>1300</x>
+      <y>200</y>
+      <width>221</width>
+      <height>31</height>
      </rect>
     </property>
-    <property name="text">
-     <string/>
-    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <item>
+      <widget class="QPushButton" name="pushButtonX">
+       <property name="text">
+        <string>X</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonY">
+       <property name="text">
+        <string>Y</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QToolBar" name="mainToolBar">

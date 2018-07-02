@@ -24,6 +24,7 @@
 #include "rulercalibrator.h"
 #include "measuretool.h"
 #include "settingdialog.h"
+#include "fdtester.h"
 
 using namespace cv;
 
@@ -31,6 +32,7 @@ class FrameGrabber;
 class RulerCalibrator;
 class MeasureTool;
 class SettingDialog;
+class FDTester;
 
 namespace Ui {
 class MainWindow;
@@ -81,6 +83,8 @@ private slots:
 
     void on_actionCameraSetting_triggered();
 
+    void on_pushButtonX_clicked();
+
 public slots:
     void receiveShowMousePosition(QPoint& pos);
 
@@ -106,6 +110,7 @@ private:
     void setMCaliVisible(bool showMCali);
     void writeCaliConf();
     void readCaliConf();
+    cv::Mat frameToTest;
 };
 
 #endif // MAINWINDOW_H

@@ -4,9 +4,16 @@ MeasureTool::MeasureTool(cv::Mat& inputFrame, const double ppmm)
 {
     frame = inputFrame.clone();
     newPPMM = ppmm;
+
+    QElapsedTimer timer;
+    timer.start();
+
     preprocessing();
     thresholding();
     getContours();
+
+    qDebug() << timer.elapsed();
+
     inputFrame = frame;
 }
 

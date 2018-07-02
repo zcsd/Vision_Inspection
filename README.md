@@ -8,7 +8,7 @@
 - Ubuntu(16.04+) (could extend to support Windows or other Linux)
 - QT Library 5.11
 - OpenCV-3.4.0
-- Pylon 5 SDK
+- Pylon 5.0.12 SDK
 
 **Recommend IDE**
 - QT Creator
@@ -26,4 +26,4 @@
 - too many
 
 
-*Jun 21 2018*
+*Jun 29 2018*

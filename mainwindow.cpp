@@ -592,3 +592,9 @@ void MainWindow::on_actionCameraSetting_triggered()
         }
     }
 }
+
+void MainWindow::on_pushButtonX_clicked()
+{
+    frameToTest = cvRawFrameCopy.clone();
+    FDTester fdTester(frameToTest);
+}
