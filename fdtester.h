@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include <QDebug>
+#include <QFile>
 #include <QElapsedTimer>
 
 #include "opencv2/core.hpp"
@@ -25,7 +26,10 @@ public:
 
 private:
     cv::Mat originalFrame;
-    void process();
+    vector<Point> getContour(cv::Mat image);
+    void compareContours(vector<Point> refContour, vector<Point> testContour);
+    void saveRefData(vector<Point> refContour);
+    vector<Point> readRefData();
 
 };
 

@@ -81,7 +81,7 @@ ColorTransformationValue	1.37500
 ColorTransformationSelector	RGBtoRGB
 ColorTransformationValueSelector	Gain00
 ExposureMode	Timed
-ExposureTime	10000.0
+ExposureTime	20000.0
 AcquisitionBurstFrameCount	1
 TriggerSelector	FrameBurstStart
 TriggerMode	Off

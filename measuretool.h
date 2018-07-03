@@ -31,7 +31,6 @@ private:
     void preprocessing();
     void thresholding();
     void getContours();
-
 };
 
 #endif // MEASURETOOL_H
