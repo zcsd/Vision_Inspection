@@ -51,10 +51,10 @@ vector<Point> FDTester::getContour(Mat image)
 void FDTester::compareContours(vector<Point> refContour, vector<Point> testContour)
 {
     std::vector<cv::Point2f> refSampleContour, testSampleContour;
-    cv::ximgproc::contourSampling(refContour, refSampleContour, 256);
-    cv::ximgproc::contourSampling(testContour, testSampleContour, 256);
+    contourSampling(refContour, refSampleContour, 256);
+    contourSampling(testContour, testSampleContour, 256);
 
-    cv::ximgproc::ContourFitting fd;
+    FDShapeMatching fd;
     fd.setFDSize(50);
 
     cv::Mat fd_contour, t;

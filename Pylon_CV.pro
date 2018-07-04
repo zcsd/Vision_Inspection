@@ -25,7 +25,7 @@ TEMPLATE = app
 INCLUDEPATH += /opt/pylon5/include
 INCLUDEPATH += /usr/local/include/opencv
 
-LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui -lopencv_ximgproc
+LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui
 QMAKE_LFLAGS += -Wl,--enable-new-dtags -Wl,-rpath,/opt/pylon5/lib64
 LIBS += -L/opt/pylon5/lib64
 LIBS += -Wl,-E
@@ -50,7 +50,8 @@ SOURCES += \
     rulercalibrator.cpp \
     measuretool.cpp \
     settingdialog.cpp \
-    fdtester.cpp
+    fdtester.cpp \
+    fourierdescriptor.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -59,7 +60,8 @@ HEADERS += \
     rulercalibrator.h \
     measuretool.h \
     settingdialog.h \
-    fdtester.h
+    fdtester.h \
+    fourierdescriptor.h
 
 FORMS += \
         mainwindow.ui \
