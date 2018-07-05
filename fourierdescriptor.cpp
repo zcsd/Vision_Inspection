@@ -99,6 +99,9 @@ double FDShapeMatching::newtonRaphson(double x1, double x2)
 
 void FDShapeMatching::estimateTransformation(InputArray _src, InputArray _ref, OutputArray _alphaPhiST, double *distFin, bool fdContour)
 {
+    QElapsedTimer timer;
+    timer.start();
+
     if (!fdContour)
         CV_Assert( (_src.kind() == _InputArray::STD_VECTOR || _src.kind() == _InputArray::MAT) && (_ref.kind() == _InputArray::STD_VECTOR || _ref.kind() == _InputArray::MAT));
     else
@@ -124,6 +127,7 @@ void FDShapeMatching::estimateTransformation(InputArray _src, InputArray _ref, O
         fdCtr1.convertTo(fdCtr1, CV_64F);
     if (fdCtr2.type() != CV_64FC2)
         fdCtr2.convertTo(fdCtr2, CV_64F);
+
     rho.resize(ctrSize);
     psi.resize(ctrSize);
     b.resize(ctrSize);
@@ -194,11 +198,13 @@ void FDShapeMatching::estimateTransformation(InputArray _src, InputArray _ref, O
             }
         }
     }
+
     while ((x1>-nbElt));
     Mat x=(Mat_<double>(1,5)<<alphaMin/ nbElt,phiMin,sMin, fdCtr2.at<Vec2d>(0, 0)[0]- fdCtr1.at<Vec2d>(0, 0)[0], fdCtr2.at<Vec2d>(0, 0)[1]- fdCtr1.at<Vec2d>(0, 0)[1]);
     if (distFin)
         *distFin= distMin;
     x.copyTo(_alphaPhiST);
+    qDebug() << timer.elapsed();
 }
 
 void fourierDescriptor(InputArray _src, OutputArray _dst, int nbElt, int nbFD)

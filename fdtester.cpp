@@ -3,20 +3,12 @@
 FDTester::FDTester(cv::Mat &inputFrame)
 {
     originalFrame = inputFrame.clone();
-    QElapsedTimer timer;
-    timer.start();
+    connect(this, SIGNAL(sendResult(QString,double)), this, SLOT(receiveResult(QString,double)));
+    //QElapsedTimer timer;
+    //timer.start();
     loadRefCtrs();
-    qDebug() << timer.elapsed();
-    findBestMatch();
-    //cv::Mat refImage = imread("../images/FD_Test/vamp_ref.bmp", 1);
-    //vector<Point> ref = readRefData();
-    //saveRefData(getContour(refImage));
-    //compareContours(ref, getContour(originalFrame));
-}
-
-FDTester::~FDTester()
-{
-
+    //qDebug() << timer.elapsed();
+    findMatchResult();
 }
 
 QMap<QString, double> FDTester::getTestDistance()
@@ -40,15 +32,35 @@ void FDTester::loadRefCtrs()
     }
 }
 
-void FDTester::findBestMatch()
+void FDTester::findMatchResult()
 {
     vector<Point> testCtr = getContour(originalFrame);
     int classSize = refCtrsMap.size();
     testCtrDist.clear();
     //double minDist = 999999.9999, tempDist = 0;
+/*
     for (int i = 0; i < classSize; i++) {
-        testCtrDist[refClassName[i]] = compareContours(refCtrsMap[refClassName[i]], testCtr);
+        compareContours(refClassName[i], refCtrsMap[refClassName[i]], testCtr);
     }
+*/
+
+    for (int i = 0; i < classSize; i++) {
+        QtConcurrent::run(compareContours, refClassName[i], refCtrsMap[refClassName[i]], testCtr);
+    }
+
+/*
+    QFuture<double> t0 = QtConcurrent::run(compareContours, refCtrsMap[refClassName[0]], testCtr);
+    QFuture<double> t1 = QtConcurrent::run(compareContours, refCtrsMap[refClassName[1]], testCtr);
+    QFuture<double> t2 = QtConcurrent::run(compareContours, refCtrsMap[refClassName[2]], testCtr);
+    QFuture<double> t3 = QtConcurrent::run(compareContours, refCtrsMap[refClassName[3]], testCtr);
+    QFuture<double> t4 = QtConcurrent::run(compareContours, refCtrsMap[refClassName[4]], testCtr);
+
+    testCtrDist[refClassName[0]] = t0.result();
+    testCtrDist[refClassName[1]] = t1.result();
+    testCtrDist[refClassName[2]] = t2.result();
+    testCtrDist[refClassName[3]] = t3.result();
+    testCtrDist[refClassName[4]] = t4.result();
+    */
 }
 
 vector<Point> FDTester::getContour(Mat image)
@@ -56,7 +68,7 @@ vector<Point> FDTester::getContour(Mat image)
     cv::Mat smallImage, grayImage, thresholdImage;
     cv::Scalar WHITE = Scalar(255, 255, 255);
 
-    cv::resize(image, smallImage, Size(), 0.5, 0.5, INTER_LINEAR);
+    cv::resize(image, smallImage, Size(), 0.25, 0.25, INTER_LINEAR);
     cv::cvtColor(smallImage, grayImage, COLOR_BGR2GRAY);
     cv::GaussianBlur(grayImage, grayImage, Size(3, 3), 0);
     cv::threshold(grayImage, thresholdImage, 135, 210, THRESH_BINARY_INV);
@@ -85,14 +97,14 @@ vector<Point> FDTester::getContour(Mat image)
     return contours[indexMaxContour];
 }
 
-double FDTester::compareContours(vector<Point> refContour, vector<Point> testContour)
+void FDTester::compareContours(QString className, vector<Point> refContour, vector<Point> testContour)
 {
     std::vector<cv::Point2f> refSampleContour, testSampleContour;
     contourSampling(refContour, refSampleContour, 256);
     contourSampling(testContour, testSampleContour, 256);
 
     FDShapeMatching fdShapeMatching;
-    fdShapeMatching.setFDSize(50);
+    fdShapeMatching.setFDSize(20);
 
     cv::Mat fd_contour, t;
     //fourierDescriptor(contour_sampled, fd_contour);
@@ -103,8 +115,13 @@ double FDTester::compareContours(vector<Point> refContour, vector<Point> testCon
     //cout << "Distance = " << dist << endl;
     //cout << "Angle = " << t.at<double>(0, 1) * 180 / M_PI <<"\n";
     //cout << "Scale = " << t.at<double>(0, 2)  << "\n";
+    emit sendResult(className, dist);
+    //return dist;
+}
 
-    return dist;
+void FDTester::receiveResult(QString name, double distance)
+{
+    testCtrDist[name] = distance;
 }
 
 void FDTester::saveRefData(vector<Point> refContour)
@@ -143,3 +160,7 @@ vector<Point> FDTester::readRefData(QString strFilePath)
     return refCtr;
 }
 
+FDTester::~FDTester()
+{
+
+}

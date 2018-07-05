@@ -10,6 +10,9 @@
 #include <QFile>
 #include <QElapsedTimer>
 #include <QDir>
+#include <QThread>
+#include <QtConcurrent>
+#include <QObject>
 
 #include "opencv2/core.hpp"
 #include "opencv2/imgproc.hpp"
@@ -20,26 +23,32 @@
 using namespace cv;
 using namespace std;
 
-class FDTester
+class FDTester: public QObject
 {
+    Q_OBJECT
 
 public:
     FDTester(cv::Mat &inputFrame);
     ~FDTester();
-
     QMap<QString, double> getTestDistance();
 
 private:
     cv::Mat originalFrame;
-    void loadRefCtrs();
-    void findBestMatch();
-    vector<Point> getContour(cv::Mat image);
-    double compareContours(vector<Point> refContour, vector<Point> testContour);
-    void saveRefData(vector<Point> refContour);
-    vector<Point> readRefData(QString strFilePath);
+    QStringList refClassName;
     QMap<QString, vector<Point>> refCtrsMap;
     QMap<QString, double> testCtrDist;
-    QStringList refClassName;
+    void loadRefCtrs();
+    void saveRefData(vector<Point> refContour);
+    void findMatchResult();
+    vector<Point> getContour(cv::Mat image);
+    vector<Point> readRefData(QString strFilePath);
+    static void compareContours(QString className, vector<Point> refContour, vector<Point> testContour);
+
+signals:
+    static void sendResult(QString name, double distance);
+
+private slots:
+    void receiveResult(QString name, double distance);
 
 };
 

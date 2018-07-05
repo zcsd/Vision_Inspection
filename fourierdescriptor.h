@@ -4,6 +4,9 @@
 #ifndef FOURIERDESCRIPTOR_H
 #define FOURIERDESCRIPTOR_H
 
+#include <QElapsedTimer>
+#include <QDebug>
+
 #include <opencv2/core.hpp>
 #include <opencv2/core/ocl.hpp>
 #include <opencv2/core/base.hpp>
