@@ -593,8 +593,26 @@ void MainWindow::on_actionCameraSetting_triggered()
     }
 }
 
-void MainWindow::on_pushButtonX_clicked()
+void MainWindow::on_pushButtonMatch_clicked()
 {
+    QElapsedTimer timer;
+    timer.start();
     frameToTest = cvRawFrameCopy.clone();
     FDTester fdTester(frameToTest);
+    QMap<QString, double> testDists = fdTester.getTestDistance();
+    QMapIterator<QString, double> i(testDists);
+    QString bestMatchName = "None";
+    double minDist = 9999.99;
+
+    while (i.hasNext()) {
+        i.next();
+        if (i.value() <= minDist) {
+            minDist = i.value();
+            bestMatchName = i.key();
+        }
+        ui->labelMatchResult->setText(bestMatchName);
+        ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    "
+                                          + i.key() + ": " + QString::number(i.value()));
+    }
+    qDebug() << timer.elapsed();
 }

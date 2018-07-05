@@ -379,7 +379,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>1300</x>
@@ -390,16 +390,19 @@
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_5">
      <item>
-      <widget class="QPushButton" name="pushButtonX">
+      <widget class="QPushButton" name="pushButtonMatch">
        <property name="text">
-        <string>X</string>
+        <string>Match</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButtonY">
+      <widget class="QLabel" name="labelMatchResult">
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(255, 255, 255);</string>
+       </property>
        <property name="text">
-        <string>Y</string>
+        <string/>
        </property>
       </widget>
      </item>

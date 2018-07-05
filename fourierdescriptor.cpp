@@ -78,14 +78,14 @@ double FDShapeMatching::distance(std::complex<double> r, double alpha)
 double FDShapeMatching::newtonRaphson(double x1, double x2)
 {
     double f1,df1;
-    fAlpha(x1,f1,df1);
+    fAlpha(x1, f1, df1);
     if (f1 < 0)
     {
         x1=x2;
         fAlpha(x1, f1, df1);
     }
-    CV_Assert(f1>=0);
-    if (f1==0)
+    CV_Assert(f1 >= 0);
+    if (f1 == 0)
         return x1;
     for (int i = 0; i < 5; i++)
     {
@@ -104,7 +104,7 @@ void FDShapeMatching::estimateTransformation(InputArray _src, InputArray _ref, O
     else
         CV_Assert(fdContour && _src.kind() == _InputArray::MAT && _ref.kind() == _InputArray::MAT);
     CV_Assert(_src.channels() == 2 && _ref.channels() == 2);
-    Mat fdCtr1,fdCtr2;
+    Mat fdCtr1, fdCtr2;
     if (!fdContour)
     {
         Mat newCtr1,newCtr2;
@@ -119,7 +119,7 @@ void FDShapeMatching::estimateTransformation(InputArray _src, InputArray _ref, O
         fdCtr2= _ref.getMat();
         CV_Assert(fdCtr1.rows == fdCtr2.rows);
     }
-    CV_Assert( fdSize<= ctrSize / 2 - 1);
+    CV_Assert( fdSize <= ctrSize / 2 - 1);
     if (fdCtr1.type() != CV_64FC2)
         fdCtr1.convertTo(fdCtr1, CV_64F);
     if (fdCtr2.type() != CV_64FC2)
@@ -129,11 +129,11 @@ void FDShapeMatching::estimateTransformation(InputArray _src, InputArray _ref, O
     b.resize(ctrSize);
     a.resize(ctrSize);
     frequencyInit();
-    double  alphaMin, phiMin, sMin;
-    long		    n, nbElt = ctrSize;
-    double 		    s1, s2, sign1, sign2, df, x1 = nbElt, x2 = nbElt, dx;
-    double		    dist, distMin = 10000, alpha, s, phi;
-    std::complex<double> 	j(0, 1), zz;
+    double alphaMin, phiMin, sMin;
+    long n, nbElt = ctrSize;
+    double s1, s2, sign1, sign2, df, x1 = nbElt, x2 = nbElt, dx;
+    double dist, distMin = 10000, alpha, s, phi;
+    std::complex<double> j(0, 1), zz;
 
     for (n = 0; n<nbElt; n++)
     {
@@ -163,7 +163,7 @@ void FDShapeMatching::estimateTransformation(InputArray _src, InputArray _ref, O
         while ((sign1*sign2>0) && (x1>-nbElt));
         if (sign1*sign2<0)
         {
-            alpha=newtonRaphson(x1,x2);
+            alpha=newtonRaphson(x1, x2);
             s1 = 0;
             s2 = 0;
             for (n = 1; n<nbElt; n++)
@@ -205,7 +205,7 @@ void fourierDescriptor(InputArray _src, OutputArray _dst, int nbElt, int nbFD)
 {
     CV_Assert(_src.kind() == _InputArray::MAT || _src.kind() == _InputArray::STD_VECTOR);
     CV_Assert(_src.empty() || (_src.channels() == 2 && (_src.depth() == CV_32S || _src.depth() == CV_32F || _src.depth() == CV_64F)));
-    Mat  z = _src.getMat();
+    Mat z = _src.getMat();
     CV_Assert(z.rows == 1 || z.cols == 1);
     if (nbElt==-1)
         nbElt = getOptimalDFTSize(max(z.rows, z.cols));
@@ -244,12 +244,12 @@ void contourSampling(InputArray _src, OutputArray _out, int nbElt)
         return;
     }
     CV_Assert(ctr.rows==1 || ctr.cols==1);
-    double		l1 = 0, l2, p, d, s;
+    double l1 = 0, l2, p, d, s;
     Mat r;
     if (ctr.rows==1)
         ctr=ctr.t();
     int j = 0;
-    int 		nb = ctr.rows;
+    int nb = ctr.rows;
     p = arcLength(ctr, true);
     l2 = norm(ctr.row(j) - ctr.row(j + 1)) / p;
     for (int i = 0; i<nbElt; i++)
@@ -313,9 +313,4 @@ void transformFD(InputArray _src, InputArray _t,OutputArray _dst,  bool fdContou
     std::vector<Point2d> z;
     dft(Z, z, DFT_INVERSE);
     Mat(z).copyTo(_dst);
-}
-
-cv::Ptr<FDShapeMatching> createFDShapeMatching(int ctr, int fd)
-{
-    return makePtr<FDShapeMatching>(ctr, fd);
 }

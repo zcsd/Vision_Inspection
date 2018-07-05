@@ -3,15 +3,52 @@
 FDTester::FDTester(cv::Mat &inputFrame)
 {
     originalFrame = inputFrame.clone();
+    QElapsedTimer timer;
+    timer.start();
+    loadRefCtrs();
+    qDebug() << timer.elapsed();
+    findBestMatch();
     //cv::Mat refImage = imread("../images/FD_Test/vamp_ref.bmp", 1);
-    vector<Point> ref = readRefData();
+    //vector<Point> ref = readRefData();
     //saveRefData(getContour(refImage));
-    compareContours(ref, getContour(originalFrame));
+    //compareContours(ref, getContour(originalFrame));
 }
 
 FDTester::~FDTester()
 {
 
+}
+
+QMap<QString, double> FDTester::getTestDistance()
+{
+    return testCtrDist;
+}
+
+void FDTester::loadRefCtrs()
+{
+    QString strRefFolder = "../data";
+    QDir directory(strRefFolder);
+    QStringList refFileList = directory.entryList(QStringList() << "*.txt", QDir::Files);
+
+    refCtrsMap.clear();
+    refClassName.clear();
+
+    for (int i = 0; i < refFileList.size(); i++) {
+        int pos = refFileList[i].lastIndexOf(QChar('.'));
+        refClassName.append(refFileList[i].left(pos));
+        refCtrsMap[refFileList[i].left(pos)] = readRefData(strRefFolder+"/"+refFileList[i]);
+    }
+}
+
+void FDTester::findBestMatch()
+{
+    vector<Point> testCtr = getContour(originalFrame);
+    int classSize = refCtrsMap.size();
+    testCtrDist.clear();
+    //double minDist = 999999.9999, tempDist = 0;
+    for (int i = 0; i < classSize; i++) {
+        testCtrDist[refClassName[i]] = compareContours(refCtrsMap[refClassName[i]], testCtr);
+    }
 }
 
 vector<Point> FDTester::getContour(Mat image)
@@ -24,8 +61,8 @@ vector<Point> FDTester::getContour(Mat image)
     cv::GaussianBlur(grayImage, grayImage, Size(3, 3), 0);
     cv::threshold(grayImage, thresholdImage, 135, 210, THRESH_BINARY_INV);
     // kernel shape: MORPH_RECT   MORPH_CROSS  MORPH_ELLIPSE
-    //cv::Mat dilateKernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, Size(3,3));
-    //cv::dilate(thresholdImage, thresholdImage, dilateKernel);
+    // cv::Mat dilateKernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, Size(3,3));
+    // cv::dilate(thresholdImage, thresholdImage, dilateKernel);
 
     std::vector<vector<cv::Point> > contours;
     std::vector<cv::Vec4i> hierarchy;
@@ -48,24 +85,26 @@ vector<Point> FDTester::getContour(Mat image)
     return contours[indexMaxContour];
 }
 
-void FDTester::compareContours(vector<Point> refContour, vector<Point> testContour)
+double FDTester::compareContours(vector<Point> refContour, vector<Point> testContour)
 {
     std::vector<cv::Point2f> refSampleContour, testSampleContour;
     contourSampling(refContour, refSampleContour, 256);
     contourSampling(testContour, testSampleContour, 256);
 
-    FDShapeMatching fd;
-    fd.setFDSize(50);
+    FDShapeMatching fdShapeMatching;
+    fdShapeMatching.setFDSize(50);
 
     cv::Mat fd_contour, t;
-    //cv::ximgproc::fourierDescriptor(contour_sampled, fd_contour);
+    //fourierDescriptor(contour_sampled, fd_contour);
     double dist;
 
-    fd.estimateTransformation(refSampleContour, testSampleContour, t, &dist, false);
+    fdShapeMatching.estimateTransformation(refSampleContour, testSampleContour, t, &dist, false);
 
-    cout << "Distance = " << dist << endl;
-    cout << "Angle = " << t.at<double>(0, 1) * 180 / M_PI <<"\n";
-    cout << "Scale = " << t.at<double>(0, 2)  << "\n";
+    //cout << "Distance = " << dist << endl;
+    //cout << "Angle = " << t.at<double>(0, 1) * 180 / M_PI <<"\n";
+    //cout << "Scale = " << t.at<double>(0, 2)  << "\n";
+
+    return dist;
 }
 
 void FDTester::saveRefData(vector<Point> refContour)
@@ -82,12 +121,12 @@ void FDTester::saveRefData(vector<Point> refContour)
     refFile.close();
 }
 
-vector<Point> FDTester::readRefData()
+vector<Point> FDTester::readRefData(QString strFilePath)
 {
-    vector<Point> refC;
-    refC.clear();
+    vector<Point> refCtr;
+    refCtr.clear();
 
-    QFile refFile("../data/p.txt");
+    QFile refFile(strFilePath);
     refFile.open(QIODevice::ReadOnly);
 
     QTextStream in (&refFile);
@@ -96,10 +135,11 @@ vector<Point> FDTester::readRefData()
     while (!in.atEnd()) {
         line = in.readLine();
         QStringList pointSL = line.split("\t");
-        refC.push_back(Point(pointSL[0].toInt(), pointSL[1].toInt()));
+        refCtr.push_back(Point(pointSL[0].toInt(), pointSL[1].toInt()));
     }
 
     refFile.close();
 
-    return refC;
+    return refCtr;
 }
+

@@ -16,6 +16,7 @@
 #include <QFileDialog>
 #include <QFile>
 #include <QTextStream>
+#include <QElapsedTimer>
 
 #include "opencv2/opencv.hpp"
 #include "opencv2/imgproc.hpp"
@@ -78,12 +79,9 @@ private slots:
     void on_actionAutoRulerStart_triggered();
     void on_actionAutoRulerStop_triggered();
     void on_actionManualRulerStart_triggered();
-
     void on_actionManualRulerStop_triggered();
-
     void on_actionCameraSetting_triggered();
-
-    void on_pushButtonX_clicked();
+    void on_pushButtonMatch_clicked();
 
 public slots:
     void receiveShowMousePosition(QPoint& pos);

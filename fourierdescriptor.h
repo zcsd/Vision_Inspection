@@ -43,7 +43,6 @@ private:
     double newtonRaphson(double x1, double x2);
 };
 
-Ptr<FDShapeMatching> createFDShapeMatching(int ctr = 1024, int fd = 16);
 void fourierDescriptor(InputArray src, OutputArray dst, int nbElt=-1,int nbFD=-1);
 void transformFD(InputArray src, InputArray t,OutputArray dst, bool fdContour=true);
 void contourSampling(InputArray src, OutputArray out, int nbElt);
