@@ -99,8 +99,8 @@ double FDShapeMatching::newtonRaphson(double x1, double x2)
 
 void FDShapeMatching::estimateTransformation(InputArray _src, InputArray _ref, OutputArray _alphaPhiST, double *distFin, bool fdContour)
 {
-    QElapsedTimer timer;
-    timer.start();
+    //QElapsedTimer timer;
+    //timer.start();
 
     if (!fdContour)
         CV_Assert( (_src.kind() == _InputArray::STD_VECTOR || _src.kind() == _InputArray::MAT) && (_ref.kind() == _InputArray::STD_VECTOR || _ref.kind() == _InputArray::MAT));
@@ -204,7 +204,7 @@ void FDShapeMatching::estimateTransformation(InputArray _src, InputArray _ref, O
     if (distFin)
         *distFin= distMin;
     x.copyTo(_alphaPhiST);
-    qDebug() << "FD Thread(" << QThread::currentThreadId() << "):" << timer.elapsed() << "ms";
+    //qDebug() << timer.elapsed();
 }
 
 void fourierDescriptor(InputArray _src, OutputArray _dst, int nbElt, int nbFD)

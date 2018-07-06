@@ -58,7 +58,6 @@ void MainWindow::initialSetup()
     connect(this, SIGNAL(sendStopGrabbing()), frameGrabber, SLOT(receiveStopGrabbing()));
     connect(frameGrabber, SIGNAL(sendCaptureFrame(cv::Mat)), this, SLOT(receiveRawFrame(cv::Mat)));
     connect(ui->labelShowFrame, SIGNAL(sendMousePosition(QPoint&)), this, SLOT(receiveShowMousePosition(QPoint&)));
-    connect(this, SIGNAL(sendGetResult()), this, SLOT(receiveGetResult()));
 
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    System started.");
     readCaliConf();
@@ -594,18 +593,13 @@ void MainWindow::on_actionCameraSetting_triggered()
     }
 }
 
-void MainWindow::receiveCounter()
+void MainWindow::on_pushButtonMatch_clicked()
 {
-    counter++;
-    if (counter == 5) {
-        emit sendGetResult();
-        counter = 0;
-    }
-}
+    QElapsedTimer timer;
+    timer.start();
+    frameToTest = cvRawFrameCopy.clone();
 
-void MainWindow::receiveGetResult()
-{
-    QMap<QString, double> testDists = fdTester->getTestDistance();
+    QMap<QString, double> testDists = fdTester.getTestDistance(frameToTest);
     QMapIterator<QString, double> i(testDists);
     QString bestMatchName = "None";
     double minDist = 9999.99;
@@ -620,20 +614,6 @@ void MainWindow::receiveGetResult()
         ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    "
                                           + i.key() + ": " + QString::number(i.value()));
     }
-    qDebug() << "Total time: " <<timer.elapsed() << "ms";
-    qDebug() << "------------------------------------------------------------";
-    //delete fdTester;
-
-    counter = 0;
-}
-
-void MainWindow::on_pushButtonMatch_clicked()
-{
-    counter = 0;
-    timer.restart();
-    frameToTest = cvRawFrameCopy.clone();
-    fdTester = new FDTester;
-
-    connect(fdTester, SIGNAL(sendCounter()), this, SLOT(receiveCounter()));
-
+    qDebug() << "Total time:" << timer.elapsed() << "ms";
+    qDebug() << "------------------------------------------------";
 }
