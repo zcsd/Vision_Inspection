@@ -6,6 +6,7 @@
 
 #include <QElapsedTimer>
 #include <QDebug>
+#include <QThread>
 
 #include <opencv2/core.hpp>
 #include <opencv2/core/ocl.hpp>

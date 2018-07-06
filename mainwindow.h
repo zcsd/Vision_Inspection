@@ -54,6 +54,7 @@ signals:
     void sendCaptureMode();
     void sendStreamMode();
     void sendStopGrabbing();
+    void sendGetResult();
 
 private slots:
     void on_pushButtonConnect_clicked();
@@ -82,9 +83,11 @@ private slots:
     void on_actionManualRulerStop_triggered();
     void on_actionCameraSetting_triggered();
     void on_pushButtonMatch_clicked();
+    void receiveGetResult();
 
 public slots:
     void receiveShowMousePosition(QPoint& pos);
+    void receiveCounter();
 
 private:
     Ui::MainWindow *ui;
@@ -108,7 +111,11 @@ private:
     void setMCaliVisible(bool showMCali);
     void writeCaliConf();
     void readCaliConf();
+    FDTester *fdTester;
+    //void getDistResult();
     cv::Mat frameToTest;
+    int counter;
+    QElapsedTimer timer;
 };
 
 #endif // MAINWINDOW_H

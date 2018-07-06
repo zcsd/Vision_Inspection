@@ -50,8 +50,8 @@ SOURCES += \
     rulercalibrator.cpp \
     measuretool.cpp \
     settingdialog.cpp \
-    fdtester.cpp \
-    fourierdescriptor.cpp
+    fourierdescriptor.cpp \
+    fdtester.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -60,8 +60,8 @@ HEADERS += \
     rulercalibrator.h \
     measuretool.h \
     settingdialog.h \
-    fdtester.h \
-    fourierdescriptor.h
+    fourierdescriptor.h \
+    fdtester.h
 
 FORMS += \
         mainwindow.ui \

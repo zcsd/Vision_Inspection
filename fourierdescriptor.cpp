@@ -204,7 +204,7 @@ void FDShapeMatching::estimateTransformation(InputArray _src, InputArray _ref, O
     if (distFin)
         *distFin= distMin;
     x.copyTo(_alphaPhiST);
-    qDebug() << timer.elapsed();
+    qDebug() << "FD Thread(" << QThread::currentThreadId() << "):" << timer.elapsed() << "ms";
 }
 
 void fourierDescriptor(InputArray _src, OutputArray _dst, int nbElt, int nbFD)

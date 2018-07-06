@@ -23,12 +23,12 @@
 using namespace cv;
 using namespace std;
 
-class FDTester: public QObject
+class FDTester : public QObject
 {
     Q_OBJECT
 
 public:
-    FDTester(cv::Mat &inputFrame);
+    explicit FDTester(QObject *parent = nullptr);
     ~FDTester();
     QMap<QString, double> getTestDistance();
 
@@ -42,14 +42,14 @@ private:
     void findMatchResult();
     vector<Point> getContour(cv::Mat image);
     vector<Point> readRefData(QString strFilePath);
-    static void compareContours(QString className, vector<Point> refContour, vector<Point> testContour);
+    void compareContours(QString className, vector<Point> refContour, vector<Point> testContour);
 
 signals:
-    static void sendResult(QString name, double distance);
+    void sendResult(QString name, double distance);
+    void sendCounter();
 
-private slots:
+public slots:
     void receiveResult(QString name, double distance);
-
 };
 
 #endif // FDTESTER_H
