@@ -610,6 +610,9 @@ void MainWindow::on_pushButtonMatch_clicked()
             minDist = i.value();
             bestMatchName = i.key();
         }
+        if (minDist > 0.3) {
+            bestMatchName = "None";
+        }
         ui->labelMatchResult->setText(bestMatchName);
         ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    "
                                           + i.key() + ": " + QString::number(i.value()));
