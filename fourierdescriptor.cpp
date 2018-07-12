@@ -97,36 +97,13 @@ double FDShapeMatching::newtonRaphson(double x1, double x2)
     return x1;
 }
 
-void FDShapeMatching::estimateTransformation(InputArray _src, InputArray _ref, OutputArray _alphaPhiST, double *distFin, bool fdContour)
+void FDShapeMatching::estimateTransformation(Mat _srcFD, Mat _refFD, Mat *_alphaPhiST, double *distFin)
 {
-    //QElapsedTimer timer;
-    //timer.start();
-
-    if (!fdContour)
-        CV_Assert( (_src.kind() == _InputArray::STD_VECTOR || _src.kind() == _InputArray::MAT) && (_ref.kind() == _InputArray::STD_VECTOR || _ref.kind() == _InputArray::MAT));
-    else
-        CV_Assert(fdContour && _src.kind() == _InputArray::MAT && _ref.kind() == _InputArray::MAT);
-    CV_Assert(_src.channels() == 2 && _ref.channels() == 2);
-    Mat fdCtr1, fdCtr2;
-    if (!fdContour)
-    {
-        Mat newCtr1,newCtr2;
-        contourSampling(_src, newCtr1, ctrSize);
-        contourSampling(_ref, newCtr2, ctrSize);
-        fourierDescriptor(newCtr1, fdCtr1);
-        fourierDescriptor(newCtr2, fdCtr2);
-    }
-    else
-    {
-        fdCtr1=_src.getMat();
-        fdCtr2= _ref.getMat();
-        CV_Assert(fdCtr1.rows == fdCtr2.rows);
-    }
     CV_Assert( fdSize <= ctrSize / 2 - 1);
-    if (fdCtr1.type() != CV_64FC2)
-        fdCtr1.convertTo(fdCtr1, CV_64F);
-    if (fdCtr2.type() != CV_64FC2)
-        fdCtr2.convertTo(fdCtr2, CV_64F);
+    if (_srcFD.type() != CV_64FC2)
+        _srcFD.convertTo(_srcFD, CV_64F);
+    if (_refFD.type() != CV_64FC2)
+        _refFD.convertTo(_refFD, CV_64F);
 
     rho.resize(ctrSize);
     psi.resize(ctrSize);
@@ -141,8 +118,8 @@ void FDShapeMatching::estimateTransformation(InputArray _src, InputArray _ref, O
 
     for (n = 0; n<nbElt; n++)
     {
-        b[n] = std::complex<double>(fdCtr1.at<Vec2d>(n,0)[0], fdCtr1.at<Vec2d>(n, 0)[1]);
-        a[n] = std::complex<double>(fdCtr2.at<Vec2d>(n, 0)[0], fdCtr2.at<Vec2d>(n, 0)[1]);
+        b[n] = std::complex<double>(_srcFD.at<Vec2d>(n,0)[0], _srcFD.at<Vec2d>(n, 0)[1]);
+        a[n] = std::complex<double>(_refFD.at<Vec2d>(n, 0)[0], _refFD.at<Vec2d>(n, 0)[1]);
         zz = conj(a[n])*b[n];
         rho[n] = abs(zz);
         psi[n] = arg(zz);
@@ -200,22 +177,17 @@ void FDShapeMatching::estimateTransformation(InputArray _src, InputArray _ref, O
     }
 
     while ((x1>-nbElt));
-    Mat x=(Mat_<double>(1,5)<<alphaMin/ nbElt,phiMin,sMin, fdCtr2.at<Vec2d>(0, 0)[0]- fdCtr1.at<Vec2d>(0, 0)[0], fdCtr2.at<Vec2d>(0, 0)[1]- fdCtr1.at<Vec2d>(0, 0)[1]);
+    Mat x=(Mat_<double>(1,5)<<alphaMin/ nbElt,phiMin,sMin, _refFD.at<Vec2d>(0, 0)[0]- _srcFD.at<Vec2d>(0, 0)[0], _refFD.at<Vec2d>(0, 0)[1]- _srcFD.at<Vec2d>(0, 0)[1]);
     if (distFin)
-        *distFin= distMin;
-    x.copyTo(_alphaPhiST);
-    //qDebug() << timer.elapsed();
+        *distFin = distMin;
+    x.copyTo(*_alphaPhiST);
 }
 
 void fourierDescriptor(InputArray _src, OutputArray _dst, int nbElt, int nbFD)
 {
-    CV_Assert(_src.kind() == _InputArray::MAT || _src.kind() == _InputArray::STD_VECTOR);
-    CV_Assert(_src.empty() || (_src.channels() == 2 && (_src.depth() == CV_32S || _src.depth() == CV_32F || _src.depth() == CV_64F)));
     Mat z = _src.getMat();
-    CV_Assert(z.rows == 1 || z.cols == 1);
     if (nbElt==-1)
         nbElt = getOptimalDFTSize(max(z.rows, z.cols));
-    CV_Assert((nbFD >= 1 && nbFD <=nbElt/2) || nbFD==-1);
     Mat  Z;
     if (z.rows*z.cols!=nbElt)
         contourSampling(_src, z,nbElt);
@@ -231,7 +203,7 @@ void fourierDescriptor(InputArray _src, OutputArray _dst, int nbElt, int nbFD)
         int n1 = nbFD / 2, n2 = nbElt - n1;
         Mat d(nbFD, 1, Z.type());
         Z.rowRange(Range(1, n1+1)).copyTo(d.rowRange(Range(0, n1)));
-        if (n2>0)
+        if (n2 > 0)
             Z.rowRange(Range(n2, Z.rows)).copyTo(d.rowRange(Range(n1, nbFD)));
         d.copyTo(_dst);
     }
@@ -239,17 +211,9 @@ void fourierDescriptor(InputArray _src, OutputArray _dst, int nbElt, int nbFD)
 
 void contourSampling(InputArray _src, OutputArray _out, int nbElt)
 {
-    CV_Assert(_src.kind() == _InputArray::STD_VECTOR || _src.kind() == _InputArray::MAT);
-    CV_Assert(_src.empty() || (_src.channels() == 2 && (_src.depth() == CV_32S || _src.depth() == CV_32F || _src.depth() == CV_64F)));
-    CV_Assert(nbElt>0);
     Mat ctr;
     _src.getMat().convertTo(ctr,CV_32F);
-    if (ctr.rows*ctr.cols == 0)
-    {
-        _out.release();
-        return;
-    }
-    CV_Assert(ctr.rows==1 || ctr.cols==1);
+
     double l1 = 0, l2, p, d, s;
     Mat r;
     if (ctr.rows==1)

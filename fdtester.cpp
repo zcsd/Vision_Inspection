@@ -2,9 +2,7 @@
 
 FDTester::FDTester()
 {
-    //connect(this, SIGNAL(sendResult(QString,double)), this, SLOT(receiveResult(QString,double)));
     loadRefCtrs();
-    //findMatchResult();
 }
 
 QMap<QString, double> FDTester::getTestDistance(cv::Mat &inputFrame)
@@ -38,18 +36,21 @@ void FDTester::findMatchResult()
     vector<Point> testCtr = getContour(originalFrame);
     int classSize = refCtrsMap.size();
     testCtrDist.clear();
-    vector<Point2f> testSampleCtr;
 
-    contourSampling(testCtr, testSampleCtr, 256);
+    cv::Mat testSCtr, testSFD;
+
+    contourSampling(testCtr, testSCtr, ctrSize);
+    fourierDescriptor(testSCtr, testSFD);
     qDebug() << "Test image preprocessing time: " << timer.elapsed() << "ms";
 
     QElapsedTimer timer1;
     timer1.start();
+
     if (!usingThread){
         qDebug() << "!!!NOT using thread!!!";
         // Method NOT using thread
         for (int i = 0; i < classSize; i++) {
-            testCtrDist[refClassName[i]] = compareContours(refCtrsMap[refClassName[i]], testSampleCtr);
+            testCtrDist[refClassName[i]] = compareContours(refCtrsMap[refClassName[i]], testSFD);
         }
     } else {
         qDebug() << "!!!Using Thread!!!";
@@ -64,11 +65,11 @@ void FDTester::findMatchResult()
 
         // Method usingh creating thread manually... BAD
         // Work well for small quantity of classes
-        QFuture<double> t0 = QtConcurrent::run(this, &FDTester::compareContours, refCtrsMap[refClassName[0]], testSampleCtr);
-        QFuture<double> t1 = QtConcurrent::run(this, &FDTester::compareContours, refCtrsMap[refClassName[1]], testSampleCtr);
-        QFuture<double> t2 = QtConcurrent::run(this, &FDTester::compareContours, refCtrsMap[refClassName[2]], testSampleCtr);
-        QFuture<double> t3 = QtConcurrent::run(this, &FDTester::compareContours, refCtrsMap[refClassName[3]], testSampleCtr);
-        QFuture<double> t4 = QtConcurrent::run(this, &FDTester::compareContours, refCtrsMap[refClassName[4]], testSampleCtr);
+        QFuture<double> t0 = QtConcurrent::run(this, &FDTester::compareContours, refCtrsMap[refClassName[0]], testSFD);
+        QFuture<double> t1 = QtConcurrent::run(this, &FDTester::compareContours, refCtrsMap[refClassName[1]], testSFD);
+        QFuture<double> t2 = QtConcurrent::run(this, &FDTester::compareContours, refCtrsMap[refClassName[2]], testSFD);
+        QFuture<double> t3 = QtConcurrent::run(this, &FDTester::compareContours, refCtrsMap[refClassName[3]], testSFD);
+        QFuture<double> t4 = QtConcurrent::run(this, &FDTester::compareContours, refCtrsMap[refClassName[4]], testSFD);
 
         t0.waitForFinished();
         t1.waitForFinished();
@@ -119,35 +120,29 @@ vector<Point> FDTester::getContour(Mat image)
     return contours[indexMaxContour];
 }
 
-double FDTester::compareContours(vector<Point> refCtr, vector<Point2f> testSCtr)
+double FDTester::compareContours(vector<Point> refCtr, Mat srcFD)
 {
     QElapsedTimer timer;
     timer.start();
 
-    vector<Point2f> refSCtr;
-    contourSampling(refCtr, refSCtr, 256);
-    FDShapeMatching fdShapeMatching;
-    fdShapeMatching.setFDSize(20);
+    cv::Mat refSCtr, refFD;
+    contourSampling(refCtr, refSCtr, ctrSize);
+    fourierDescriptor(refSCtr, refFD);
 
-    cv::Mat fd_contour, t;
-    //fourierDescriptor(contour_sampled, fd_contour);
+    FDShapeMatching fdShapeMatching(ctrSize, fdSize);
+
+    cv::Mat t;
     double dist;
 
-    fdShapeMatching.estimateTransformation(refSCtr, testSCtr, t, &dist, false);
+    fdShapeMatching.estimateTransformation(srcFD, refFD, &t, &dist);
 
     //cout << "Distance = " << dist << endl;
     //cout << "Angle = " << t.at<double>(0, 1) * 180 / M_PI <<"\n";
     //cout << "Scale = " << t.at<double>(0, 2)  << "\n";
-    //emit sendResult(className, dist);
     qDebug() << "One matching time(" << QThread::currentThreadId() << "):" << timer.elapsed() << "ms";
     return dist;
 }
-/*
-void FDTester::receiveResult(QString name, double distance)
-{
-    testCtrDist[name] = distance;
-}
-*/
+
 void FDTester::saveRefData(vector<Point> refContour)
 {
     QFile refFile("../data/temp.txt");

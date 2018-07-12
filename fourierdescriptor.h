@@ -26,8 +26,8 @@ class FDShapeMatching
 {
 
 public:
-    FDShapeMatching(int ctr=1024,int fd=16);
-    void estimateTransformation(InputArray src, InputArray dst, OutputArray alphaPhiST, double *dist = 0, bool fdContour = false);
+    FDShapeMatching(int ctr=128,int fd=12);
+    void estimateTransformation(Mat _srcFD, Mat _refFD, Mat *alphaPhiST, double *dist=0);
     void setCtrSize(int n);
     void setFDSize(int n);
     int getCtrSize();
@@ -47,7 +47,7 @@ private:
 };
 
 void fourierDescriptor(InputArray src, OutputArray dst, int nbElt=-1,int nbFD=-1);
-void transformFD(InputArray src, InputArray t,OutputArray dst, bool fdContour=true);
+void transformFD(InputArray src, InputArray t, OutputArray dst, bool fdContour=true);
 void contourSampling(InputArray src, OutputArray out, int nbElt);
 
 #endif // FOURIERDESCRIPTOR_H

@@ -33,7 +33,8 @@ public:
     QMap<QString, double> getTestDistance(cv::Mat &inputFrame);
 
 private:
-    bool usingThread = false;
+    bool usingThread = true;
+    int ctrSize = 128, fdSize = 12;
     cv::Mat originalFrame;
     QStringList refClassName;
     QMap<QString, vector<Point>> refCtrsMap;
@@ -43,7 +44,7 @@ private:
     void findMatchResult();
     vector<Point> getContour(cv::Mat image);
     vector<Point> readRefData(QString strFilePath);
-    double compareContours(vector<Point> refCtr, vector<Point2f> testSCtr);
+    double compareContours(vector<Point> refCtr, Mat srcFD);
 
 signals:
     //void sendResult(QString name, double distance);

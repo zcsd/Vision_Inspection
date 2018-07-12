@@ -165,7 +165,7 @@ void MainWindow::on_pushButtonCapture_clicked()
 
 void MainWindow::on_pushButtonSaveCapture_clicked()
 {
-    QString filePath = defaultSavePath + "/" + QDateTime::currentDateTime().toString("yyyy-MM-dd_hh-mm-ss") + ".bmp";
+    QString filePath = defaultSavePath + "/" + QDateTime::currentDateTime().toString("yyyy-MM-dd_hh-mm-ss") + ".jpg";
     QByteArray ba = filePath.toLatin1();
     const char *fileName = ba.data();
 
@@ -600,9 +600,13 @@ void MainWindow::on_pushButtonMatch_clicked()
     frameToTest = cvRawFrameCopy.clone();
 
     QMap<QString, double> testDists = fdTester.getTestDistance(frameToTest);
+
     QMapIterator<QString, double> i(testDists);
     QString bestMatchName = "None";
     double minDist = 9999.99;
+
+    qDebug() << "Total time:" << timer.elapsed() << "ms";
+    qDebug() << "------------------------------------------------";
 
     while (i.hasNext()) {
         i.next();
@@ -610,13 +614,11 @@ void MainWindow::on_pushButtonMatch_clicked()
             minDist = i.value();
             bestMatchName = i.key();
         }
-        if (minDist > 0.3) {
+        if (minDist > 0.999) {
             bestMatchName = "None";
         }
         ui->labelMatchResult->setText(bestMatchName);
         ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    "
                                           + i.key() + ": " + QString::number(i.value()));
     }
-    qDebug() << "Total time:" << timer.elapsed() << "ms";
-    qDebug() << "------------------------------------------------";
 }
