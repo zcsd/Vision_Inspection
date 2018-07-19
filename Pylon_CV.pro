@@ -51,7 +51,8 @@ SOURCES += \
     measuretool.cpp \
     settingdialog.cpp \
     fourierdescriptor.cpp \
-    fdtester.cpp
+    fdtester.cpp \
+    colorextrator.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -61,7 +62,8 @@ HEADERS += \
     measuretool.h \
     settingdialog.h \
     fourierdescriptor.h \
-    fdtester.h
+    fdtester.h \
+    colorextrator.h
 
 FORMS += \
         mainwindow.ui \

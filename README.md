@@ -23,7 +23,8 @@
 
 ## **TODO**
 
-- too many
+- use FD as ref to save
+- too many...
 
 
-*Jun 29 2018*
+*Jul 12 2018*
