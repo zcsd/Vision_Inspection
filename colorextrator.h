@@ -4,7 +4,6 @@
 #ifndef COLOREXTRATOR_H
 #define COLOREXTRATOR_H
 
-
 class ColorExtrator
 {
 public:

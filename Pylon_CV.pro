@@ -22,8 +22,13 @@ TEMPLATE = app
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+# CONFIG += no_keywords
+
 INCLUDEPATH += /opt/pylon5/include
 INCLUDEPATH += /usr/local/include/opencv
+INCLUDEPATH += /home/zichun/venv/include/python3.5m
+
+LIBS += -L/home/zichun/venv/lib/python3.5 -lpython3.5m
 
 LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui
 QMAKE_LFLAGS += -Wl,--enable-new-dtags -Wl,-rpath,/opt/pylon5/lib64
@@ -52,7 +57,8 @@ SOURCES += \
     settingdialog.cpp \
     fourierdescriptor.cpp \
     fdtester.cpp \
-    colorextrator.cpp
+    colorextrator.cpp \
+    pyclassification.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -63,8 +69,12 @@ HEADERS += \
     settingdialog.h \
     fourierdescriptor.h \
     fdtester.h \
-    colorextrator.h
+    colorextrator.h \
+    pyclassification.h
 
 FORMS += \
         mainwindow.ui \
     settingdialog.ui
+
+DISTFILES += \
+    mytest.py

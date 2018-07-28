@@ -26,6 +26,7 @@
 #include "measuretool.h"
 #include "settingdialog.h"
 #include "fdtester.h"
+#include "pyclassification.h"
 
 using namespace cv;
 
@@ -89,6 +90,7 @@ public slots:
 private:
     Ui::MainWindow *ui;
     FDTester fdTester;
+    PyClassification pyClassification;
     QString defaultSavePath = "../images";
     char grabMode;
     bool manualCalibration = false;
