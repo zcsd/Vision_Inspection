@@ -1,3 +1,6 @@
-def main(szString):
-    print("in python:" + szString)
-    return ("hello", 5)
+def main(st):
+    import cv2
+    import numpy as np
+    print("in python:" + st)
+    return ("hello", 4)
+

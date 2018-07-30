@@ -8,6 +8,7 @@ PyClassification::PyClassification()
 void PyClassification::PyInit()
 {
     Py_Initialize();
+    //import_array();
     PyObject* pModule = NULL;
     PyObject* pFunc = NULL;
     PyObject* pParam = NULL;
@@ -20,6 +21,7 @@ void PyClassification::PyInit()
     string chdir_cmd = string("sys.path.append(\'/home/zichun/pylon_cv\')");
     const char* cstr_cmd = chdir_cmd.c_str();
     PyRun_SimpleString("import sys");
+    //PyRun_SimpleString("import numpy");
     PyRun_SimpleString(cstr_cmd);
 
     pModule = PyImport_ImportModule("mytest");
@@ -38,10 +40,13 @@ void PyClassification::PyInit()
         //exit (0);
     }
 
-    //PyObject_CallFunction(pFunc,NULL);
+    cv::Mat img = cv::imread("../images/test.jpg", 1);
+    //PyObject *ret = pbcvt::matToNDArrayBoostConverter::convert(img);
+   // PyObject* ret = pbcvt::fromMatToNDArray(img);
+    qDebug() << "adad!";
+    pParam = Py_BuildValue("(s)", "121251");
+    pResult = PyEval_CallObject(pFunc, pParam);
 
-    pParam = Py_BuildValue("(s)", "HEHEHE");
-    pResult = PyEval_CallObject(pFunc,pParam);
     if(pResult)
     {
         if(PyArg_Parse(pResult, "(si)", &pBuffer, &iBufferSize))

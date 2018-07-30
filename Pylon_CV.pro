@@ -26,9 +26,13 @@ TEMPLATE = app
 
 INCLUDEPATH += /opt/pylon5/include
 INCLUDEPATH += /usr/local/include/opencv
-INCLUDEPATH += /home/zichun/venv/include/python3.5m
+#INCLUDEPATH += /home/zichun/venv/include/python3.5m
+INCLUDEPATH += /usr/include/python2.7
+INCLUDEPATH += /usr/include/boost
 
-LIBS += -L/home/zichun/venv/lib/python3.5 -lpython3.5m
+#LIBS += -L/home/zichun/venv/lib/python3.5 -lpython3.5m
+LIBS += -L/usr/local/lib/python2.7 -lpython2.7
+LIBS += -L/usr/include/boost -lboost_python -lboost_system
 
 LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui
 QMAKE_LFLAGS += -Wl,--enable-new-dtags -Wl,-rpath,/opt/pylon5/lib64
