@@ -26,6 +26,7 @@
 #include "measuretool.h"
 #include "settingdialog.h"
 #include "fdtester.h"
+
 #include "pyclassification.h"
 
 using namespace cv;

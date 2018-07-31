@@ -41,9 +41,9 @@ void PyClassification::PyInit()
     }
 
     cv::Mat img = cv::imread("../images/test.jpg", 1);
-    //PyObject *ret = pbcvt::matToNDArrayBoostConverter::convert(img);
-   // PyObject* ret = pbcvt::fromMatToNDArray(img);
-    qDebug() << "adad!";
+
+    PyObject* ret = pycvt::fromMatToNDArray(img);
+
     pParam = Py_BuildValue("(s)", "121251");
     pResult = PyEval_CallObject(pFunc, pParam);
 
