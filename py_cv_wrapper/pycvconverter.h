@@ -7,8 +7,9 @@
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <Python.h>
 #include <numpy/ndarrayobject.h>
-#include <opencv2/core/core.hpp>
 #include <cstdio>
+
+#include "opencv2/core/core.hpp"
 
 namespace pycvt{
 

@@ -8,7 +8,6 @@ PyClassification::PyClassification()
 void PyClassification::PyInit()
 {
     Py_Initialize();
-    //import_array();
     PyObject* pModule = NULL;
     PyObject* pFunc = NULL;
     PyObject* pParam = NULL;
@@ -18,10 +17,10 @@ void PyClassification::PyInit()
 
     int iBufferSize = 0;
 
-    string chdir_cmd = string("sys.path.append(\'/home/zichun/pylon_cv\')");
+    string chdir_cmd = string("sys.path.append(\'/home/zichun/pylon_cv/python\')");
     const char* cstr_cmd = chdir_cmd.c_str();
     PyRun_SimpleString("import sys");
-    //PyRun_SimpleString("import numpy");
+    //PyRun_SimpleString("import cv2");
     PyRun_SimpleString(cstr_cmd);
 
     pModule = PyImport_ImportModule("mytest");
@@ -44,7 +43,7 @@ void PyClassification::PyInit()
 
     PyObject* ret = pycvt::fromMatToNDArray(img);
 
-    pParam = Py_BuildValue("(s)", "121251");
+    pParam = Py_BuildValue("(s)", "MSG from QT");
     pResult = PyEval_CallObject(pFunc, pParam);
 
     if(pResult)

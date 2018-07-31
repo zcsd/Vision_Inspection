@@ -1,6 +1,7 @@
 #include "py_cv_wrapper/pycvconverter.h"
 
 #if CV_VERSION_MAJOR == 3
+
 namespace pycvt {
 
 using namespace cv;
