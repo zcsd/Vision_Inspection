@@ -5,8 +5,6 @@ namespace pycvt {
 
 using namespace cv;
 
-//===================   ERROR HANDLING     =========================================================
-
 static int failmsg(const char *fmt, ...) {
     char str[1000];
 
@@ -19,7 +17,6 @@ static int failmsg(const char *fmt, ...) {
     return 0;
 }
 
-//===================   THREADING     ==============================================================
 class PyAllowThreads {
 public:
     PyAllowThreads() :
@@ -118,11 +115,7 @@ public:
     const MatAllocator* stdAllocator;
 };
 
-//===================   ALLOCATOR INITIALIZTION   ==================================================
-
 NumpyAllocator g_numpyAllocator;
-
-//===================   STANDALONE CONVERTER FUNCTIONS     =========================================
 
 PyObject* fromMatToNDArray(const Mat& m) {
     if (!m.data)
@@ -250,17 +243,15 @@ Mat fromNDArrayToMat(PyObject* o) {
     return m;
 }
 
-
-//==================================================================================================
 // Ensure that import_array() is called to avoid "Segmentation Fault: 11"
-// See https://stackoverflow.com/questions/47026900/pyarray-check-gives-segmentation-fault-with-cython-c
+// Check https://stackoverflow.com/questions/47026900/pyarray-check-gives-segmentation-fault-with-cython-c
 int init_numpy(){
     Py_Initialize();
     import_array();
     return 0;
 }
+
 const static int numpy_initialized =  init_numpy();
-//==================================================================================================
 
 }
 #endif
