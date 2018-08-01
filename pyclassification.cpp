@@ -14,8 +14,8 @@ void PyClassification::PyInit()
     //PyObject* pParam = NULL;
     PyObject* pNDArray = NULL;
     PyObject* pResult = NULL;
-    const char* pBuffer = NULL;
-    int iBufferSize = 0;
+    const char* resLabel = NULL;
+    float resConfidence = 0.0;
 
     qDebug() << "Python Initialized";
 
@@ -44,10 +44,12 @@ void PyClassification::PyInit()
     }
 
     cv::Mat img = cv::imread("../images/test.jpg", 1);
+    cv::Mat small_img;
+    cv::resize(img, small_img, Size(224, 224), 0, 0);
 
     // python-opencv version must be v3.1.0
     // Native-opencv version must be v3.0.0 ~ v3.4.0
-    pNDArray = pycvt::fromMatToNDArray(img);
+    pNDArray = pycvt::fromMatToNDArray(small_img);
 
     // counld add more PyObj arguments before "NULL" indicator
     pResult = PyObject_CallFunctionObjArgs(pFunc, pNDArray, NULL);
@@ -59,10 +61,9 @@ void PyClassification::PyInit()
 
     if(pResult)
     {
-        if(PyArg_Parse(pResult, "(si)", &pBuffer, &iBufferSize))
+        if(PyArg_Parse(pResult, "(sf)", &resLabel, &resConfidence))
         {
-            qDebug() << pBuffer;
-            qDebug() << iBufferSize;
+            qDebug() << resLabel << ":" << resConfidence;
         }
     }
 
