@@ -29,9 +29,17 @@ class PyClassification
 {
 public:
     PyClassification();
+    void process();
 
 private:
     void PyInit();
+    void PyClose();
+
+    PyObject* pModule = NULL;
+    PyObject* pFunc = NULL;
+    //PyObject* pParam = NULL;
+    PyObject* pNDArray = NULL;
+    PyObject* pResult = NULL;
 
 };
 

@@ -3,19 +3,13 @@
 PyClassification::PyClassification()
 {
     PyInit();
+    process();
+    PyClose();
 }
 
 void PyClassification::PyInit()
 {
     Py_Initialize();
-
-    PyObject* pModule = NULL;
-    PyObject* pFunc = NULL;
-    //PyObject* pParam = NULL;
-    PyObject* pNDArray = NULL;
-    PyObject* pResult = NULL;
-    const char* resLabel = NULL;
-    float resConfidence = 0.0;
 
     qDebug() << "Python Initialized";
 
@@ -42,8 +36,11 @@ void PyClassification::PyInit()
         qDebug() << "get func failed!";
         //exit (0);
     }
+}
 
-    cv::Mat img = cv::imread("../images/test.jpg", 1);
+void PyClassification::process()
+{
+    cv::Mat img = cv::imread("../images/1.jpg", 1);
     cv::Mat small_img;
     cv::resize(img, small_img, Size(224, 224), 0, 0);
 
@@ -59,6 +56,9 @@ void PyClassification::PyInit()
     pResult = PyEval_CallObject(pFunc, pParam);
     */
 
+    const char* resLabel = NULL;
+    float resConfidence = 0.0;
+
     if(pResult)
     {
         if(PyArg_Parse(pResult, "(sf)", &resLabel, &resConfidence))
@@ -66,7 +66,10 @@ void PyClassification::PyInit()
             qDebug() << resLabel << ":" << resConfidence;
         }
     }
+}
 
+void PyClassification::PyClose()
+{
     // Decrement the reference count for python object, prevent memory leak
     // PyObject must NOT be NULL.
     Py_DECREF(pModule);
@@ -77,3 +80,4 @@ void PyClassification::PyInit()
 
     Py_Finalize();
 }
+

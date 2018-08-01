@@ -5,7 +5,6 @@ import keras
 from keras.models import Sequential
 from keras.layers import Dropout, Flatten, Dense
 from keras import applications
-from keras.utils.np_utils import to_categorical
 from keras import backend as K
 #import PIL
 import imutils
