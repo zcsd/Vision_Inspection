@@ -19,12 +19,14 @@ void PyClassification::PyInit()
 
     qDebug() << "Python Initialized";
 
+    // set system path to find correct python script
     string chdir_cmd = string("sys.path.append(\'/home/zichun/pylon_cv/python\')");
     const char* cstr_cmd = chdir_cmd.c_str();
     PyRun_SimpleString("import sys");
     PyRun_SimpleString(cstr_cmd);
 
-    pModule = PyImport_ImportModule("mytest");
+    // import module(classification.py), it's a python script file name
+    pModule = PyImport_ImportModule("classification");
 
     if (!pModule)
     {
@@ -32,7 +34,8 @@ void PyClassification::PyInit()
         //exit (0);
     }
 
-    pFunc = PyObject_GetAttrString(pModule, "testa");
+    // import function from the module
+    pFunc = PyObject_GetAttrString(pModule, "main");
 
     if (!pFunc)
     {
@@ -42,8 +45,11 @@ void PyClassification::PyInit()
 
     cv::Mat img = cv::imread("../images/test.jpg", 1);
 
+    // python-opencv version must be v3.1.0
+    // Native-opencv version must be v3.0.0 ~ v3.4.0
     pNDArray = pycvt::fromMatToNDArray(img);
 
+    // counld add more PyObj arguments before "NULL" indicator
     pResult = PyObject_CallFunctionObjArgs(pFunc, pNDArray, NULL);
 
     /* This method is to pass non-object para
@@ -60,6 +66,8 @@ void PyClassification::PyInit()
         }
     }
 
+    // Decrement the reference count for python object, prevent memory leak
+    // PyObject must NOT be NULL.
     Py_DECREF(pModule);
     //Py_DECREF(pParam);
     Py_DECREF(pFunc);

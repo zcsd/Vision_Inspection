@@ -77,4 +77,4 @@ FORMS += \
     settingdialog.ui
 
 DISTFILES += \
-    python/mytest.py
+    python/classification.py

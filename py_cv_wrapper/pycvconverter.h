@@ -8,14 +8,13 @@
 #include <Python.h>
 #include <numpy/ndarrayobject.h>
 #include <cstdio>
-
 #include "opencv2/core/core.hpp"
 
 namespace pycvt{
 
 using namespace cv;
 static PyObject* opencv_error = 0;
-
+// == MACRO ==
 #define ERRWRAP2(expr) \
 try \
 { \
@@ -27,10 +26,11 @@ catch (const cv::Exception &e) \
     PyErr_SetString(opencv_error, e.what()); \
     return 0; \
 }
-
+// ==========
 class PyAllowThreads;
-
+// Function that convert image data from C++ Mat to Python numpy NDArray
 PyObject* fromMatToNDArray(const Mat& m);
+// Invert function
 Mat fromNDArrayToMat(PyObject* o);
 
 }

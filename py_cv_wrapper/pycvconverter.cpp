@@ -6,6 +6,7 @@ namespace pycvt {
 
 using namespace cv;
 
+// === Error handling ===
 static int failmsg(const char *fmt, ...) {
     char str[1000];
 
@@ -18,6 +19,7 @@ static int failmsg(const char *fmt, ...) {
     return 0;
 }
 
+// === Threading method ===
 class PyAllowThreads {
 public:
     PyAllowThreads() :
@@ -42,6 +44,7 @@ private:
     PyGILState_STATE _state;
 };
 
+// Allocate numpy memory
 class NumpyAllocator:
         public MatAllocator {
 public:

@@ -1,3 +1,6 @@
+// PyClassification class: parts classification using external Python method
+// Author: @ZC
+// Date: created on 31 JuL 2018
 #ifndef PYCLASSIFICATION_H
 #define PYCLASSIFICATION_H
 
@@ -5,6 +8,7 @@
 #include <QDebug>
 #include <QString>
 
+// To handle SLOTs error
 #pragma push_macro("slots")
 #undef slots
 #include "Python.h"
