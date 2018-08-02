@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    pyClassification.PyClose();
     delete frameGrabber;
     delete ui;
 }
@@ -61,6 +62,8 @@ void MainWindow::initialSetup()
 
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    System started.");
     readCaliConf();
+    ui->comboBoxMatchMethod->addItem("Machine Learning");
+    ui->comboBoxMatchMethod->addItem("Image Processing");
 }
 
 void MainWindow::on_pushButtonConnect_clicked()
@@ -595,30 +598,39 @@ void MainWindow::on_actionCameraSetting_triggered()
 
 void MainWindow::on_pushButtonMatch_clicked()
 {
+    matchMethod = ui->comboBoxMatchMethod->currentText();
+
     QElapsedTimer timer;
     timer.start();
     frameToTest = cvRawFrameCopy.clone();
 
-    QMap<QString, double> testDists = fdTester.getTestDistance(frameToTest);
+    if (matchMethod == "Machine Learning") {
+        QString matchResult = pyClassification.process(frameToTest);
+        ui->labelMatchResult->setText(matchResult);
+    }else if (matchMethod == "Image Processing") {
+        qDebug() << "IP";
+        QMap<QString, double> testDists = fdTester.getTestDistance(frameToTest);
 
-    QMapIterator<QString, double> i(testDists);
-    QString bestMatchName = "None";
-    double minDist = 9999.99;
+        QMapIterator<QString, double> i(testDists);
+        QString bestMatchName = "None";
+        double minDist = 9999.99;
 
-    qDebug() << "Total time:" << timer.elapsed() << "ms";
-    qDebug() << "------------------------------------------------";
+        qDebug() << "Total time:" << timer.elapsed() << "ms";
+        qDebug() << "------------------------------------------------";
 
-    while (i.hasNext()) {
-        i.next();
-        if (i.value() <= minDist) {
-            minDist = i.value();
-            bestMatchName = i.key();
+        while (i.hasNext()) {
+            i.next();
+            if (i.value() <= minDist) {
+                minDist = i.value();
+                bestMatchName = i.key();
+            }
+            if (minDist > 0.999) {
+                bestMatchName = "None";
+            }
+            ui->labelMatchResult->setText(bestMatchName);
+            ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    "
+                                              + i.key() + ": " + QString::number(i.value()));
         }
-        if (minDist > 0.999) {
-            bestMatchName = "None";
-        }
-        ui->labelMatchResult->setText(bestMatchName);
-        ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    "
-                                          + i.key() + ": " + QString::number(i.value()));
     }
+
 }

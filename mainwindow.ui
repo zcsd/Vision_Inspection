@@ -379,22 +379,29 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
       <x>1300</x>
       <y>200</y>
-      <width>221</width>
-      <height>31</height>
+      <width>241</width>
+      <height>51</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_5">
+    <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QPushButton" name="pushButtonMatch">
-       <property name="text">
-        <string>Match</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <item>
+        <widget class="QPushButton" name="pushButtonMatch">
+         <property name="text">
+          <string>Match</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBoxMatchMethod"/>
+       </item>
+      </layout>
      </item>
      <item>
       <widget class="QLabel" name="labelMatchResult">

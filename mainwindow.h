@@ -26,7 +26,6 @@
 #include "measuretool.h"
 #include "settingdialog.h"
 #include "fdtester.h"
-
 #include "pyclassification.h"
 
 using namespace cv;
@@ -93,6 +92,7 @@ private:
     FDTester fdTester;
     PyClassification pyClassification;
     QString defaultSavePath = "../images";
+    QString matchMethod = "Machine Learning";
     char grabMode;
     bool manualCalibration = false;
     bool autoCalibration = false;

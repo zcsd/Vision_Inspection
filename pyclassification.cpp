@@ -3,8 +3,8 @@
 PyClassification::PyClassification()
 {
     PyInit();
-    process();
-    PyClose();
+    //process();
+    //PyClose();
 }
 
 void PyClassification::PyInit()
@@ -38,11 +38,11 @@ void PyClassification::PyInit()
     }
 }
 
-void PyClassification::process()
+QString PyClassification::process(cv::Mat image)
 {
-    cv::Mat img = cv::imread("../images/1.jpg", 1);
+    //cv::Mat img = cv::imread("../images/1.jpg", 1);
     cv::Mat small_img;
-    cv::resize(img, small_img, Size(224, 224), 0, 0);
+    cv::resize(image, small_img, Size(224, 224), 0, 0);
 
     // python-opencv version must be v3.1.0
     // Native-opencv version must be v3.0.0 ~ v3.4.0
@@ -66,6 +66,8 @@ void PyClassification::process()
             qDebug() << resLabel << ":" << resConfidence;
         }
     }
+
+    return QString(resLabel);
 }
 
 void PyClassification::PyClose()
