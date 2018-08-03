@@ -599,16 +599,16 @@ void MainWindow::on_actionCameraSetting_triggered()
 void MainWindow::on_pushButtonMatch_clicked()
 {
     matchMethod = ui->comboBoxMatchMethod->currentText();
-
-    QElapsedTimer timer;
-    timer.start();
     frameToTest = cvRawFrameCopy.clone();
 
     if (matchMethod == "Machine Learning") {
+        //qDebug() << "Machine Learning is running.";
         QString matchResult = pyClassification.process(frameToTest);
         ui->labelMatchResult->setText(matchResult);
     }else if (matchMethod == "Image Processing") {
-        qDebug() << "IP";
+        QElapsedTimer timer;
+        timer.start();
+        //qDebug() << "Image Processing is running.";
         QMap<QString, double> testDists = fdTester.getTestDistance(frameToTest);
 
         QMapIterator<QString, double> i(testDists);

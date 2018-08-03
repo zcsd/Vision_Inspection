@@ -12,7 +12,8 @@ RulerCalibrator::RulerCalibrator(cv::Mat& inputFrame, double& pixelDistance)
 
 void RulerCalibrator::preprocessing()
 {
-    cv::Rect ROI = Rect(400, 350, 1190, 850);
+    // 2048x1536
+    cv::Rect ROI = Rect(1, 1, 2045, 1530);
     roiFrame = frame(ROI);
     cv::cvtColor(roiFrame, grayFrame, COLOR_BGR2GRAY);
     cv::GaussianBlur(grayFrame, grayFrame, Size(3, 3), 0);
