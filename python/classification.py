@@ -95,8 +95,10 @@ def indentification(image):
     model_label = model_inv_map[model_inID]
 
     #print("id_label: {}; model_label: {}.".format(id_label, model_label))
-    
-    label = model_label + " " + id_label
+    if id_label == "heel_lining" or id_label == "heel_cap":
+        label = id_label
+    else:
+        label = model_label + " " + id_label
     #print("id_label: {}; id_confidence: {:.2f};".format(id_label, id_confidence))
     #print("All: {}".format(id_probabilities[0]))
     return (label, id_confidence)
