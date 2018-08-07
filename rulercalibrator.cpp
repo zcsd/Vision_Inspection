@@ -22,7 +22,7 @@ void RulerCalibrator::preprocessing()
 void RulerCalibrator::thresholding()
 {
     //cv::Canny(grayFrame, cannyImage, 80, 200, 3); // edge pnly
-    cv::threshold(grayFrame, thresholdImage, 135, 210, THRESH_BINARY_INV);
+    cv::threshold(grayFrame, thresholdImage, 135, 255, THRESH_BINARY_INV);
     //cv::dilate(thresholdImage, thresholdImage, Mat());
     //cv::erode(thresholdImage, thresholdImage, Mat());
 }

@@ -94,7 +94,7 @@ vector<Point> FDTester::getContour(Mat image)
     cv::resize(image, smallImage, Size(), 0.25, 0.25, INTER_LINEAR);
     cv::cvtColor(smallImage, grayImage, COLOR_BGR2GRAY);
     cv::GaussianBlur(grayImage, grayImage, Size(3, 3), 0);
-    cv::threshold(grayImage, thresholdImage, 135, 210, THRESH_BINARY_INV);
+    cv::threshold(grayImage, thresholdImage, 135, 255, THRESH_BINARY_INV);
     // kernel shape: MORPH_RECT   MORPH_CROSS  MORPH_ELLIPSE
     // cv::Mat dilateKernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, Size(3,3));
     // cv::dilate(thresholdImage, thresholdImage, dilateKernel);
@@ -116,6 +116,8 @@ vector<Point> FDTester::getContour(Mat image)
            maxArea = tempArea;
        }
     }
+
+    //cv::imwrite("tt.jpg", thresholdImage);
 
     return contours[indexMaxContour];
 }

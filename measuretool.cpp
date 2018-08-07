@@ -5,14 +5,9 @@ MeasureTool::MeasureTool(cv::Mat& inputFrame, const double ppmm)
     frame = inputFrame.clone();
     newPPMM = ppmm;
 
-    QElapsedTimer timer;
-    timer.start();
-
     preprocessing();
     thresholding();
     getContours();
-
-    qDebug() << timer.elapsed();
 
     inputFrame = frame;
 }
@@ -28,7 +23,7 @@ void MeasureTool::preprocessing()
 void MeasureTool::thresholding()
 {
     //cv::Canny(grayFrame, cannyImage, 80, 200, 3); // edge pnly
-    cv::threshold(grayFrame, thresholdImage, 135, 210, THRESH_BINARY_INV);
+    cv::threshold(grayFrame, thresholdImage, 135, 255, THRESH_BINARY_INV);
     //cv::dilate(thresholdImage, thresholdImage, Mat());
     //cv::erode(thresholdImage, thresholdImage, Mat());
 }
@@ -106,7 +101,7 @@ void MeasureTool::getContours()
             // Get string from output string stream
             std::string strObj3 = streamObj3.str();
             string printDistance = strObj3 + "mm";
-            cv::putText(roiFrame, printDistance, rotatedRect[i].center, 1, 1.5, Scalar(0, 255, 0), 2, 8);
+            cv::putText(roiFrame, printDistance, rotatedRect[i].center, 1, 4.0, Scalar(0, 255, 0), 2, 8);
         }
     }
 

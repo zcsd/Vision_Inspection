@@ -604,6 +604,7 @@ void MainWindow::on_pushButtonMatch_clicked()
     if (matchMethod == "Machine Learning") {
         //qDebug() << "Machine Learning is running.";
         QString matchResult = pyClassification.process(frameToTest);
+        ui->labelMatchResult->setStyleSheet("color: blue; font: 20pt; background-color: white;");
         ui->labelMatchResult->setText(matchResult);
     }else if (matchMethod == "Image Processing") {
         QElapsedTimer timer;
@@ -623,10 +624,10 @@ void MainWindow::on_pushButtonMatch_clicked()
             if (i.value() <= minDist) {
                 minDist = i.value();
                 bestMatchName = i.key();
-            }
+            }/*
             if (minDist > 0.999) {
                 bestMatchName = "None";
-            }
+            }*/
             ui->labelMatchResult->setText(bestMatchName);
             ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    "
                                               + i.key() + ": " + QString::number(i.value()));

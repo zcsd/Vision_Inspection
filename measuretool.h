@@ -9,7 +9,6 @@
 #include <iomanip>
 
 #include <QDebug>
-#include <QElapsedTimer>
 
 #include "opencv2/opencv.hpp"
 #include "opencv2/imgproc.hpp"
