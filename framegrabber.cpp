@@ -58,7 +58,8 @@ void FrameGrabber::configureCamera()
     try {
         // Method 1:
         // Load pfs file into the camera's node map with enabled validation.
-        const char cameraParaFile[] = "../conf/acA2040-55uc_22095198.pfs";
+        //const char cameraParaFile[] = "../conf/acA2040-55uc_22095198.pfs";
+        const char cameraParaFile[] = "../conf/acA2440-35uc_22776933.pfs";
         //CFeaturePersistence::Save(cameraParaFile, &pylonCamera->GetNodeMap());
         CFeaturePersistence::Load(cameraParaFile, &pylonCamera->GetNodeMap(), true);
 

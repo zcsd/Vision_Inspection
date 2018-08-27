@@ -97,7 +97,7 @@ private:
     bool manualCalibration = false;
     bool autoCalibration = false;
     bool autoMeasure = false;
-    double scaleFactor = 1.0;
+    double scaleFactor = 0.4; // 0.4 is fit windows size
     double pixelPerMM;
     double currentPPMM;
     double pixelDistanceAC = 0.0;

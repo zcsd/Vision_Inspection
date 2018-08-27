@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1559</width>
-    <height>1023</height>
+    <width>1491</width>
+    <height>1044</height>
    </rect>
   </property>
   <property name="font">
@@ -24,7 +24,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>800</y>
+      <y>860</y>
       <width>101</width>
       <height>17</height>
      </rect>
@@ -37,9 +37,9 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>830</y>
-      <width>1261</width>
-      <height>131</height>
+      <y>880</y>
+      <width>1211</width>
+      <height>111</height>
      </rect>
     </property>
    </widget>
@@ -150,8 +150,8 @@
    <widget class="QLabel" name="labelShowRes">
     <property name="geometry">
      <rect>
-      <x>1090</x>
-      <y>800</y>
+      <x>1050</x>
+      <y>860</y>
       <width>91</width>
       <height>16</height>
      </rect>
@@ -166,8 +166,8 @@
    <widget class="QLabel" name="labelShowPos">
     <property name="geometry">
      <rect>
-      <x>990</x>
-      <y>800</y>
+      <x>950</x>
+      <y>860</y>
       <width>91</width>
       <height>16</height>
      </rect>
@@ -190,7 +190,7 @@
      <rect>
       <x>230</x>
       <y>10</y>
-      <width>1031</width>
+      <width>991</width>
       <height>611</height>
      </rect>
     </property>
@@ -201,8 +201,8 @@
      <rect>
       <x>240</x>
       <y>0</y>
-      <width>1041</width>
-      <height>791</height>
+      <width>991</width>
+      <height>851</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout_2">
@@ -216,8 +216,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>1031</width>
-          <height>764</height>
+          <width>981</width>
+          <height>824</height>
          </rect>
         </property>
        </widget>
@@ -235,8 +235,8 @@
    <widget class="QLabel" name="labelShowScale">
     <property name="geometry">
      <rect>
-      <x>1190</x>
-      <y>800</y>
+      <x>1150</x>
+      <y>860</y>
       <width>71</width>
       <height>16</height>
      </rect>
@@ -257,8 +257,8 @@
    <widget class="QLabel" name="labelShowRGB">
     <property name="geometry">
      <rect>
-      <x>860</x>
-      <y>800</y>
+      <x>820</x>
+      <y>860</y>
       <width>101</width>
       <height>16</height>
      </rect>
@@ -279,7 +279,7 @@
    <widget class="QLabel" name="labelMCaliName">
     <property name="geometry">
      <rect>
-      <x>1301</x>
+      <x>1250</x>
       <y>7</y>
       <width>129</width>
       <height>17</height>
@@ -292,7 +292,7 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>1300</x>
+      <x>1249</x>
       <y>96</y>
       <width>221</width>
       <height>27</height>
@@ -321,7 +321,7 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>1301</x>
+      <x>1250</x>
       <y>63</y>
       <width>221</width>
       <height>27</height>
@@ -343,7 +343,7 @@
    <widget class="QPushButton" name="pushButtonConfirm">
     <property name="geometry">
      <rect>
-      <x>1300</x>
+      <x>1249</x>
       <y>130</y>
       <width>111</width>
       <height>31</height>
@@ -356,7 +356,7 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>1302</x>
+      <x>1251</x>
       <y>31</y>
       <width>221</width>
       <height>27</height>
@@ -379,10 +379,10 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>1301</x>
+      <x>1250</x>
       <y>201</y>
       <width>231</width>
       <height>27</height>
@@ -404,7 +404,7 @@
    <widget class="QLabel" name="labelMatchResult">
     <property name="geometry">
      <rect>
-      <x>1301</x>
+      <x>1250</x>
       <y>234</y>
       <width>231</width>
       <height>51</height>
@@ -432,7 +432,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1559</width>
+     <width>1491</width>
      <height>22</height>
     </rect>
    </property>

@@ -70,7 +70,8 @@ void SettingDialog::readConf()
                                         "GainAuto\t", "Gain\t", "Width\t", "Height\t", "OffsetX\t", "OffsetY\t",
                                         "CenterX\t", "CenterY\t", "PixelFormat\t", "AcquisitionFrameRate\t"};
 
-   QFile confFile("../conf/acA2040-55uc_22095198.pfs");
+   //QFile confFile("../conf/acA2040-55uc_22095198.pfs");
+   QFile confFile("../conf/acA2440-35uc_22776933.pfs");
    confFile.open(QIODevice::ReadOnly);
 
    QTextStream in (&confFile);
@@ -99,7 +100,8 @@ void SettingDialog::updateConf()
   /*  QStringList strListCameraParaName = {"ExposureAuto\t", "ExposureMode\t", "ExposureTime\t", "BalanceWhiteAuto\t",
                                          "GainAuto\t", "Gain\t", "Width\t", "Height\t", "OffsetX\t", "OffsetY\t",
                                          "CenterX\t", "CenterY\t", "PixelFormat\t", "AcquisitionFrameRate\t"};*/
-    QFile confFile("../conf/acA2040-55uc_22095198.pfs");
+    //QFile confFile("../conf/acA2040-55uc_22095198.pfs");
+    QFile confFile("../conf/acA2440-35uc_22776933.pfs");
     confFile.open(QIODevice::ReadOnly);
     QFile newConfFile("../conf/temp.pfs");
     newConfFile.open(QIODevice::WriteOnly|QIODevice::Truncate);
@@ -137,7 +139,8 @@ void SettingDialog::updateConf()
     confFile.close();
     newConfFile.close();
     confFile.remove();
-    newConfFile.rename("../conf/temp.pfs", "../conf/acA2040-55uc_22095198.pfs");
+    //newConfFile.rename("../conf/temp.pfs", "../conf/acA2040-55uc_22095198.pfs");
+    newConfFile.rename("../conf/temp.pfs", "../conf/acA2440-35uc_22776933.pfs");
 }
 
 QString SettingDialog::getParameters(QString nameParameter)

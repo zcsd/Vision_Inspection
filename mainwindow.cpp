@@ -25,7 +25,7 @@ void MainWindow::initialSetup()
     ui->scrollArea->setVisible(true);
     setMCaliVisible(false);
 
-    QPixmap whiteBackground = QPixmap(1024, 786);
+    QPixmap whiteBackground = QPixmap(980, 820);
     whiteBackground.fill(Qt::white);
     ui->labelShowFrame->setPixmap(whiteBackground);
     // N means No Grabbing
@@ -143,7 +143,7 @@ void MainWindow::on_pushButtonDisconnect_clicked()
         }
     }
     ui->labelShowFrame->setMouseTracking(false);
-    QPixmap whiteBackground = QPixmap(1024, 786);
+    QPixmap whiteBackground = QPixmap(980, 820);
     whiteBackground.fill(Qt::white);
     ui->labelShowFrame->setPixmap(whiteBackground);
     ui->labelShowRes->setText("");
@@ -155,7 +155,7 @@ void MainWindow::on_pushButtonDisconnect_clicked()
 void MainWindow::on_pushButtonCapture_clicked()
 {
     emit sendCaptureMode();
-    ui->labelShowRes->setText("2048x1536");
+    ui->labelShowRes->setText("2448x2048");
     ui->labelShowScale->setText(QString::number(scaleFactor*100, 'f', 0)+"%");
 
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Capture one image.");
@@ -197,7 +197,7 @@ void MainWindow::on_pushButtonStream_clicked()
 
     streamTrigger->start();
     ui->labelShowFrame->setMouseTracking(true);
-    ui->labelShowRes->setText("2048x1536");
+    ui->labelShowRes->setText("2448x2048");
     ui->labelShowScale->setText(QString::number(scaleFactor*100, 'f', 0)+"%");
 
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Start streaming mode.");
@@ -283,8 +283,8 @@ void MainWindow::on_actionZoomIn_triggered()
         if (scaleFactor > 5.0)  scaleFactor = 5.0;
     } else if (scaleFactor < 1.0) {
         scaleFactor *= 1.3333;
-        if (scaleFactor > 0.4 && scaleFactor < 0.6)
-            scaleFactor = 0.5;
+        if (scaleFactor > 0.35 && scaleFactor < 0.5)
+            scaleFactor = 0.4;
         if (scaleFactor > 0.85 && scaleFactor < 1.1)
             scaleFactor = 1.0;
     }
@@ -295,7 +295,7 @@ void MainWindow::on_actionZoomIn_triggered()
 
 void MainWindow::on_actionZoomToFit_triggered()
 {
-    scaleFactor = 0.5;
+    scaleFactor = 0.4;
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Scaling factor: " + QString::number(scaleFactor));
     ui->labelShowScale->setText(QString::number(scaleFactor*100, 'f', 0)+"%");
     if (grabMode == 'C')  displayFrame();
@@ -308,10 +308,10 @@ void MainWindow::on_actionZoomOut_triggered()
         scaleFactor -= 1.0;
     } else if (scaleFactor <= 1.0) {
         scaleFactor *= 0.6667;
-        if (scaleFactor > 0.4 && scaleFactor < 0.6)
-            scaleFactor = 0.5;
-        if (scaleFactor < 0.5)
-            scaleFactor = 0.5;
+        if (scaleFactor >= 0.35 && scaleFactor < 0.5)
+            scaleFactor = 0.4;
+        if (scaleFactor < 0.35)
+            scaleFactor = 0.4;
     }
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Scaling factor: " + QString::number(scaleFactor));
     ui->labelShowScale->setText(QString::number(scaleFactor*100, 'f', 0)+"%");
@@ -349,7 +349,7 @@ void MainWindow::on_actionMCalibrate_triggered()
 void MainWindow::on_actionOpenImage_triggered()
 {
     grabMode = 'C';
-    ui->labelShowRes->setText("2048x1536");
+    ui->labelShowRes->setText("2448x2048");
     ui->labelShowFrame->setMouseTracking(true);
     ui->labelShowScale->setText(QString::number(scaleFactor*100, 'f', 0)+"%");
     QString openFilePath = QFileDialog::getOpenFileName(this, "Open an image", "../");
