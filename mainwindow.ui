@@ -293,7 +293,7 @@
     <property name="geometry">
      <rect>
       <x>1249</x>
-      <y>96</y>
+      <y>130</y>
       <width>221</width>
       <height>27</height>
      </rect>
@@ -322,7 +322,7 @@
     <property name="geometry">
      <rect>
       <x>1250</x>
-      <y>63</y>
+      <y>97</y>
       <width>221</width>
       <height>27</height>
      </rect>
@@ -344,7 +344,7 @@
     <property name="geometry">
      <rect>
       <x>1249</x>
-      <y>130</y>
+      <y>164</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -357,7 +357,7 @@
     <property name="geometry">
      <rect>
       <x>1251</x>
-      <y>31</y>
+      <y>65</y>
       <width>221</width>
       <height>27</height>
      </rect>
@@ -383,7 +383,7 @@
     <property name="geometry">
      <rect>
       <x>1250</x>
-      <y>201</y>
+      <y>227</y>
       <width>231</width>
       <height>27</height>
      </rect>
@@ -405,7 +405,7 @@
     <property name="geometry">
      <rect>
       <x>1250</x>
-      <y>234</y>
+      <y>260</y>
       <width>231</width>
       <height>51</height>
      </rect>
@@ -415,6 +415,19 @@
     </property>
     <property name="text">
      <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonBGColor">
+    <property name="geometry">
+     <rect>
+      <x>1250</x>
+      <y>30</y>
+      <width>101</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>BG Color</string>
     </property>
    </widget>
   </widget>

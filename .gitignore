@@ -1,5 +1,6 @@
 *.o
 build
 *.user
+*.autosave
 *.pyc
 __pycache__

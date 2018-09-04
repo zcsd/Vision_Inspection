@@ -11,7 +11,7 @@ void PyClassification::PyInit()
 {
     Py_Initialize();
 
-    qDebug() << "Python Initialized";
+    //qDebug() << "Python Initialized";
 
     // set system path to find correct python script
     string chdir_cmd = string("sys.path.append(\'/home/zichun/pylon_cv/python\')");
@@ -67,6 +67,8 @@ QString PyClassification::process(cv::Mat image)
         }
     }
 
+    is_processed = true;
+
     return QString(resLabel);
 }
 
@@ -77,8 +79,11 @@ void PyClassification::PyClose()
     Py_DECREF(pModule);
     //Py_DECREF(pParam);
     Py_DECREF(pFunc);
-    Py_DECREF(pNDArray);
-    Py_DECREF(pResult);
+    if (is_processed)
+    {
+        Py_DECREF(pNDArray);
+        Py_DECREF(pResult);
+    }
 
     Py_Finalize();
 }

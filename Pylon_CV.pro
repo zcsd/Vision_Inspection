@@ -11,23 +11,15 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = Pylon_CV
 TEMPLATE = app
 
-# boost
-#INCLUDEPATH += /usr/include/boost
-#LIBS += -L/usr/include/boost -lboost_python -lboost_system
-
-# Python
-#INCLUDEPATH += /home/zichun/venv/include/python3.5m
+# Python 3.5 native library
 INCLUDEPATH += /usr/include/python3.5m
-#INCLUDEPATH += /usr/lib/python3.5/config-3.5m-x86_64-linux-gnu
-#LIBS += -L/home/zichun/venv/lib/python3.5 -lpython3.5m
 LIBS += -L/usr/local/lib/python3.5 -lpython3.5m
-#LIBS += -L/usr/lib/python3.5/config-3.5m-x86_64-linux-gnu -lpython3.5m
 
-# OpenCV 3.4.0
+# OpenCV 3.4.0, 3.4.2 also pass
 INCLUDEPATH += /usr/local/include/opencv
 LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui
 
-# Pylon 5
+# Pylon 5.0.12 SDK
 INCLUDEPATH += /opt/pylon5/include
 QMAKE_LFLAGS += -Wl,--enable-new-dtags -Wl,-rpath,/opt/pylon5/lib64
 LIBS += -L/opt/pylon5/lib64
@@ -45,6 +37,10 @@ LIBS += -llog4cpp_gcc_v3_0_Basler_pylon_v5_0
 LIBS += -lLog_gcc_v3_0_Basler_pylon_v5_0
 LIBS += -lXmlParser_gcc_v3_0_Basler_pylon_v5_0
 
+# boost
+#INCLUDEPATH += /usr/include/boost
+#LIBS += -L/usr/include/boost -lboost_python -lboost_system
+
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
@@ -55,7 +51,6 @@ SOURCES += \
     settingdialog.cpp \
     fourierdescriptor.cpp \
     fdtester.cpp \
-    colorextrator.cpp \
     pyclassification.cpp \
     py_cv_wrapper/pycvconverter.cpp \
 
@@ -68,7 +63,6 @@ HEADERS += \
     settingdialog.h \
     fourierdescriptor.h \
     fdtester.h \
-    colorextrator.h \
     pyclassification.h \
     py_cv_wrapper/pycvconverter.h \
 

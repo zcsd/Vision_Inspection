@@ -34,7 +34,7 @@ public:
 
 private:
     void PyInit();
-
+    bool is_processed = false;
     PyObject* pModule = NULL;
     PyObject* pFunc = NULL;
     //PyObject* pParam = NULL;

@@ -336,6 +336,7 @@ void MainWindow::on_actionMCalibrate_triggered()
     manualCalibration = true;
     autoCalibration = false;
     ui->pushButtonStartCali->setEnabled(true);
+    ui->pushButtonBGColor->setEnabled(true);
     ui->pushButtonRedoCali->setEnabled(false);
     ui->pushButtonConfirm->setEnabled(false);
     ui->pushButtonCalculate->setEnabled(false);
@@ -525,6 +526,7 @@ void MainWindow::setMCaliVisible(bool showMCali)
     ui->pushButtonRedoCali->setVisible(showMCali);
     ui->pushButtonConfirm->setVisible(showMCali);
     ui->pushButtonCalculate->setVisible(showMCali);
+    ui->pushButtonBGColor->setVisible(showMCali);
     ui->lineEditRealDistance->setVisible(showMCali);
     ui->labelRealDisName->setVisible(showMCali);
     ui->labelCalResult->setVisible(showMCali);
@@ -633,5 +635,10 @@ void MainWindow::on_pushButtonMatch_clicked()
                                               + i.key() + ": " + QString::number(i.value()));
         }
     }
+
+}
+
+void MainWindow::on_pushButtonBGColor_clicked()
+{
 
 }
