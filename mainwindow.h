@@ -20,6 +20,7 @@
 
 #include "opencv2/opencv.hpp"
 #include "opencv2/imgproc.hpp"
+using namespace cv;
 
 #include "framegrabber.h"
 #include "rulercalibrator.h"
@@ -28,13 +29,6 @@
 #include "fdtester.h"
 #include "pyclassification.h"
 
-using namespace cv;
-
-class FrameGrabber;
-class RulerCalibrator;
-class MeasureTool;
-class SettingDialog;
-class FDTester;
 
 namespace Ui {
 class MainWindow;
@@ -47,7 +41,6 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    FrameGrabber *frameGrabber;
 
 signals:
     void sendConnect();
@@ -84,16 +77,19 @@ private slots:
     void on_actionCameraSetting_triggered();
     void on_pushButtonMatch_clicked();
 
+    void on_pushButtonBGColor_clicked();
+
 public slots:
     void receiveShowMousePosition(QPoint& pos);
 
 private:
     Ui::MainWindow *ui;
+    FrameGrabber *frameGrabber;
     FDTester fdTester;
     PyClassification pyClassification;
     QString defaultSavePath = "../images";
     QString matchMethod = "Machine Learning";
-    char grabMode;
+    char grabMode = 'N';
     bool manualCalibration = false;
     bool autoCalibration = false;
     bool autoMeasure = false;

@@ -23,19 +23,21 @@ void MainWindow::initialSetup()
     ui->scrollArea->setBackgroundRole(QPalette::Dark);
     ui->scrollArea->setWidget(ui->labelShowFrame);
     ui->scrollArea->setVisible(true);
+
     setMCaliVisible(false);
+
+    readCaliConf();
 
     QPixmap whiteBackground = QPixmap(980, 820);
     whiteBackground.fill(Qt::white);
     ui->labelShowFrame->setPixmap(whiteBackground);
-    // N means No Grabbing
-    grabMode = 'N';
+
     ui->labelCalResult->setAlignment(Qt::AlignCenter);
     ui->labelShowPos->setAlignment(Qt::AlignCenter);
     ui->labelShowRes->setAlignment(Qt::AlignCenter);
     ui->labelShowScale->setAlignment(Qt::AlignCenter);
     ui->labelShowRGB->setAlignment(Qt::AlignCenter);
-    // Set button initial status and color
+
     ui->pushButtonConnect->setEnabled(false);
     ui->pushButtonDisconnect->setEnabled(false);
     ui->pushButtonCapture->setEnabled(false);
@@ -43,15 +45,10 @@ void MainWindow::initialSetup()
     ui->pushButtonStop->setEnabled(false);
     ui->pushButtonSaveCapture->setEnabled(false);
     ui->pushButtonScanDevices->setEnabled(true);
-    ui->pushButtonStop->setStyleSheet("background-color: rgb(225, 225, 225);");
-    ui->pushButtonConnect->setStyleSheet("background-color: rgb(225, 225, 225);");
-    ui->pushButtonDisconnect->setStyleSheet("background-color: rgb(225, 225, 225);");
-    ui->pushButtonCapture->setStyleSheet("background-color: rgb(225, 225, 225);");
-    ui->pushButtonStream->setStyleSheet("background-color: rgb(225, 225, 225);");
-    ui->pushButtonScanDevices->setStyleSheet("background-color: rgb(225, 225, 225);");
-    ui->pushButtonSaveCapture->setStyleSheet("background-color: rgb(225, 225, 225);");
-    // Interation between UI and frameGrabber
+
+    // Always dispaly the latest message in msg log in bottom
     connect(ui->listWidgetMessageLog->model(), SIGNAL(rowsInserted(QModelIndex,int,int)), ui->listWidgetMessageLog, SLOT(scrollToBottom()));
+
     connect(this, SIGNAL(sendConnect()), frameGrabber, SLOT(receiveConnectCamera()));
     connect(this, SIGNAL(sendDisconnect()), frameGrabber, SLOT(receiveDisconnectCamera()));
     connect(this, SIGNAL(sendCaptureMode()), frameGrabber, SLOT(receiveStartCaptureMode()));
@@ -61,9 +58,41 @@ void MainWindow::initialSetup()
     connect(ui->labelShowFrame, SIGNAL(sendMousePosition(QPoint&)), this, SLOT(receiveShowMousePosition(QPoint&)));
 
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    System started.");
-    readCaliConf();
     ui->comboBoxMatchMethod->addItem("Machine Learning");
     ui->comboBoxMatchMethod->addItem("Image Processing");
+}
+
+void MainWindow::setMCaliVisible(bool showMCali)
+{
+    ui->pushButtonStartCali->setVisible(showMCali);
+    ui->pushButtonRedoCali->setVisible(showMCali);
+    ui->pushButtonConfirm->setVisible(showMCali);
+    ui->pushButtonCalculate->setVisible(showMCali);
+    ui->pushButtonBGColor->setVisible(showMCali);
+    ui->lineEditRealDistance->setVisible(showMCali);
+    ui->labelRealDisName->setVisible(showMCali);
+    ui->labelCalResult->setVisible(showMCali);
+    ui->labelMCaliName->setVisible(showMCali);
+}
+
+void MainWindow::readCaliConf()
+{
+    QFile caliConfFile("../conf/calibration.conf");
+
+    if(!caliConfFile.open(QIODevice::ReadOnly))
+    {
+         QMessageBox::warning(this,"File Write Error","Conf file can't open",QMessageBox::Yes);
+    }
+    else
+    {
+        QTextStream in(&caliConfFile);
+        QString line;
+        line = in.readLine();
+        currentPPMM = line.toDouble();
+        ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Loaded configuration: " + line + " pixel/mm");
+    }
+
+    caliConfFile.close();
 }
 
 void MainWindow::on_pushButtonConnect_clicked()
@@ -483,23 +512,6 @@ void MainWindow::writeCaliConf()
     caliConfFile.close();
 }
 
-void MainWindow::readCaliConf()
-{
-    QFile caliConfFile("../conf/calibration.conf");
-
-    if(!caliConfFile.open(QIODevice::ReadOnly)) {
-         QMessageBox::warning(this,"File Write Error","Conf file can't open",QMessageBox::Yes);
-    } else {
-        QTextStream in(&caliConfFile);
-        QString line;
-        line = in.readLine();
-        currentPPMM = line.toDouble();
-        ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") + "    Loaded configuration: " + line + " pixel/mm");
-    }
-
-    caliConfFile.close();
-}
-
 void MainWindow::on_pushButtonConfirm_clicked()
 {
     if (manualCalibration || autoCalibration) {
@@ -518,19 +530,6 @@ void MainWindow::on_pushButtonConfirm_clicked()
     manualCalibration = false;
     autoCalibration = false;
     displayFrame();
-}
-
-void MainWindow::setMCaliVisible(bool showMCali)
-{
-    ui->pushButtonStartCali->setVisible(showMCali);
-    ui->pushButtonRedoCali->setVisible(showMCali);
-    ui->pushButtonConfirm->setVisible(showMCali);
-    ui->pushButtonCalculate->setVisible(showMCali);
-    ui->pushButtonBGColor->setVisible(showMCali);
-    ui->lineEditRealDistance->setVisible(showMCali);
-    ui->labelRealDisName->setVisible(showMCali);
-    ui->labelCalResult->setVisible(showMCali);
-    ui->labelMCaliName->setVisible(showMCali);
 }
 
 void MainWindow::on_actionACalibrate_triggered()

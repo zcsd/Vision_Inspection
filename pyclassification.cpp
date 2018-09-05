@@ -14,7 +14,9 @@ void PyClassification::PyInit()
     //qDebug() << "Python Initialized";
 
     // set system path to find correct python script
-    string chdir_cmd = string("sys.path.append(\'/home/zichun/pylon_cv/python\')");
+    // @ZC TODO: using relative path
+    //string chdir_cmd = string("sys.path.append(\'/home/starasia/pylon_cv/python\')");
+    string chdir_cmd = string("sys.path.append(\'../python\')");
     const char* cstr_cmd = chdir_cmd.c_str();
     PyRun_SimpleString("import sys");
     PyRun_SimpleString(cstr_cmd);
