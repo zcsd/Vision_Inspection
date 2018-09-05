@@ -85,8 +85,8 @@ public slots:
 private:
     Ui::MainWindow *ui;
     FrameGrabber *frameGrabber;
-    FDTester fdTester;
-    PyClassification pyClassification;
+    PyClassification *pyClassification;
+    FDTester *fdTester;
     QString defaultSavePath = "../images";
     QString matchMethod = "Machine Learning";
     char grabMode = 'N';
@@ -101,6 +101,7 @@ private:
     cv::Mat frameToCali;
     cv::Mat frameToMeasure;
     cv::Mat cvRGBFrame;
+    cv::Mat frameToTest;
     QImage qDisplayedFrame;
     QTimer *streamTrigger;
     void initialSetup();
@@ -108,7 +109,6 @@ private:
     void setMCaliVisible(bool showMCali);
     void writeCaliConf();
     void readCaliConf();
-    cv::Mat frameToTest;
 };
 
 #endif // MAINWINDOW_H

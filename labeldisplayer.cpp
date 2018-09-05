@@ -14,8 +14,10 @@ void LabelDisplayer::mouseMoveEvent(QMouseEvent *mouseQEvent)
 {
     QPoint mousePos = mouseQEvent->pos();
 
-    if (mousePos.x() <= this->size().width() && mousePos.y() <= this->size().height()) {
-        if (mousePos.x() > 0 && mousePos.y() > 0) {
+    if (mousePos.x() <= this->size().width() && mousePos.y() <= this->size().height())
+    {
+        if (mousePos.x() > 0 && mousePos.y() > 0)
+        {
             emit sendMousePosition(mousePos);
         }
     }
@@ -33,8 +35,10 @@ void LabelDisplayer::paintEvent(QPaintEvent *paintQEvent)
     /* set the modified font to the painter */
     painter.setFont(font);
 
-    if ( (startManuCalibration && !finishManuCalibration) || startManualRulerFlag) {
-        if (!firstPointSaved || !secondPointSaved || !thirdPointSaved) {
+    if ( (startManuCalibration && !finishManuCalibration) || startManualRulerFlag)
+    {
+        if (!firstPointSaved || !secondPointSaved || !thirdPointSaved)
+        {
             painter.setPen(QPen(Qt::blue, 2, Qt::SolidLine));
             painter.drawEllipse(tempPoint, 15, 15);
             painter.setPen(QPen(Qt::blue, 1, Qt::SolidLine));
@@ -42,7 +46,8 @@ void LabelDisplayer::paintEvent(QPaintEvent *paintQEvent)
             painter.drawLine(QPoint(tempPoint.x(), tempPoint.y()-5), QPoint(tempPoint.x(), tempPoint.y()+5));
             //painter.drawEllipse(tempPoint, 1, 1);
         }
-        if (firstPointSaved) {
+        if (firstPointSaved)
+        {
             painter.setPen(QPen(Qt::red, 2, Qt::SolidLine));
             painter.drawEllipse(firstPoint, 10, 10);
             painter.setPen(QPen(Qt::red, 1, Qt::SolidLine));
@@ -50,7 +55,8 @@ void LabelDisplayer::paintEvent(QPaintEvent *paintQEvent)
             painter.drawLine(QPoint(firstPoint.x(), firstPoint.y()-4), QPoint(firstPoint.x(), firstPoint.y()+4));
             //painter.drawEllipse(firstPoint, 1, 1);
         }
-        if (secondPointSaved && firstPointSaved) {
+        if (secondPointSaved && firstPointSaved)
+        {
             painter.setPen(QPen(Qt::red, 2, Qt::SolidLine));
             painter.drawEllipse(secondPoint, 10, 10);
             painter.setPen(QPen(Qt::red, 1, Qt::SolidLine));
@@ -62,13 +68,15 @@ void LabelDisplayer::paintEvent(QPaintEvent *paintQEvent)
             if (!startManualRulerFlag)
                 painter.drawText(QLineF(firstPoint, secondPoint).center(), QString::number(QLineF(firstPoint, secondPoint).length(), 'f', 1));
             //painter.drawEllipse(secondPoint, 1, 1);
-            if (startManualRulerFlag) {
+            if (startManualRulerFlag)
+            {
                 //startManualRulerFlag = false;
                 //finishManualRulerFlag = true;
                 painter.drawText(QLineF(firstPoint, secondPoint).center(), QString::number(realDistance, 'f', 2)+"mm");
             }
         }
-        if (thirdPointSaved && secondPointSaved) {
+        if (thirdPointSaved && secondPointSaved)
+        {
             painter.setPen(QPen(Qt::red, 2, Qt::SolidLine));
             painter.drawEllipse(thirdPoint, 10, 10);
             painter.setPen(QPen(Qt::red, 1, Qt::SolidLine));
@@ -81,7 +89,8 @@ void LabelDisplayer::paintEvent(QPaintEvent *paintQEvent)
             if (!startManualRulerFlag)
                 painter.drawText(QLineF(secondPoint, thirdPoint).center(), QString::number(QLineF(secondPoint, thirdPoint).length(), 'f', 1));
             //painter.drawEllipse(secondPoint, 1, 1);
-            if (startManualRulerFlag) {
+            if (startManualRulerFlag)
+            {
                 //startManualRulerFlag = false;
                 //finishManualRulerFlag = true;
                 double realDistance = QLineF(secondPoint, thirdPoint).length() / newPPMM;
@@ -95,7 +104,8 @@ void LabelDisplayer::paintEvent(QPaintEvent *paintQEvent)
 
 void LabelDisplayer::mousePressEvent(QMouseEvent *mouseQEvent)
 {
-    if (mouseQEvent->button() == Qt::LeftButton) {
+    if (mouseQEvent->button() == Qt::LeftButton)
+    {
         setFocus();
         tempPoint = mouseQEvent->pos();
     }
@@ -103,14 +113,20 @@ void LabelDisplayer::mousePressEvent(QMouseEvent *mouseQEvent)
 
 void LabelDisplayer::keyPressEvent(QKeyEvent *keyQEvent)
 {
-    if (keyQEvent->key() == Qt::Key_Space) {
-        if (!firstPointSaved) {
+    if (keyQEvent->key() == Qt::Key_Space)
+    {
+        if (!firstPointSaved)
+        {
             firstPoint = tempPoint;
             firstPointSaved = true;
-        } else if (!secondPointSaved) {
+        }
+        else if (!secondPointSaved)
+        {
             secondPoint = tempPoint;
             secondPointSaved = true;
-        } else if (!thirdPointSaved) {
+        }
+        else if (!thirdPointSaved)
+        {
             thirdPoint = tempPoint;
             thirdPointSaved = true;
         }
@@ -120,7 +136,8 @@ void LabelDisplayer::keyPressEvent(QKeyEvent *keyQEvent)
 
 void LabelDisplayer::mouseReleaseEvent(QMouseEvent *mouseQEvent)
 {
-    if (mouseQEvent->button() == Qt::LeftButton) {
+    if (mouseQEvent->button() == Qt::LeftButton)
+    {
         update();
     }
 }

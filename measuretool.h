@@ -23,6 +23,7 @@ class MeasureTool
 
 public:
     MeasureTool(cv::Mat& inputFrame, const double ppmm);
+    ~MeasureTool();
 
 private:
     cv::Mat frame, roiFrame, grayFrame, thresholdImage;

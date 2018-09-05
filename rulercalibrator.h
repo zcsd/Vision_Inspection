@@ -22,6 +22,7 @@ class RulerCalibrator
 {
 public:
     RulerCalibrator(cv::Mat& inputFrame, double &pixelDistance);
+    ~RulerCalibrator();
 
 private:
     cv::Mat frame, roiFrame, grayFrame, thresholdImage;

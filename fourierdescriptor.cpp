@@ -5,6 +5,11 @@ FDShapeMatching::FDShapeMatching(int ctr,int fd) : ctrSize(ctr),fdSize(fd)
 
 }
 
+FDShapeMatching::~FDShapeMatching()
+{
+
+}
+
 void FDShapeMatching::setCtrSize(int n)
 {
     ctrSize = n;

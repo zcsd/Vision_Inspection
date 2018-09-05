@@ -7,7 +7,7 @@
 - PC with USB3.0 port
 - Ubuntu(16.04+) (could extend to support Windows or other Linux)
 - QT Library 5.11
-- OpenCV-3.4.0
+- OpenCV-3.4.2
 - Pylon 5.0.12 SDK
 
 **Recommend IDE**
@@ -15,7 +15,7 @@
 
 **Steps:**
 
-- Install OpenCV-3.4.0 from native building
+- Install OpenCV-3.4.2 from native building
 
 - Install Pylon 5 SDK
 
@@ -23,8 +23,7 @@
 
 ## **TODO**
 
-- use FD as ref to save
-- too many...
+- Move connect/disconnect/capture/stream to upper menu.
 
 
 *Jul 12 2018*

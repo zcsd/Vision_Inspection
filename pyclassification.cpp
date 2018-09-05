@@ -7,6 +7,11 @@ PyClassification::PyClassification()
     //PyClose();
 }
 
+PyClassification::~PyClassification()
+{
+    PyClose();
+}
+
 void PyClassification::PyInit()
 {
     Py_Initialize();

@@ -7,7 +7,8 @@ FrameGrabber::FrameGrabber(QObject *parent) : QObject(parent)
 
 FrameGrabber::~FrameGrabber()
 {
-    if (pylonCamera->IsOpen()) {
+    if (pylonCamera->IsOpen())
+    {
         if (pylonCamera->IsGrabbing())  pylonCamera->StopGrabbing();
         pylonCamera->Close();
         cameraConnected = false;
@@ -28,23 +29,27 @@ void FrameGrabber::initCamera()
 
 void FrameGrabber::receiveConnectCamera()
 {
-    try {
+    try
+    {
         // Attach connected camera to the pylon camera object
         pylonCamera->Attach(CTlFactory::GetInstance().CreateFirstDevice());
         // Open the camera, but not yet start grabbing
         pylonCamera->Open();
         // Warm up camera for 0.1s or 100ms
         usleep(100000);
-        if(pylonCamera->IsOpen()) {
+        if(pylonCamera->IsOpen())
+        {
             cameraConnected = true;
             configureCamera();
         }
-        else {
+        else
+        {
             cameraConnected = false;
             qDebug() << "FAIL to Connect Camera.";
         }
     }
-    catch (GenICam::GenericException &e) {
+    catch (GenICam::GenericException &e)
+    {
         // Error handling.
         cerr << "[ERROR!] An Exception Occurred in connectCamera()."
              << endl << e.GetDescription() << endl;
@@ -55,7 +60,8 @@ void FrameGrabber::configureCamera()
 {
     if (pylonCamera->IsGrabbing()) pylonCamera->StopGrabbing();
 
-    try {
+    try
+    {
         // Method 1:
         // Load pfs file into the camera's node map with enabled validation.
         //const char cameraParaFile[] = "../conf/acA2040-55uc_22095198.pfs";
@@ -84,7 +90,8 @@ void FrameGrabber::configureCamera()
         // Warm up camera for 0.1s
         usleep(100000);
     }
-    catch (GenICam::GenericException &e) {
+    catch (GenICam::GenericException &e)
+    {
         // Error handling.
         cerr << "[ERROR!] An Exception Occurred in configureCamera()."
              << endl << e.GetDescription() << endl;
@@ -93,7 +100,8 @@ void FrameGrabber::configureCamera()
 
 void FrameGrabber::receiveDisconnectCamera()
 {
-    if (pylonCamera->IsOpen()) {
+    if (pylonCamera->IsOpen())
+    {
         if (pylonCamera->IsGrabbing())  pylonCamera->StopGrabbing();
         pylonCamera->Close();
         cameraConnected = false;
@@ -106,12 +114,15 @@ void FrameGrabber::receiveDisconnectCamera()
 void FrameGrabber::receiveStartCaptureMode()
 {
     grabMode = 'C';
-    if (!startGrabbing) {
-        try {
+    if (!startGrabbing)
+    {
+        try
+        {
             pylonCamera->StartGrabbing(GrabStrategy_LatestImageOnly);
             startGrabbing = true;
         }
-        catch (GenICam::GenericException &e) {
+        catch (GenICam::GenericException &e)
+        {
             // Error handling.
             cerr << "[ERROR!] An Exception Occurred in startCapture()."
                  << endl << e.GetDescription() << endl;
@@ -124,12 +135,15 @@ void FrameGrabber::receiveStartCaptureMode()
 void FrameGrabber::receiveStartStreamMode()
 {
     grabMode = 'S';
-    if (!startGrabbing) {
-        try {
+    if (!startGrabbing)
+    {
+        try
+        {
             pylonCamera->StartGrabbing(GrabStrategy_LatestImageOnly);
             startGrabbing = true;
         }
-        catch (GenICam::GenericException &e) {
+        catch (GenICam::GenericException &e)
+        {
             // Error handling.
             cerr << "[ERROR!] An Exception Occurred in startStream()."
                  << endl << e.GetDescription() << endl;
@@ -139,14 +153,16 @@ void FrameGrabber::receiveStartStreamMode()
 
 void FrameGrabber::receiveSendFrame()
 {
-    if (startGrabbing) {
+    if (startGrabbing)
+    {
         emit sendFrame(readFrame());
     }
 }
 
 cv::Mat FrameGrabber::readFrame()
 {
-    try {
+    try
+    {
         CPylonImage pylonFrame;
         CImageFormatConverter formatConverter;
         formatConverter.OutputPixelFormat = PixelType_BGR8packed;
@@ -155,7 +171,8 @@ cv::Mat FrameGrabber::readFrame()
         // Wait for an image and then retrieve it. A timeout of 5000 ms is used.
         pylonCamera->RetrieveResult(5000, ptrGrabResult, TimeoutHandling_ThrowException);
 
-        if (ptrGrabResult->GrabSucceeded()) {
+        if (ptrGrabResult->GrabSucceeded())
+        {
             // Convert the grabbed buffer to pylon image
             formatConverter.Convert(pylonFrame, ptrGrabResult);
             // Create an OpenCV image out of pylon image
@@ -165,11 +182,13 @@ cv::Mat FrameGrabber::readFrame()
 
             return cvFrame;
         }
-        else {
+        else
+        {
             qDebug() << "Fail to Grab Frame.";
         }
     }
-    catch (GenICam::GenericException &e) {
+    catch (GenICam::GenericException &e)
+    {
         // Error handling.
         cerr << "[ERROR!] An Exception Occurred in readFrame()."
              << endl << e.GetDescription() << endl;
@@ -178,7 +197,8 @@ cv::Mat FrameGrabber::readFrame()
 
 void FrameGrabber::receiveStopGrabbing()
 {
-    if (startGrabbing) {
+    if (startGrabbing)
+    {
         if (pylonCamera->IsGrabbing()) pylonCamera->StopGrabbing();
         startGrabbing = false;
         grabMode = 'N';
@@ -191,7 +211,8 @@ QString FrameGrabber::scanDevices()
     Pylon::DeviceInfoList_t cameraList;
     Pylon::CTlFactory::GetInstance().EnumerateDevices(cameraList, true);
     QString cameraNameString = NULL;
-    if (cameraList.size() != 0) {
+    if (cameraList.size() != 0)
+    {
         cameraNameString = QString(cameraList[0].GetFriendlyName());
     }
 

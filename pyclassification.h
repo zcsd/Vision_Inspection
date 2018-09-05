@@ -29,11 +29,12 @@ class PyClassification
 {
 public:
     PyClassification();
+    ~PyClassification();
     QString process(cv::Mat image);
-    void PyClose();
 
 private:
     void PyInit();
+    void PyClose();
     bool is_processed = false;
     PyObject* pModule = NULL;
     PyObject* pFunc = NULL;

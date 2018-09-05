@@ -10,6 +10,11 @@ RulerCalibrator::RulerCalibrator(cv::Mat& inputFrame, double& pixelDistance)
     inputFrame = frame;
 }
 
+RulerCalibrator::~RulerCalibrator()
+{
+
+}
+
 void RulerCalibrator::preprocessing()
 {
     cv::Rect ROI = Rect(5, 5, 2438, 1950);// 2448x2048

@@ -3,6 +3,7 @@
 FDTester::FDTester()
 {
     loadRefCtrs();
+    fdShapeMatching = new FDShapeMatching(ctrSize, fdSize);
 }
 
 QMap<QString, double> FDTester::getTestDistance(cv::Mat &inputFrame)
@@ -21,7 +22,8 @@ void FDTester::loadRefCtrs()
     refCtrsMap.clear();
     refClassName.clear();
 
-    for (int i = 0; i < refFileList.size(); i++) {
+    for (int i = 0; i < refFileList.size(); i++)
+    {
         int pos = refFileList[i].lastIndexOf(QChar('.'));
         refClassName.append(refFileList[i].left(pos));
         refCtrsMap[refFileList[i].left(pos)] = readRefData(strRefFolder+"/"+refFileList[i]);
@@ -46,13 +48,17 @@ void FDTester::findMatchResult()
     QElapsedTimer timer1;
     timer1.start();
 
-    if (!usingThread){
+    if (!usingThread)
+    {
         qDebug() << "!!!NOT using thread!!!";
         // Method NOT using thread
-        for (int i = 0; i < classSize; i++) {
+        for (int i = 0; i < classSize; i++)
+        {
             testCtrDist[refClassName[i]] = compareContours(refCtrsMap[refClassName[i]], testSFD);
         }
-    } else {
+    }
+    else
+    {
         qDebug() << "!!!Using Thread!!!";
         /*
         // TO OPTIMIZE
@@ -108,10 +114,12 @@ vector<Point> FDTester::getContour(Mat image)
     int indexMaxContour = 0;
     double maxArea = -999, tempArea;
 
-    for (size_t cC = 0; cC < contours.size(); cC++) {
+    for (size_t cC = 0; cC < contours.size(); cC++)
+    {
        cv::drawContours(contoursImage, contours, (int)cC, WHITE, 1, 8, hierarchy, 0, Point());
        tempArea = contourArea(contours[cC]);
-       if (tempArea >= maxArea) {
+       if (tempArea >= maxArea)
+       {
            indexMaxContour = cC;
            maxArea = tempArea;
        }
@@ -131,12 +139,10 @@ double FDTester::compareContours(vector<Point> refCtr, Mat srcFD)
     contourSampling(refCtr, refSCtr, ctrSize);
     fourierDescriptor(refSCtr, refFD);
 
-    FDShapeMatching fdShapeMatching(ctrSize, fdSize);
-
     cv::Mat t;
     double dist;
 
-    fdShapeMatching.estimateTransformation(srcFD, refFD, &t, &dist);
+    fdShapeMatching->estimateTransformation(srcFD, refFD, &t, &dist);
 
     //cout << "Distance = " << dist << endl;
     //cout << "Angle = " << t.at<double>(0, 1) * 180 / M_PI <<"\n";
@@ -153,7 +159,8 @@ void FDTester::saveRefData(vector<Point> refContour)
     QTextStream out (&refFile);
 
     int sizeContour = int(refContour.size());
-    for (int i = 0; i < sizeContour; i++) {
+    for (int i = 0; i < sizeContour; i++)
+    {
         out << QString::number(refContour[i].x) + "\t" + QString::number(refContour[i].y) + "\n";
     }
     refFile.close();
@@ -170,7 +177,8 @@ vector<Point> FDTester::readRefData(QString strFilePath)
     QTextStream in (&refFile);
     QString line;
 
-    while (!in.atEnd()) {
+    while (!in.atEnd())
+    {
         line = in.readLine();
         QStringList pointSL = line.split("\t");
         refCtr.push_back(Point(pointSL[0].toInt(), pointSL[1].toInt()));
@@ -183,5 +191,5 @@ vector<Point> FDTester::readRefData(QString strFilePath)
 
 FDTester::~FDTester()
 {
-
+    delete fdShapeMatching;
 }

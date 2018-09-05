@@ -33,6 +33,7 @@ public:
     QMap<QString, double> getTestDistance(cv::Mat &inputFrame);
 
 private:
+    FDShapeMatching *fdShapeMatching;
     bool usingThread = true;
     int ctrSize = 128, fdSize = 12;
     cv::Mat originalFrame;

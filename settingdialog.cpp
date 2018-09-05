@@ -22,10 +22,13 @@ void SettingDialog::initSetup()
 
     QStringList expoModeList = {"Off", "On", "Auto"};
     ui->comboBoxExpMode->addItems(expoModeList);
-    if (cameraParaMap["ExposureAuto"] == "Off" && cameraParaMap["ExposureMode"] == "Timed") {
+    if (cameraParaMap["ExposureAuto"] == "Off" && cameraParaMap["ExposureMode"] == "Timed")
+    {
         ui->comboBoxExpMode->setCurrentText("Off");
         ui->lineEditExpTime->setText(cameraParaMap["ExposureTime"]);
-    } else if (cameraParaMap["ExposureAuto"] == "On") {
+    }
+    else if (cameraParaMap["ExposureAuto"] == "On")
+    {
         ui->comboBoxExpMode->setCurrentText("Auto");
         ui->lineEditExpTime->setEnabled(false);
     }
@@ -36,10 +39,13 @@ void SettingDialog::initSetup()
 
     QStringList gainModeList = {"Off", "On"};
     ui->comboBoxGainMode->addItems(gainModeList);
-    if (cameraParaMap["GainAuto"] == "Off") {
+    if (cameraParaMap["GainAuto"] == "Off")
+    {
         ui->comboBoxGainMode->setCurrentText("Off");
         ui->lineEditGainValue->setText(cameraParaMap["Gain"]);
-    } else if (cameraParaMap["GainAuto"] == "On") {
+    }
+    else if (cameraParaMap["GainAuto"] == "On")
+    {
         ui->comboBoxGainMode->setCurrentText("On");
         ui->lineEditGainValue->setEnabled(false);
     }
@@ -70,7 +76,6 @@ void SettingDialog::readConf()
                                         "GainAuto\t", "Gain\t", "Width\t", "Height\t", "OffsetX\t", "OffsetY\t",
                                         "CenterX\t", "CenterY\t", "PixelFormat\t", "AcquisitionFrameRate\t"};
 
-   //QFile confFile("../conf/acA2040-55uc_22095198.pfs");
    QFile confFile("../conf/acA2440-35uc_22776933.pfs");
    confFile.open(QIODevice::ReadOnly);
 
@@ -80,8 +85,10 @@ void SettingDialog::readConf()
 
    do {
        line = in.readLine();
-       for (int i = 0; i < strListCameraParaName.size(); i++) {
-           if (line.contains(strListCameraParaName[i], Qt::CaseSensitive)) {
+       for (int i = 0; i < strListCameraParaName.size(); i++)
+       {
+           if (line.contains(strListCameraParaName[i], Qt::CaseSensitive))
+           {
                line.remove(0, strListCameraParaName[i].length());
                tempStr = strListCameraParaName[i];
                cameraParaMap[tempStr.remove(tempStr.length()-1, tempStr.length())] = line;
@@ -100,7 +107,6 @@ void SettingDialog::updateConf()
   /*  QStringList strListCameraParaName = {"ExposureAuto\t", "ExposureMode\t", "ExposureTime\t", "BalanceWhiteAuto\t",
                                          "GainAuto\t", "Gain\t", "Width\t", "Height\t", "OffsetX\t", "OffsetY\t",
                                          "CenterX\t", "CenterY\t", "PixelFormat\t", "AcquisitionFrameRate\t"};*/
-    //QFile confFile("../conf/acA2040-55uc_22095198.pfs");
     QFile confFile("../conf/acA2440-35uc_22776933.pfs");
     confFile.open(QIODevice::ReadOnly);
     QFile newConfFile("../conf/temp.pfs");
@@ -111,13 +117,17 @@ void SettingDialog::updateConf()
     QString line, tempStr;
     bool found = false, finished = false;
     int counterFound = 0;
-    do {
+    do
+    {
         line = in.readLine();
         found = false;
 
-        if (!finished) {
-            for (int i = 0; i < strListCameraParaName.size(); i++) {
-                if (line.contains(strListCameraParaName[i], Qt::CaseSensitive)) {
+        if (!finished)
+        {
+            for (int i = 0; i < strListCameraParaName.size(); i++)
+            {
+                if (line.contains(strListCameraParaName[i], Qt::CaseSensitive))
+                {
                     out << ( strListCameraParaName[i] + getParameters(strListCameraParaName[i]) + "\n" );
                     counterFound++;
                     found = true;
@@ -126,7 +136,8 @@ void SettingDialog::updateConf()
             }
         }
 
-        if (found == false) {
+        if (found == false)
+        {
             out << line;
             if (!in.atEnd())
                 out << "\n";
@@ -139,7 +150,6 @@ void SettingDialog::updateConf()
     confFile.close();
     newConfFile.close();
     confFile.remove();
-    //newConfFile.rename("../conf/temp.pfs", "../conf/acA2040-55uc_22095198.pfs");
     newConfFile.rename("../conf/temp.pfs", "../conf/acA2440-35uc_22776933.pfs");
 }
 

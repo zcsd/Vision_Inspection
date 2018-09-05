@@ -7,7 +7,8 @@ namespace pycvt {
 using namespace cv;
 
 // === Error handling ===
-static int failmsg(const char *fmt, ...) {
+static int failmsg(const char *fmt, ...)
+{
     char str[1000];
 
     va_list ap;
@@ -48,14 +49,17 @@ private:
 class NumpyAllocator:
         public MatAllocator {
 public:
-    NumpyAllocator() {
+    NumpyAllocator()
+    {
         stdAllocator = Mat::getStdAllocator();
     }
-    ~NumpyAllocator() {
+    ~NumpyAllocator()
+    {
     }
 
     UMatData* allocate(PyObject* o, int dims, const int* sizes, int type,
-            size_t* step) const {
+            size_t* step) const
+    {
         UMatData* u = new UMatData(this);
         u->data = u->origdata = (uchar*) PyArray_DATA((PyArrayObject*) o);
         npy_intp* _strides = PyArray_STRIDES((PyArrayObject*) o);
@@ -68,8 +72,10 @@ public:
     }
 
     UMatData* allocate(int dims0, const int* sizes, int type, void* data,
-            size_t* step, int flags, UMatUsageFlags usageFlags) const {
-        if (data != 0) {
+            size_t* step, int flags, UMatUsageFlags usageFlags) const
+    {
+        if (data != 0)
+        {
             CV_Error(Error::StsAssert, "The data should normally be NULL!");
             // probably this is safe to do in such extreme case
             return stdAllocator->allocate(dims0, sizes, type, data, step, flags,
@@ -103,12 +109,15 @@ public:
     }
 
     bool allocate(UMatData* u, int accessFlags,
-            UMatUsageFlags usageFlags) const {
+            UMatUsageFlags usageFlags) const
+    {
         return stdAllocator->allocate(u, accessFlags, usageFlags);
     }
 
-    void deallocate(UMatData* u) const {
-        if (u) {
+    void deallocate(UMatData* u) const
+    {
+        if (u)
+        {
             PyEnsureGIL gil;
             PyObject* o = (PyObject*) u->userdata;
             Py_XDECREF(o);
@@ -121,11 +130,13 @@ public:
 
 NumpyAllocator g_numpyAllocator;
 
-PyObject* fromMatToNDArray(const Mat& m) {
+PyObject* fromMatToNDArray(const Mat& m)
+{
     if (!m.data)
         Py_RETURN_NONE;
     Mat temp, *p = (Mat*) &m;
-    if (!p->u || p->allocator != &g_numpyAllocator) {
+    if (!p->u || p->allocator != &g_numpyAllocator)
+    {
         temp.allocator = &g_numpyAllocator;
         ERRWRAP2(m.copyTo(temp));
         p = &temp;
@@ -135,14 +146,18 @@ PyObject* fromMatToNDArray(const Mat& m) {
     return o;
 }
 
-Mat fromNDArrayToMat(PyObject* o) {
+Mat fromNDArrayToMat(PyObject* o)
+{
     cv::Mat m;
     bool allowND = true;
-    if (!PyArray_Check(o)) {
+    if (!PyArray_Check(o))
+    {
         failmsg("argument is not a numpy array");
         if (!m.data)
             m.allocator = &g_numpyAllocator;
-    } else {
+    }
+    else
+    {
         PyArrayObject* oarr = (PyArrayObject*) o;
 
         bool needcopy = false, needcast = false;
@@ -155,13 +170,16 @@ Mat fromNDArrayToMat(PyObject* o) {
                     typenum == NPY_FLOAT ? CV_32F :
                     typenum == NPY_DOUBLE ? CV_64F : -1;
 
-        if (type < 0) {
+        if (type < 0)
+        {
             if (typenum == NPY_INT64 || typenum == NPY_UINT64
                     || type == NPY_LONG) {
                 needcopy = needcast = true;
                 new_typenum = NPY_INT;
                 type = CV_32S;
-            } else {
+            }
+            else
+            {
                 failmsg("Argument data type is not supported");
                 m.allocator = &g_numpyAllocator;
                 return m;
@@ -173,7 +191,8 @@ Mat fromNDArrayToMat(PyObject* o) {
 #endif
 
         int ndims = PyArray_NDIM(oarr);
-        if (ndims >= CV_MAX_DIM) {
+        if (ndims >= CV_MAX_DIM)
+        {
             failmsg("Dimensionality of argument is too high");
             if (!m.data)
                 m.allocator = &g_numpyAllocator;
@@ -187,7 +206,8 @@ Mat fromNDArrayToMat(PyObject* o) {
         const npy_intp* _strides = PyArray_STRIDES(oarr);
         bool ismultichannel = ndims == 3 && _sizes[2] <= CV_CN_MAX;
 
-        for (int i = ndims - 1; i >= 0 && !needcopy; i--) {
+        for (int i = ndims - 1; i >= 0 && !needcopy; i--)
+        {
             // these checks handle cases of
             //  a) multi-dimensional (ndims > 2) arrays, as well as simpler 1- and 2-dimensional cases
             //  b) transposed arrays, where _strides[] elements go in non-descending order
@@ -200,12 +220,16 @@ Mat fromNDArrayToMat(PyObject* o) {
         if (ismultichannel && _strides[1] != (npy_intp) elemsize * _sizes[2])
             needcopy = true;
 
-        if (needcopy) {
+        if (needcopy)
+        {
 
-            if (needcast) {
+            if (needcast)
+            {
                 o = PyArray_Cast(oarr, new_typenum);
                 oarr = (PyArrayObject*) o;
-            } else {
+            }
+            else
+            {
                 oarr = PyArray_GETCONTIGUOUS(oarr);
                 o = (PyObject*) oarr;
             }
@@ -213,32 +237,39 @@ Mat fromNDArrayToMat(PyObject* o) {
             _strides = PyArray_STRIDES(oarr);
         }
 
-        for (int i = 0; i < ndims; i++) {
+        for (int i = 0; i < ndims; i++)
+        {
             size[i] = (int) _sizes[i];
             step[i] = (size_t) _strides[i];
         }
 
         // handle degenerate case
-        if (ndims == 0) {
+        if (ndims == 0)
+        {
             size[ndims] = 1;
             step[ndims] = elemsize;
             ndims++;
         }
 
-        if (ismultichannel) {
+        if (ismultichannel)
+        {
             ndims--;
             type |= CV_MAKETYPE(0, size[2]);
         }
 
-        if (ndims > 2 && !allowND) {
+        if (ndims > 2 && !allowND)
+        {
             failmsg("%s has more than 2 dimensions");
-        } else {
+        }
+        else
+        {
 
             m = Mat(ndims, size, type, PyArray_DATA(oarr), step);
             m.u = g_numpyAllocator.allocate(o, ndims, size, type, step);
             m.addref();
 
-            if (!needcopy) {
+            if (!needcopy)
+            {
                 Py_INCREF(o);
             }
         }
@@ -249,7 +280,8 @@ Mat fromNDArrayToMat(PyObject* o) {
 
 // Ensure that import_array() is called to avoid "Segmentation Fault: 11"
 // Check https://stackoverflow.com/questions/47026900/pyarray-check-gives-segmentation-fault-with-cython-c
-int init_numpy(){
+int init_numpy()
+{
     Py_Initialize();
     import_array();
     return 0;
