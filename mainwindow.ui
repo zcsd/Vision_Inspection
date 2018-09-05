@@ -502,6 +502,8 @@
     <addaction name="actionROI"/>
     <addaction name="menuManual_Ruler"/>
     <addaction name="menuAuto_Ruler"/>
+    <addaction name="separator"/>
+    <addaction name="actionCalibration"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -646,6 +648,11 @@
   <action name="actionManualRulerStop">
    <property name="text">
     <string>Stop</string>
+   </property>
+  </action>
+  <action name="actionCalibration">
+   <property name="text">
+    <string>Calibration</string>
    </property>
   </action>
  </widget>

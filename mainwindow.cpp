@@ -414,6 +414,11 @@ void MainWindow::receiveShowMousePosition(QPoint &pos)
     ui->labelShowPos->setText(QString::number(pos.x()) + ", " + QString::number((pos.y())) );
 }
 
+void MainWindow::receiveTest()
+{
+    qDebug() << "I am in MainWindow";
+}
+
 void MainWindow::on_actionMCalibrate_triggered()
 {
     ui->pushButtonStartCali->setEnabled(true);
@@ -742,4 +747,11 @@ void MainWindow::on_pushButtonMatch_clicked()
 void MainWindow::on_pushButtonBGColor_clicked()
 {
 
+}
+
+void MainWindow::on_actionCalibration_triggered()
+{
+    CalibratorForm *calibratorForm = new CalibratorForm();
+    calibratorForm->show();
+    connect(calibratorForm, SIGNAL(sendTest()), this, SLOT(receiveTest()));
 }

@@ -53,6 +53,7 @@ SOURCES += \
     fdtester.cpp \
     pyclassification.cpp \
     py_cv_wrapper/pycvconverter.cpp \
+    calibratorform.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -65,10 +66,12 @@ HEADERS += \
     fdtester.h \
     pyclassification.h \
     py_cv_wrapper/pycvconverter.h \
+    calibratorform.h
 
 FORMS += \
         mainwindow.ui \
-    settingdialog.ui
+    settingdialog.ui \
+    calibratorform.ui
 
 DISTFILES += \
     python/classification.py

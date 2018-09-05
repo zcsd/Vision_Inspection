@@ -25,10 +25,10 @@ using namespace cv;
 #include "framegrabber.h"
 #include "rulercalibrator.h"
 #include "measuretool.h"
-#include "settingdialog.h"
 #include "fdtester.h"
 #include "pyclassification.h"
-
+#include "settingdialog.h"
+#include "calibratorform.h"
 
 namespace Ui {
 class MainWindow;
@@ -79,8 +79,11 @@ private slots:
 
     void on_pushButtonBGColor_clicked();
 
+    void on_actionCalibration_triggered();
+
 public slots:
     void receiveShowMousePosition(QPoint& pos);
+    void receiveTest();
 
 private:
     Ui::MainWindow *ui;
