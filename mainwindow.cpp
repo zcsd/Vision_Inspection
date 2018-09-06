@@ -74,7 +74,6 @@ void MainWindow::setMCaliVisible(bool showMCali)
     ui->pushButtonRedoCali->setVisible(showMCali);
     ui->pushButtonConfirm->setVisible(showMCali);
     ui->pushButtonCalculate->setVisible(showMCali);
-    ui->pushButtonBGColor->setVisible(showMCali);
     ui->lineEditRealDistance->setVisible(showMCali);
     ui->labelRealDisName->setVisible(showMCali);
     ui->labelCalResult->setVisible(showMCali);
@@ -414,15 +413,15 @@ void MainWindow::receiveShowMousePosition(QPoint &pos)
     ui->labelShowPos->setText(QString::number(pos.x()) + ", " + QString::number((pos.y())) );
 }
 
-void MainWindow::receiveTest()
+void MainWindow::receiveFrameRequest()
 {
-    qDebug() << "I am in MainWindow";
+    qDebug() << "Receive Frame Request in MainWindow";
+    emit sendFrametoCalibrator(cvRawFrameCopy);
 }
 
 void MainWindow::on_actionMCalibrate_triggered()
 {
     ui->pushButtonStartCali->setEnabled(true);
-    ui->pushButtonBGColor->setEnabled(true);
     ui->pushButtonRedoCali->setEnabled(false);
     ui->pushButtonConfirm->setEnabled(false);
     ui->pushButtonCalculate->setEnabled(false);
@@ -744,14 +743,11 @@ void MainWindow::on_pushButtonMatch_clicked()
     }
 }
 
-void MainWindow::on_pushButtonBGColor_clicked()
-{
-
-}
-
 void MainWindow::on_actionCalibration_triggered()
 {
     CalibratorForm *calibratorForm = new CalibratorForm();
     calibratorForm->show();
-    connect(calibratorForm, SIGNAL(sendTest()), this, SLOT(receiveTest()));
+
+    connect(calibratorForm, SIGNAL(sendFrameRequest()), this, SLOT(receiveFrameRequest()));
+    connect(this, SIGNAL(sendFrametoCalibrator(cv::Mat)), calibratorForm, SLOT(receiveFrame(cv::Mat)));
 }

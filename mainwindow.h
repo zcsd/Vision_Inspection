@@ -48,6 +48,7 @@ signals:
     void sendCaptureMode();
     void sendStreamMode();
     void sendStopGrabbing();
+    void sendFrametoCalibrator(cv::Mat cvRawFrame);
 
 private slots:
     void on_pushButtonConnect_clicked();
@@ -76,14 +77,11 @@ private slots:
     void on_actionManualRulerStop_triggered();
     void on_actionCameraSetting_triggered();
     void on_pushButtonMatch_clicked();
-
-    void on_pushButtonBGColor_clicked();
-
     void on_actionCalibration_triggered();
 
 public slots:
     void receiveShowMousePosition(QPoint& pos);
-    void receiveTest();
+    void receiveFrameRequest();
 
 private:
     Ui::MainWindow *ui;

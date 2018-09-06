@@ -417,19 +417,6 @@
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButtonBGColor">
-    <property name="geometry">
-     <rect>
-      <x>1250</x>
-      <y>30</y>
-      <width>101</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>BG Color</string>
-    </property>
-   </widget>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
