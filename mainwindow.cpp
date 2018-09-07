@@ -33,9 +33,8 @@ void MainWindow::initialSetup()
 
     readCaliConf();
 
-    QPixmap whiteBackground = QPixmap(980, 820);
-    whiteBackground.fill(Qt::white);
-    ui->labelShowFrame->setPixmap(whiteBackground);
+    bgImg.load("../resource/logo.png");
+    ui->labelShowFrame->setPixmap(bgImg);
 
     ui->labelCalResult->setAlignment(Qt::AlignCenter);
     ui->labelShowPos->setAlignment(Qt::AlignCenter);
@@ -196,9 +195,7 @@ void MainWindow::on_pushButtonDisconnect_clicked()
     }
 
     ui->labelShowFrame->setMouseTracking(false);
-    QPixmap whiteBackground = QPixmap(980, 820);
-    whiteBackground.fill(Qt::white);
-    ui->labelShowFrame->setPixmap(whiteBackground);
+    ui->labelShowFrame->setPixmap(bgImg);
     ui->labelShowRes->setText("");
     ui->labelShowPos->setText("");
     ui->labelShowRGB->setText("");

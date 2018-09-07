@@ -36,7 +36,7 @@ void CalibratorForm::on_pushButtonBGStart_clicked()
 
 void CalibratorForm::extractColorMean()
 {
-    cv::Rect ROI = Rect(10, 10, 2428, 1938); // original 2448x2048, now 2428x1938
+    cv::Rect ROI = Rect(10, 150, 2428, 1600); // original 2448x2048, now 2428x1600
     cv::Mat roiFrame = frameCopy(ROI);
 
     cv::Mat roiFrameHSV;

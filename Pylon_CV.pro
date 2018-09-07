@@ -75,3 +75,5 @@ FORMS += \
 
 DISTFILES += \
     python/classification.py
+
+RESOURCES +=

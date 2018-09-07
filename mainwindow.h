@@ -88,6 +88,7 @@ private:
     FrameGrabber *frameGrabber;
     PyClassification *pyClassification;
     FDTester *fdTester;
+    QPixmap bgImg;
     QString defaultSavePath = "../images";
     QString matchMethod = "Machine Learning";
     char grabMode = 'N';

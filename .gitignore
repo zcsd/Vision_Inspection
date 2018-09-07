@@ -4,3 +4,4 @@ build
 *.autosave
 *.pyc
 __pycache__
+*.jpg
