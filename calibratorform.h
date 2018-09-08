@@ -8,9 +8,12 @@
 #include <QDebug>
 
 #include <unistd.h> // for usleep()
+#include <iostream>
+using namespace std;
 
 #include "opencv2/opencv.hpp"
 #include "opencv2/imgproc.hpp"
+#include "opencv2/highgui.hpp"
 using namespace cv;
 
 namespace Ui {
@@ -34,12 +37,19 @@ public slots:
 private slots:
     void on_pushButtonBGStart_clicked();
     void receiveCloseForm();
+    void on_pushButtonRulerStart_clicked();
+    void receiveSetColorInv(QString colorChoice);
 
 private:
     Ui::CalibratorForm *ui;
     cv::Mat frameCopy;
+    cv::Scalar meanBGR, meanHSV, meanGS;
+    cv::Rect ROI;
     void extractColorMean();
-
+    void autoCalibrateRuler();
+    void manualCalibrateRuler();
+    void hsvThreshold();
+    void grayscaleThreshold();
 };
 
 #endif // CALIBRATORFORM_H
