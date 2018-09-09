@@ -102,12 +102,12 @@
    </property>
    <item>
     <property name="text">
-     <string>Auto</string>
+     <string>Manual</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>Manual</string>
+     <string>Auto</string>
     </property>
    </item>
   </widget>
@@ -345,6 +345,11 @@
      <height>31</height>
     </rect>
    </property>
+   <item>
+    <property name="text">
+     <string>Diff</string>
+    </property>
+   </item>
    <item>
     <property name="text">
      <string>GrayScale</string>

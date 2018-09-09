@@ -15,7 +15,6 @@ using namespace std;
 
 #include "opencv2/opencv.hpp"
 #include "opencv2/imgproc.hpp"
-#include "opencv2/highgui.hpp"
 using namespace cv;
 
 namespace Ui {
@@ -39,11 +38,10 @@ public slots:
 
 private slots:
     void on_pushButtonBGStart_clicked();
-    void receiveCloseForm();
     void on_pushButtonRulerStart_clicked();
-    void receiveSetColorInv(QString colorChoice);
-
     void on_pushButtonCalculate_clicked();
+    void receiveCloseForm();
+    void receiveSetButtonVisible(QString input);
 
 private:
     Ui::CalibratorForm *ui;
@@ -52,11 +50,12 @@ private:
     cv::Scalar meanBGR, meanHSV, meanGS;
     cv::Rect ROI;
     double pixelDistance, pixelPERmm;
-    void initialize();
+    void initialSetup();
     void extractColorMean();
     void autoCalibrateRuler();
     void manualCalibrateRuler();
     void hsvThreshold();
+    void diffThreshold();
     void grayscaleThreshold();
     void getContour();
 };
