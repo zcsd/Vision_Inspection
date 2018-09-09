@@ -6,8 +6,10 @@
 
 #include <QWidget>
 #include <QDebug>
+#include <QMessageBox>
 
 #include <unistd.h> // for usleep()
+#include <math.h>
 #include <iostream>
 using namespace std;
 
@@ -30,6 +32,7 @@ public:
 
 signals:
     void sendFrameRequest();
+    void sendFrameToShow(cv::Mat frame);
 
 public slots:
     void receiveFrame(cv::Mat frame);
@@ -40,16 +43,22 @@ private slots:
     void on_pushButtonRulerStart_clicked();
     void receiveSetColorInv(QString colorChoice);
 
+    void on_pushButtonCalculate_clicked();
+
 private:
     Ui::CalibratorForm *ui;
-    cv::Mat frameCopy;
+    cv::Mat frameCopy, roiBGFrame, roiRLFrame, roiRLFrame2Show;
+    cv::Mat thresholdImg, contourImg;
     cv::Scalar meanBGR, meanHSV, meanGS;
     cv::Rect ROI;
+    double pixelDistance, pixelPERmm;
+    void initialize();
     void extractColorMean();
     void autoCalibrateRuler();
     void manualCalibrateRuler();
     void hsvThreshold();
     void grayscaleThreshold();
+    void getContour();
 };
 
 #endif // CALIBRATORFORM_H

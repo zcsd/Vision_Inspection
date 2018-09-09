@@ -412,7 +412,6 @@ void MainWindow::receiveShowMousePosition(QPoint &pos)
 
 void MainWindow::receiveFrameRequest()
 {
-    qDebug() << "Receive Frame Request in MainWindow";
     emit sendFrametoCalibrator(cvRawFrameCopy);
 }
 
@@ -747,4 +746,5 @@ void MainWindow::on_actionCalibration_triggered()
 
     connect(calibratorForm, SIGNAL(sendFrameRequest()), this, SLOT(receiveFrameRequest()));
     connect(this, SIGNAL(sendFrametoCalibrator(cv::Mat)), calibratorForm, SLOT(receiveFrame(cv::Mat)));
+    connect(calibratorForm, SIGNAL(sendFrameToShow(cv::Mat)), this, SLOT(receiveRawFrame(cv::Mat)));
 }
