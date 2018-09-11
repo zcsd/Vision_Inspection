@@ -21,6 +21,8 @@
 
 - Install QT
 
+- sudo apt-get install python3-numpy
+
 ## **TODO**
 
 - Move connect/disconnect/capture/stream to upper menu.

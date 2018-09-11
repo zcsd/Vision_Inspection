@@ -34,7 +34,7 @@ public:
 
 private:
     FDShapeMatching *fdShapeMatching;
-    bool usingThread = true;
+    bool usingThread = false;
     int ctrSize = 128, fdSize = 12;
     cv::Mat originalFrame;
     QStringList refClassName;

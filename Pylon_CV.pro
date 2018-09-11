@@ -11,9 +11,9 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = Pylon_CV
 TEMPLATE = app
 
-# Python 3.5 native library
-INCLUDEPATH += /usr/include/python3.5m
-LIBS += -L/usr/local/lib/python3.5 -lpython3.5m
+# Python 3.6 native library
+INCLUDEPATH += /usr/include/python3.6m
+LIBS += -L/usr/local/lib/python3.6 -lpython3.6m
 
 # OpenCV 3.4.0, 3.4.2 also pass
 INCLUDEPATH += /usr/local/include/opencv
