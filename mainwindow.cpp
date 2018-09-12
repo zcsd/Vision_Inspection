@@ -29,14 +29,11 @@ void MainWindow::initialSetup()
     ui->scrollArea->setWidget(ui->labelShowFrame);
     ui->scrollArea->setVisible(true);
 
-    setMCaliVisible(false);
-
     readCaliConf();
 
     bgImg.load("../resource/logo.png");
     ui->labelShowFrame->setPixmap(bgImg);
 
-    ui->labelCalResult->setAlignment(Qt::AlignCenter);
     ui->labelShowPos->setAlignment(Qt::AlignCenter);
     ui->labelShowRes->setAlignment(Qt::AlignCenter);
     ui->labelShowScale->setAlignment(Qt::AlignCenter);
@@ -65,18 +62,6 @@ void MainWindow::initialSetup()
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
                                       + "    System started.");
     ui->comboBoxMatchMethod->addItems({"Machine Learning", "Image Processing"});
-}
-
-void MainWindow::setMCaliVisible(bool showMCali)
-{
-    ui->pushButtonStartCali->setVisible(showMCali);
-    ui->pushButtonRedoCali->setVisible(showMCali);
-    ui->pushButtonConfirm->setVisible(showMCali);
-    ui->pushButtonCalculate->setVisible(showMCali);
-    ui->lineEditRealDistance->setVisible(showMCali);
-    ui->labelRealDisName->setVisible(showMCali);
-    ui->labelCalResult->setVisible(showMCali);
-    ui->labelMCaliName->setVisible(showMCali);
 }
 
 void MainWindow::readCaliConf()
@@ -415,24 +400,6 @@ void MainWindow::receiveFrameRequest()
     emit sendFrametoCalibrator(cvRawFrameCopy);
 }
 
-void MainWindow::on_actionMCalibrate_triggered()
-{
-    ui->pushButtonStartCali->setEnabled(true);
-    ui->pushButtonRedoCali->setEnabled(false);
-    ui->pushButtonConfirm->setEnabled(false);
-    ui->pushButtonCalculate->setEnabled(false);
-    ui->lineEditRealDistance->setEnabled(false);
-    ui->labelRealDisName->setEnabled(false);
-    ui->labelCalResult->setEnabled(false);
-
-    manualCalibration = true;
-    autoCalibration = false;
-    setMCaliVisible(true);
-
-    ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
-                                      + "    Manual calibration selected.");
-}
-
 void MainWindow::on_actionOpenImage_triggered()
 {
     grabMode = 'C';
@@ -450,141 +417,6 @@ void MainWindow::on_actionOpenImage_triggered()
                                       + "    Opened an image.");
 }
 
-void MainWindow::on_pushButtonStartCali_clicked()
-{
-    if (manualCalibration)
-    {
-        ui->labelShowFrame->startMCalibration();
-
-        ui->pushButtonRedoCali->setEnabled(true);
-        ui->pushButtonStartCali->setEnabled(false);
-        ui->pushButtonCalculate->setEnabled(true);
-        ui->lineEditRealDistance->setEnabled(true);
-        ui->labelRealDisName->setEnabled(true);
-        ui->labelCalResult->setEnabled(true);
-        ui->pushButtonConfirm->setEnabled(false);
-        ui->lineEditRealDistance->clear();
-        ui->labelCalResult->clear();
-
-        QDoubleValidator *validator = new QDoubleValidator(0.00, 9999.99, 2);
-        ui->lineEditRealDistance->setValidator(validator);
-        ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
-                                          + "     Manual calibration started.");
-    }
-    if (autoCalibration)
-    {
-        ui->pushButtonRedoCali->setEnabled(true);
-        ui->pushButtonStartCali->setEnabled(false);
-        ui->pushButtonCalculate->setEnabled(true);
-        ui->lineEditRealDistance->setEnabled(true);
-        ui->labelRealDisName->setEnabled(true);
-        ui->labelCalResult->setEnabled(true);
-        ui->pushButtonConfirm->setEnabled(false);
-        ui->lineEditRealDistance->clear();
-        ui->labelCalResult->clear();
-
-        QDoubleValidator *validator = new QDoubleValidator(0.00, 9999.99, 2);
-        ui->lineEditRealDistance->setValidator(validator);
-        ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
-                                          + "    Auto Calibration started.");
-
-        frameToCali = cvRawFrameCopy.clone();
-
-        RulerCalibrator *rulerCalibrator = new RulerCalibrator(frameToCali, pixelDistanceAC);
-        delete rulerCalibrator;
-
-        cv::resize(frameToCali, cvRGBFrame, cv::Size(), scaleFactor, scaleFactor);
-        cv::cvtColor(cvRGBFrame, cvRGBFrame, cv::COLOR_BGR2RGB);
-        qDisplayedFrame = QImage((uchar*)cvRGBFrame.data, cvRGBFrame.cols, cvRGBFrame.rows, cvRGBFrame.step, QImage::Format_RGB888);
-        ui->labelShowFrame->setPixmap(QPixmap::fromImage(qDisplayedFrame));
-    }
-}
-
-void MainWindow::on_pushButtonRedoCali_clicked()
-{
-    if (manualCalibration)
-    {
-        ui->labelShowFrame->redoMCalibration();
-
-        ui->pushButtonRedoCali->setEnabled(true);
-        ui->pushButtonStartCali->setEnabled(false);
-        ui->pushButtonCalculate->setEnabled(true);
-        ui->lineEditRealDistance->setEnabled(true);
-        ui->labelRealDisName->setEnabled(true);
-        ui->labelCalResult->setEnabled(true);
-        ui->pushButtonConfirm->setEnabled(false);
-        ui->lineEditRealDistance->clear();
-        ui->labelCalResult->clear();
-        ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
-                                          + "    Manual calibration restarted.");
-    }
-    if (autoCalibration)
-    {
-        ui->pushButtonRedoCali->setEnabled(true);
-        ui->pushButtonStartCali->setEnabled(false);
-        ui->pushButtonCalculate->setEnabled(true);
-        ui->lineEditRealDistance->setEnabled(true);
-        ui->labelRealDisName->setEnabled(true);
-        ui->labelCalResult->setEnabled(true);
-        ui->pushButtonConfirm->setEnabled(false);
-        ui->lineEditRealDistance->clear();
-        ui->labelCalResult->clear();
-
-        QDoubleValidator *validator = new QDoubleValidator(0.00, 9999.99, 2);;
-        ui->lineEditRealDistance->setValidator(validator);
-        ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
-                                          + "    Auto Calibration started.");
-
-        frameToCali = cvRawFrameCopy.clone();
-        RulerCalibrator *rulerCalibrator = new RulerCalibrator(frameToCali, pixelDistanceAC);
-        delete rulerCalibrator;
-
-        cv::resize(frameToCali, cvRGBFrame, cv::Size(), scaleFactor, scaleFactor);
-        cv::cvtColor(cvRGBFrame, cvRGBFrame, cv::COLOR_BGR2RGB);
-        qDisplayedFrame = QImage((uchar*)cvRGBFrame.data, cvRGBFrame.cols, cvRGBFrame.rows, cvRGBFrame.step, QImage::Format_RGB888);
-        ui->labelShowFrame->setPixmap(QPixmap::fromImage(qDisplayedFrame));
-    }
-}
-
-void MainWindow::on_pushButtonCalculate_clicked()
-{
-    if (manualCalibration)
-    {
-        if (ui->lineEditRealDistance->text().isEmpty())
-        {
-            QMessageBox::information(this, "No Input", "Please fill in number only.");
-        }
-        else
-        {
-            ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
-                                              + "    Calculate calibration results.");
-            QString  distance = ui->lineEditRealDistance->text();
-            double realDistance = distance.toDouble();
-            double pixelDistance = ui->labelShowFrame->getAverageDistance();
-            pixelPerMM = pixelDistance / realDistance;
-            ui->labelCalResult->setText(QString::number(pixelPerMM, 'f', 2) + " pixel/mm");
-            ui->pushButtonConfirm->setEnabled(true);
-        }
-    }
-    if (autoCalibration)
-    {
-        if (ui->lineEditRealDistance->text().isEmpty())
-        {
-            QMessageBox::information(this, "No Input", "Please fill in number only.");
-        }
-        else
-        {
-            ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
-                                              + "    Calculate calibration results.");
-            QString  distance = ui->lineEditRealDistance->text();
-            double realDistance = distance.toDouble();
-            pixelPerMM = pixelDistanceAC / realDistance;
-            ui->labelCalResult->setText(QString::number(pixelPerMM, 'f', 2) + " pixel/mm");
-            ui->pushButtonConfirm->setEnabled(true);
-        }
-    }
-}
-
 void MainWindow::writeCaliConf()
 {
     QFile caliConfFile("../conf/calibration.conf");
@@ -600,43 +432,6 @@ void MainWindow::writeCaliConf()
     }
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
                                       + "    Calibration results updated to conf file.");
-}
-
-void MainWindow::on_pushButtonConfirm_clicked()
-{
-    if (manualCalibration || autoCalibration)
-    {
-        ui->labelShowFrame->finishMCalibration();
-        setMCaliVisible(false);
-        QMessageBox::StandardButton updateConfReply;
-        updateConfReply = QMessageBox::question(this, "Update Configuration",
-                                                "Do you want to update configuration file?",
-                                                QMessageBox::Yes|QMessageBox::No);
-        if (updateConfReply == QMessageBox::Yes)
-        {
-            writeCaliConf();
-            currentPPMM = pixelPerMM;
-        }
-    }
-    manualCalibration = false;
-    autoCalibration = false;
-    displayFrame();
-}
-
-void MainWindow::on_actionACalibrate_triggered()
-{
-    manualCalibration = false;
-    autoCalibration = true;
-    ui->pushButtonStartCali->setEnabled(true);
-    ui->pushButtonRedoCali->setEnabled(false);
-    ui->pushButtonConfirm->setEnabled(false);
-    ui->pushButtonCalculate->setEnabled(false);
-    ui->lineEditRealDistance->setEnabled(false);
-    ui->labelRealDisName->setEnabled(false);
-    ui->labelCalResult->setEnabled(false);
-    setMCaliVisible(true);
-    ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
-                                      + "    Auto calibration selected.");
 }
 
 void MainWindow::on_actionAutoRulerStart_triggered()

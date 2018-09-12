@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1491</width>
+    <width>1248</width>
     <height>1044</height>
    </rect>
   </property>
@@ -276,116 +276,13 @@
      <number>0</number>
     </property>
    </widget>
-   <widget class="QLabel" name="labelMCaliName">
+   <widget class="QWidget" name="layoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>1250</x>
-      <y>7</y>
-      <width>129</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Calibration</string>
-    </property>
-   </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>1249</x>
-      <y>130</y>
-      <width>221</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_8">
-     <item>
-      <widget class="QPushButton" name="pushButtonCalculate">
-       <property name="text">
-        <string>Calculate:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="labelCalResult">
-       <property name="styleSheet">
-        <string notr="true">background-color: rgb(255, 255, 255);</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>1250</x>
-      <y>97</y>
-      <width>221</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_7">
-     <item>
-      <widget class="QLabel" name="labelRealDisName">
-       <property name="text">
-        <string>Real Distance(mm):</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="lineEditRealDistance"/>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QPushButton" name="pushButtonConfirm">
-    <property name="geometry">
-     <rect>
-      <x>1249</x>
-      <y>164</y>
-      <width>111</width>
+      <x>20</x>
+      <y>247</y>
+      <width>201</width>
       <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Confirm</string>
-    </property>
-   </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>1251</x>
-      <y>65</y>
-      <width>221</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_6">
-     <item>
-      <widget class="QPushButton" name="pushButtonStartCali">
-       <property name="text">
-        <string>Start</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButtonRedoCali">
-       <property name="text">
-        <string>Redo</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>1250</x>
-      <y>227</y>
-      <width>231</width>
-      <height>27</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -404,10 +301,10 @@
    <widget class="QLabel" name="labelMatchResult">
     <property name="geometry">
      <rect>
-      <x>1250</x>
-      <y>260</y>
-      <width>231</width>
-      <height>51</height>
+      <x>20</x>
+      <y>280</y>
+      <width>201</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -432,7 +329,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1491</width>
+     <width>1248</width>
      <height>22</height>
     </rect>
    </property>
@@ -484,8 +381,6 @@
      <addaction name="actionManualRulerStart"/>
      <addaction name="actionManualRulerStop"/>
     </widget>
-    <addaction name="actionMCalibrate"/>
-    <addaction name="actionACalibrate"/>
     <addaction name="actionROI"/>
     <addaction name="menuManual_Ruler"/>
     <addaction name="menuAuto_Ruler"/>

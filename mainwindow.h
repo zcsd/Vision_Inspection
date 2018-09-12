@@ -64,13 +64,7 @@ private slots:
     void on_actionZoomToFit_triggered();
     void on_actionZoomOut_triggered();
     void on_actionZoomToRaw_triggered();
-    void on_actionMCalibrate_triggered();
     void on_actionOpenImage_triggered();
-    void on_pushButtonStartCali_clicked();
-    void on_pushButtonRedoCali_clicked();
-    void on_pushButtonConfirm_clicked();
-    void on_pushButtonCalculate_clicked();
-    void on_actionACalibrate_triggered();
     void on_actionAutoRulerStart_triggered();
     void on_actionAutoRulerStop_triggered();
     void on_actionManualRulerStart_triggered();
@@ -108,7 +102,6 @@ private:
     QTimer *streamTrigger;
     void initialSetup();
     void displayFrame();
-    void setMCaliVisible(bool showMCali);
     void writeCaliConf();
     void readCaliConf();
 };
