@@ -19,7 +19,8 @@ void CalibratorForm::initialSetup()
     QDoubleValidator *validator = new QDoubleValidator(0.00, 9999.99, 2);
     ui->lineEditmmD->setValidator(validator);
 
-    connect(ui->buttonBoxEnd, SIGNAL(rejected()), this, SLOT(receiveCloseForm()));
+    connect(ui->buttonBoxEnd, SIGNAL(rejected()), this, SLOT(receiveCancelForm()));
+    connect(ui->buttonBoxEnd, SIGNAL(accepted()), this, SLOT(receiveOkForm()));
     // set button visible or not
     receiveSetButtonVisible(ui->comboBoxCaliColor->currentText());
     receiveSetButtonVisible(ui->comboBoxCaliMethod->currentText());
@@ -209,9 +210,9 @@ void CalibratorForm::getContour()
 
 void CalibratorForm::on_pushButtonCalculate_clicked()
 {
-    if (ui->lineEditmmD->text().isEmpty())
+    if (ui->lineEditmmD->text().isEmpty() || !ui->labelShowPixelD->text().contains('.'))
     {
-        QMessageBox::information(this, "No Input", "Please fill in real distance(float).");
+        QMessageBox::warning(this, "Wrong Input", "Please check calibration steps.");
     }
     else
     {
@@ -257,7 +258,44 @@ void CalibratorForm::receiveSetButtonVisible(QString input)
     }
 }
 
-void CalibratorForm::receiveCloseForm()
+void CalibratorForm::receiveCancelForm()
 {
     this->close();
+    //this->~CalibratorForm();
+}
+
+void CalibratorForm::receiveOkForm()
+{
+    if (ui->labelShowCalResult->text().contains('.'))
+    {
+        QMessageBox::StandardButton updateConfReply;
+        updateConfReply = QMessageBox::question(this, "Update Configuration",
+                                                "Yes to update configuration file, No to Cancel.",
+                                                QMessageBox::Yes|QMessageBox::No);
+        if (updateConfReply == QMessageBox::Yes)
+        {
+            writeCaliConf();
+            emit sendUpdateConfig();
+            receiveCancelForm();
+        }
+    }
+    else
+    {
+        QMessageBox::warning(this,"No Calculated Result","Please complete calibration steps.",QMessageBox::Yes);
+    }
+}
+
+void CalibratorForm::writeCaliConf()
+{
+    QFile caliConfFile("../conf/calibration.conf");
+    if(!caliConfFile.open(QIODevice::WriteOnly|QIODevice::Text|QIODevice::Truncate))
+    {
+         QMessageBox::warning(this,"File Write Error","Configuration file can't open",QMessageBox::Yes);
+    }
+    else
+    {
+        QTextStream in(&caliConfFile);
+        in << QString::number(pixelPERmm, 'f', 2) << "\n";
+        caliConfFile.close();
+    }
 }

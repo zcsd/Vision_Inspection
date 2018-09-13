@@ -7,6 +7,7 @@
 #include <QWidget>
 #include <QDebug>
 #include <QMessageBox>
+#include <QFile>
 
 #include <unistd.h> // for usleep()
 #include <math.h>
@@ -32,6 +33,7 @@ public:
 signals:
     void sendFrameRequest();
     void sendFrameToShow(cv::Mat frame);
+    void sendUpdateConfig();
 
 public slots:
     void receiveFrame(cv::Mat frame);
@@ -40,7 +42,8 @@ private slots:
     void on_pushButtonBGStart_clicked();
     void on_pushButtonRulerStart_clicked();
     void on_pushButtonCalculate_clicked();
-    void receiveCloseForm();
+    void receiveCancelForm();
+    void receiveOkForm();
     void receiveSetButtonVisible(QString input);
 
 private:
@@ -58,6 +61,7 @@ private:
     void diffThreshold();
     void grayscaleThreshold();
     void getContour();
+    void writeCaliConf();
 };
 
 #endif // CALIBRATORFORM_H

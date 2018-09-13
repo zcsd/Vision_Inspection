@@ -19,6 +19,7 @@ MainWindow::~MainWindow()
     delete pyClassification;
     delete fdTester;
     delete frameGrabber;
+    //delete calibratorForm;
     delete ui;
 }
 
@@ -29,7 +30,7 @@ void MainWindow::initialSetup()
     ui->scrollArea->setWidget(ui->labelShowFrame);
     ui->scrollArea->setVisible(true);
 
-    readCaliConf();
+    receiveReadCaliConf();
 
     bgImg.load("../resource/logo.png");
     ui->labelShowFrame->setPixmap(bgImg);
@@ -60,17 +61,17 @@ void MainWindow::initialSetup()
     connect(ui->labelShowFrame, SIGNAL(sendMousePosition(QPoint&)), this, SLOT(receiveShowMousePosition(QPoint&)));
 
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
-                                      + "    System started.");
+                                      + "    Vision Inspection System started.");
     ui->comboBoxMatchMethod->addItems({"Machine Learning", "Image Processing"});
 }
 
-void MainWindow::readCaliConf()
+void MainWindow::receiveReadCaliConf()
 {
     QFile caliConfFile("../conf/calibration.conf");
 
     if (!caliConfFile.open(QIODevice::ReadOnly))
     {
-         QMessageBox::warning(this,"File Write Error", "Conf file can't open", QMessageBox::Yes);
+         QMessageBox::warning(this,"File Read Error", "Configuration file can't open", QMessageBox::Yes);
     }
     else
     {
@@ -87,7 +88,7 @@ void MainWindow::readCaliConf()
 void MainWindow::on_pushButtonConnect_clicked()
 {
     emit sendConnect();
-    usleep(2000); // 2ms
+    usleep(1000); // 1ms
 
     if (frameGrabber->cameraConnected)
     {
@@ -114,7 +115,7 @@ void MainWindow::on_pushButtonDisconnect_clicked()
     if (grabMode == 'N') // in camera close mode
     {
         emit sendDisconnect();
-        usleep(5000);
+        usleep(1000);
 
         if (!frameGrabber->cameraConnected)
         {
@@ -144,7 +145,7 @@ void MainWindow::on_pushButtonDisconnect_clicked()
         if (disconnectReply == QMessageBox::Yes)
         {
             emit sendDisconnect();
-            usleep(5000);
+            usleep(1000);
 
             if (!frameGrabber->cameraConnected)
             {
@@ -164,7 +165,7 @@ void MainWindow::on_pushButtonDisconnect_clicked()
     else if (grabMode == 'C') // in camera capture mode
     {
         emit sendDisconnect();
-        usleep(5000);
+        usleep(1000);
 
         if (!frameGrabber->cameraConnected)
         {
@@ -197,7 +198,7 @@ void MainWindow::on_pushButtonCapture_clicked()
     ui->pushButtonSaveCapture->setEnabled(true);
     ui->labelShowFrame->setMouseTracking(true);
 
-    ui->labelShowRes->setText("2448x2048");
+    ui->labelShowRes->setText("2448x2048"); // hard code need to be changed
     ui->labelShowScale->setText(QString::number(scaleFactor*100, 'f', 0)+"%");
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
                                       + "    Capture one image.");
@@ -214,7 +215,7 @@ void MainWindow::on_pushButtonSaveCapture_clicked()
     if (cv::imwrite(fileSavePathChar, cvRawFrameCopy))
     {
         ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
-                                          + "    Image saved.");
+                                          + "    One image saved.");
     }
 }
 
@@ -239,7 +240,7 @@ void MainWindow::on_pushButtonStream_clicked()
     streamTrigger->start(); // loop start
 
     ui->labelShowFrame->setMouseTracking(true);
-    ui->labelShowRes->setText("2448x2048");
+    ui->labelShowRes->setText("2448x2048"); // hard code, need to be changed
     ui->labelShowScale->setText(QString::number(scaleFactor*100, 'f', 0)+"%");
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
                                       + "    Start streaming mode.");
@@ -249,10 +250,12 @@ void MainWindow::on_pushButtonStop_clicked()
 {
     if (grabMode == 'S')
     {
-        delete streamTrigger; // stop timer
+        streamTrigger->stop();
+        delete streamTrigger;
+
         ui->labelShowFrame->setMouseTracking(false);
         emit sendStopGrabbing();
-        usleep(5000);
+        usleep(1000);
 
         if (!frameGrabber->startGrabbing)
         {
@@ -403,35 +406,18 @@ void MainWindow::receiveFrameRequest()
 void MainWindow::on_actionOpenImage_triggered()
 {
     grabMode = 'C';
-    ui->labelShowRes->setText("2448x2048");
-    ui->labelShowFrame->setMouseTracking(true);
-    ui->labelShowScale->setText(QString::number(scaleFactor*100, 'f', 0)+"%");
 
     QString openFilePath = QFileDialog::getOpenFileName(this, "Open an image", "../");
     QByteArray ba = openFilePath.toLatin1();
     const char *imagePath = ba.data();
-    if (openFilePath.isEmpty())  imagePath = "../images/ex.jpg";
+    if (openFilePath.isEmpty())  imagePath = "../resource/logo.png";
     cv::Mat openImage = cv::imread(imagePath, 1);
     receiveRawFrame(openImage);
+    ui->labelShowRes->setText("2448x2048"); // hard code
+    ui->labelShowFrame->setMouseTracking(true);
+    ui->labelShowScale->setText(QString::number(scaleFactor*100, 'f', 0)+"%");
     ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
                                       + "    Opened an image.");
-}
-
-void MainWindow::writeCaliConf()
-{
-    QFile caliConfFile("../conf/calibration.conf");
-    if(!caliConfFile.open(QIODevice::WriteOnly|QIODevice::Text|QIODevice::Truncate))
-    {
-         QMessageBox::warning(this,"File Write Error","Conf file can't open",QMessageBox::Yes);
-    }
-    else
-    {
-        QTextStream in(&caliConfFile);
-        in << QString::number(pixelPerMM, 'f', 2) << "\n";
-        caliConfFile.close();
-    }
-    ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
-                                      + "    Calibration results updated to conf file.");
 }
 
 void MainWindow::on_actionAutoRulerStart_triggered()
@@ -527,7 +513,8 @@ void MainWindow::on_pushButtonMatch_clicked()
             {
                 bestMatchName = "None";
             }*/
-            ui->labelMatchResult->setText(bestMatchName);
+            ui->labelMatchResult->setStyleSheet("color: blue; font: 20pt; background-color: white;");
+            ui->labelMatchResult->setText(bestMatchName);  
             ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
                                                + "    " + i.key() + ": " + QString::number(i.value()));
         }
@@ -536,10 +523,11 @@ void MainWindow::on_pushButtonMatch_clicked()
 
 void MainWindow::on_actionCalibration_triggered()
 {
-    CalibratorForm *calibratorForm = new CalibratorForm();
+    calibratorForm = new CalibratorForm();
     calibratorForm->show();
 
     connect(calibratorForm, SIGNAL(sendFrameRequest()), this, SLOT(receiveFrameRequest()));
     connect(this, SIGNAL(sendFrametoCalibrator(cv::Mat)), calibratorForm, SLOT(receiveFrame(cv::Mat)));
     connect(calibratorForm, SIGNAL(sendFrameToShow(cv::Mat)), this, SLOT(receiveRawFrame(cv::Mat)));
+    connect(calibratorForm, SIGNAL(sendUpdateConfig()), this, SLOT(receiveReadCaliConf()));
 }

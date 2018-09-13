@@ -57,7 +57,6 @@ private slots:
     void on_pushButtonStream_clicked();
     void on_pushButtonStop_clicked();
     void on_pushButtonScanDevices_clicked();
-    void receiveRawFrame(cv::Mat cvRawFrame);
     void on_pushButtonSaveCapture_clicked();
     void on_actionChangeSavePath_triggered();
     void on_actionZoomIn_triggered();
@@ -72,6 +71,8 @@ private slots:
     void on_actionCameraSetting_triggered();
     void on_pushButtonMatch_clicked();
     void on_actionCalibration_triggered();
+    void receiveRawFrame(cv::Mat cvRawFrame);
+    void receiveReadCaliConf();
 
 public slots:
     void receiveShowMousePosition(QPoint& pos);
@@ -82,6 +83,7 @@ private:
     FrameGrabber *frameGrabber;
     PyClassification *pyClassification;
     FDTester *fdTester;
+    CalibratorForm *calibratorForm;
     QPixmap bgImg;
     QString defaultSavePath = "../images";
     QString matchMethod = "Machine Learning";
@@ -90,9 +92,7 @@ private:
     bool autoCalibration = false;
     bool autoMeasure = false;
     double scaleFactor = 0.4; // 0.4 is fit windows size
-    double pixelPerMM;
     double currentPPMM;
-    double pixelDistanceAC = 0.0;
     cv::Mat cvRawFrameCopy;
     cv::Mat frameToCali;
     cv::Mat frameToMeasure;
@@ -102,8 +102,6 @@ private:
     QTimer *streamTrigger;
     void initialSetup();
     void displayFrame();
-    void writeCaliConf();
-    void readCaliConf();
 };
 
 #endif // MAINWINDOW_H
