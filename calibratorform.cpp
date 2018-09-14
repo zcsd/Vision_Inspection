@@ -33,13 +33,30 @@ void CalibratorForm::initialSetup()
 void CalibratorForm::receiveFrame(cv::Mat frame)
 {
     frameCopy = frame.clone();
+    // TODO @ZC, add second frame update check
+    if (frameCopy.empty())
+    {
+        newFrameAvaviable = false;
+    }
+    else
+    {
+        newFrameAvaviable = true;
+    }
 }
 
 void CalibratorForm::on_pushButtonBGStart_clicked()
 {
     emit sendFrameRequest();
     usleep(2000);
-    extractColorMean();
+
+    if (newFrameAvaviable)
+    {
+        extractColorMean();
+    }
+    else
+    {
+        QMessageBox::warning(this, "No Image Captured", "Please capture correct image.");
+    }
 }
 
 void CalibratorForm::extractColorMean()
@@ -69,15 +86,24 @@ void CalibratorForm::on_pushButtonRulerStart_clicked()
 {
     emit sendFrameRequest(); // require 2nd frame for step 2
     usleep(2000);
-    roiRLFrame = frameCopy(ROI).clone();
 
-    if (ui->comboBoxCaliMethod->currentText() == "Auto")
+    if (newFrameAvaviable)
     {
-        autoCalibrateRuler();
+        roiRLFrame = frameCopy(ROI).clone();
+
+        if (ui->comboBoxCaliMethod->currentText() == "Auto")
+        {
+            autoCalibrateRuler();
+        }
+        else if (ui->comboBoxCaliMethod->currentText() == "Manual")
+        {
+            manualCalibrateRuler();
+        }
+
     }
-    else if (ui->comboBoxCaliMethod->currentText() == "Manual")
+    else
     {
-        manualCalibrateRuler();
+        QMessageBox::warning(this, "No Image Captured", "Please capture correct image.");
     }
 }
 

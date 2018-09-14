@@ -52,6 +52,7 @@ private:
     cv::Mat thresholdImg, contourImg;
     cv::Scalar meanBGR, meanHSV, meanGS;
     cv::Rect ROI;
+    bool newFrameAvaviable = false;
     double pixelDistance, pixelPERmm;
     void initialSetup();
     void extractColorMean();
