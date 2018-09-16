@@ -15,7 +15,7 @@ TEMPLATE = app
 INCLUDEPATH += /usr/include/python3.6m
 LIBS += -L/usr/local/lib/python3.6 -lpython3.6m
 
-# OpenCV 3.4.0, 3.4.2 also pass
+# OpenCV 3.4.0, 3.4.2, 3.4.3 tested
 INCLUDEPATH += /usr/local/include/opencv
 LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui
 
@@ -46,7 +46,6 @@ SOURCES += \
         mainwindow.cpp \
     framegrabber.cpp \
     labeldisplayer.cpp \
-    rulercalibrator.cpp \
     measuretool.cpp \
     settingdialog.cpp \
     fourierdescriptor.cpp \
@@ -59,7 +58,6 @@ HEADERS += \
         mainwindow.h \
     framegrabber.h \
     labeldisplayer.h \
-    rulercalibrator.h \
     measuretool.h \
     settingdialog.h \
     fourierdescriptor.h \

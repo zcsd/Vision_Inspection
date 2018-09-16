@@ -34,9 +34,11 @@ signals:
     void sendFrameRequest();
     void sendFrameToShow(cv::Mat frame);
     void sendUpdateConfig();
+    void sendCaliCommand(QString command);
 
 public slots:
     void receiveFrame(cv::Mat frame);
+    void receiveMousePressedPosition(QPoint& pos);
 
 private slots:
     void on_pushButtonBGStart_clicked();
@@ -45,17 +47,21 @@ private slots:
     void receiveCancelForm();
     void receiveOkForm();
     void receiveSetButtonVisible(QString input);
+    void on_pushButtonRulerSelect_clicked();
+    void on_pushButtonRulerSelectStop_clicked();
 
 private:
     Ui::CalibratorForm *ui;
     cv::Mat frameCopy, roiBGFrame, roiRLFrame, roiRLFrame2Show;
     cv::Mat thresholdImg, contourImg;
     cv::Scalar meanBGR, meanHSV, meanGS;
+    cv::Scalar objMeanBGR, objMeanHSV, objMeanGS;
     cv::Rect ROI;
     bool newFrameAvaviable = false;
     double pixelDistance, pixelPERmm;
     void initialSetup();
-    void extractColorMean();
+    void extractBGColorMean();
+    void extractObjColorMean(cv::Mat image);
     void autoCalibrateRuler();
     void manualCalibrateRuler();
     void hsvThreshold();

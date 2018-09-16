@@ -6,6 +6,7 @@ CalibratorForm::CalibratorForm(QWidget *parent) :
     ui(new Ui::CalibratorForm)
 {
     ui->setupUi(this);
+    this->setWindowFlag(Qt::WindowStaysOnTopHint); // always on top
     initialSetup();
 }
 
@@ -22,9 +23,9 @@ void CalibratorForm::initialSetup()
     connect(ui->buttonBoxEnd, SIGNAL(rejected()), this, SLOT(receiveCancelForm()));
     connect(ui->buttonBoxEnd, SIGNAL(accepted()), this, SLOT(receiveOkForm()));
     // set button visible or not
-    receiveSetButtonVisible(ui->comboBoxCaliColor->currentText());
+    //receiveSetButtonVisible(ui->comboBoxCaliColor->currentText());
     receiveSetButtonVisible(ui->comboBoxCaliMethod->currentText());
-    connect(ui->comboBoxCaliColor, SIGNAL(activated(QString)), this, SLOT(receiveSetButtonVisible(QString)));
+    //connect(ui->comboBoxCaliColor, SIGNAL(activated(QString)), this, SLOT(receiveSetButtonVisible(QString)));
     connect(ui->comboBoxCaliMethod, SIGNAL(activated(QString)), this, SLOT(receiveSetButtonVisible(QString)));
     // @ZC, temp using!!! for step 1 and 2
     ROI = Rect(10, 150, 2428, 1600); // original 2448x2048, now 2428x1600
@@ -44,6 +45,44 @@ void CalibratorForm::receiveFrame(cv::Mat frame)
     }
 }
 
+void CalibratorForm::receiveMousePressedPosition(QPoint &pos)
+{
+    int x = pos.x();
+    int y = pos.y();
+
+    int x_topLeft, y_topLeft;
+    // 2322 = 2448 - 125 -1
+    if ((x/0.4 - 62.5) >= 2322 )
+    {
+        x_topLeft = 2322;
+    }
+    else if ((x/0.4 - 62.5) <= 1)
+    {
+        x_topLeft = 1;
+    }
+    else
+    {
+        x_topLeft = int(x/0.4 - 62.5);
+    }
+
+    if ((y/0.4 - 62.5) >= 1922 )
+    {
+        y_topLeft = 1922;
+    }
+    else if ((y/0.4 - 62.5) <= 1)
+    {
+        y_topLeft = 1;
+    }
+    else
+    {
+        y_topLeft = int(y/0.4 - 62.5);
+    }
+
+    cv::Rect objROI = Rect(x_topLeft, y_topLeft, 125, 125);
+    cv::Mat objImage = frameCopy(objROI).clone();
+    extractObjColorMean(objImage);
+}
+
 void CalibratorForm::on_pushButtonBGStart_clicked()
 {
     emit sendFrameRequest();
@@ -51,7 +90,7 @@ void CalibratorForm::on_pushButtonBGStart_clicked()
 
     if (newFrameAvaviable)
     {
-        extractColorMean();
+        extractBGColorMean();
     }
     else
     {
@@ -59,7 +98,7 @@ void CalibratorForm::on_pushButtonBGStart_clicked()
     }
 }
 
-void CalibratorForm::extractColorMean()
+void CalibratorForm::extractBGColorMean()
 {
     roiBGFrame = frameCopy(ROI).clone();
 
@@ -82,10 +121,32 @@ void CalibratorForm::extractColorMean()
     ui->labelDisplayColor->setStyleSheet(rgbValueSS);
 }
 
+void CalibratorForm::extractObjColorMean(cv::Mat image)
+{
+    cv::imwrite("../images/testa.jpg", image);
+    cv::Mat imageHSV, imageGS;
+    cv::cvtColor(image, imageHSV, COLOR_BGR2HSV_FULL);
+    cv::cvtColor(image, imageGS, COLOR_BGR2GRAY);
+    objMeanGS = cv::mean(imageGS);
+    objMeanBGR = cv::mean(image); // B G R order
+    objMeanHSV = cv::mean(imageHSV); // H S V order
+    QString grayVauleStr = QString::number(int(objMeanGS[0]));
+    QString bgrValueStr = QString::number(int(objMeanBGR[0])) + "," + QString::number(int(objMeanBGR[1]))
+                          + "," + QString::number(int(objMeanBGR[2]));
+    QString hsvValueStr = QString::number(int(objMeanHSV[0])) + "," + QString::number(int(objMeanHSV[1]))
+                          + "," + QString::number(int(objMeanHSV[2]));
+    QString rgbValueSS =  "background-color: rgb(" + QString::number(int(objMeanBGR[2])) + ", "
+                          + QString::number(int(objMeanBGR[1])) + ", " + QString::number(int(objMeanBGR[0])) + ");";
+    ui->labelShowObjRGB->setText(bgrValueStr);
+    ui->labelShowObjHSV->setText(hsvValueStr);
+    ui->labelShowObjGS->setText(grayVauleStr);
+    ui->labelDisplayObjColor->setStyleSheet(rgbValueSS);
+}
+
 void CalibratorForm::on_pushButtonRulerStart_clicked()
 {
-    emit sendFrameRequest(); // require 2nd frame for step 2
-    usleep(2000);
+    //emit sendFrameRequest(); // require 2nd frame for step 2
+    //usleep(2000);
 
     if (newFrameAvaviable)
     {
@@ -160,15 +221,27 @@ void CalibratorForm::grayscaleThreshold()
     int invFlag;
     int threshValue;
 
-    if (ui->comboBoxCaliColorInv->currentText() == "No-Invert")
+    bool invert = false;
+
+    if ( meanGS[0] > objMeanGS[0])
     {
-        invFlag = THRESH_BINARY;
-        threshValue = meanGS[0] + 60;
+        invert = true;
     }
     else
     {
+        invert = false;
+    }
+
+    if (invert)
+    {
         invFlag = THRESH_BINARY_INV;
         threshValue = meanGS[0] - 60;
+    }
+    else
+    {
+
+        invFlag = THRESH_BINARY;
+        threshValue = meanGS[0] + 60;
     }
 
     cv::threshold(roiRLGray, thresholdImg, threshValue, 255, invFlag);
@@ -251,35 +324,15 @@ void CalibratorForm::on_pushButtonCalculate_clicked()
 
 void CalibratorForm::receiveSetButtonVisible(QString input)
 {
-    if (input == "HSV" || input == "GrayScale" || input == "Diff")
-    {
-        if (input == "HSV" || input == "Diff")
-        {
-            ui->comboBoxCaliColorInv->setVisible(false);
-        }
-        else if (input == "GrayScale" && ui->comboBoxCaliMethod->currentText() == "Auto")
-        {
-            ui->comboBoxCaliColorInv->setVisible(true);
-        }
-    }
-    else if (input == "Auto" || input == "Manual")
+    if (input == "Auto" || input == "Manual")
     {
         if (input == "Manual")
         {
-            ui->comboBoxCaliColorInv->setVisible(false);
             ui->comboBoxCaliColor->setVisible(false);
         }
         else if (input == "Auto")
         {
             ui->comboBoxCaliColor->setVisible(true);
-            if (ui->comboBoxCaliColor->currentText() == "GrayScale")
-            {
-                ui->comboBoxCaliColorInv->setVisible(true);
-            }
-            else
-            {
-                ui->comboBoxCaliColorInv->setVisible(false);
-            }
         }
     }
 }
@@ -324,4 +377,17 @@ void CalibratorForm::writeCaliConf()
         in << QString::number(pixelPERmm, 'f', 2) << "\n";
         caliConfFile.close();
     }
+}
+
+void CalibratorForm::on_pushButtonRulerSelect_clicked()
+{
+    emit sendFrameRequest(); // require 2nd frame for step 2
+    usleep(2000);
+
+    emit sendCaliCommand("SelectStart");
+}
+
+void CalibratorForm::on_pushButtonRulerSelectStop_clicked()
+{
+    emit sendCaliCommand("SelectStop");
 }

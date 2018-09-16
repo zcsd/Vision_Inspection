@@ -23,7 +23,6 @@
 using namespace cv;
 
 #include "framegrabber.h"
-#include "rulercalibrator.h"
 #include "measuretool.h"
 #include "fdtester.h"
 #include "pyclassification.h"

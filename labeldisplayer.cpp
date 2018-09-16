@@ -35,6 +35,12 @@ void LabelDisplayer::paintEvent(QPaintEvent *paintQEvent)
     /* set the modified font to the painter */
     painter.setFont(font);
 
+    if (selectStart)
+    {
+        painter.setPen(QPen(Qt::red, 3, Qt::SolidLine));
+        painter.drawRect(tempPoint.x()-25, tempPoint.y()-25, 50, 50); // int x, int y, int width, int height
+    }
+
     if ( (startManuCalibration && !finishManuCalibration) || startManualRulerFlag)
     {
         if (!firstPointSaved || !secondPointSaved || !thirdPointSaved)
@@ -99,7 +105,6 @@ void LabelDisplayer::paintEvent(QPaintEvent *paintQEvent)
             //painter.drawEllipse(thirdPoint, 1, 1);
         }
     }
-
 }
 
 void LabelDisplayer::mousePressEvent(QMouseEvent *mouseQEvent)
@@ -108,6 +113,10 @@ void LabelDisplayer::mousePressEvent(QMouseEvent *mouseQEvent)
     {
         setFocus();
         tempPoint = mouseQEvent->pos();
+        if (selectStart)
+        {
+            emit sendMousePressedPosition(tempPoint);
+        }
     }
 }
 
@@ -139,6 +148,18 @@ void LabelDisplayer::mouseReleaseEvent(QMouseEvent *mouseQEvent)
     if (mouseQEvent->button() == Qt::LeftButton)
     {
         update();
+    }
+}
+
+void LabelDisplayer::receiveCaliCommand(QString command)
+{
+    if (command == "SelectStart")
+    {
+        selectStart = true;
+    }
+    else if (command == "SelectStop")
+    {
+        selectStart = false;
     }
 }
 

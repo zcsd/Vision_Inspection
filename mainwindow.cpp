@@ -530,4 +530,6 @@ void MainWindow::on_actionCalibration_triggered()
     connect(this, SIGNAL(sendFrametoCalibrator(cv::Mat)), calibratorForm, SLOT(receiveFrame(cv::Mat)));
     connect(calibratorForm, SIGNAL(sendFrameToShow(cv::Mat)), this, SLOT(receiveRawFrame(cv::Mat)));
     connect(calibratorForm, SIGNAL(sendUpdateConfig()), this, SLOT(receiveReadCaliConf()));
+    connect(calibratorForm, SIGNAL(sendCaliCommand(QString)), this->ui->labelShowFrame, SLOT(receiveCaliCommand(QString)));
+    connect(this->ui->labelShowFrame, SIGNAL(sendMousePressedPosition(QPoint&)), calibratorForm, SLOT(receiveMousePressedPosition(QPoint&)));
 }

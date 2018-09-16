@@ -37,8 +37,13 @@ protected:
 
 signals:
     void sendMousePosition(QPoint&);
+    void sendMousePressedPosition(QPoint&);
+
+public slots:
+    void receiveCaliCommand(QString command);
 
 private:
+    bool selectStart = false;
     double newPPMM = 0.0;
     bool startManualRulerFlag = false, finishManualRulerFlag = true;
     bool startManuCalibration = false, finishManuCalibration = false;
