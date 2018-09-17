@@ -23,9 +23,7 @@ void CalibratorForm::initialSetup()
     connect(ui->buttonBoxEnd, SIGNAL(rejected()), this, SLOT(receiveCancelForm()));
     connect(ui->buttonBoxEnd, SIGNAL(accepted()), this, SLOT(receiveOkForm()));
     // set button visible or not
-    //receiveSetButtonVisible(ui->comboBoxCaliColor->currentText());
     receiveSetButtonVisible(ui->comboBoxCaliMethod->currentText());
-    //connect(ui->comboBoxCaliColor, SIGNAL(activated(QString)), this, SLOT(receiveSetButtonVisible(QString)));
     connect(ui->comboBoxCaliMethod, SIGNAL(activated(QString)), this, SLOT(receiveSetButtonVisible(QString)));
     // @ZC, temp using!!! for step 1 and 2
     ROI = Rect(10, 150, 2428, 1600); // original 2448x2048, now 2428x1600
@@ -79,8 +77,11 @@ void CalibratorForm::receiveMousePressedPosition(QPoint &pos)
     }
 
     cv::Rect objROI = Rect(x_topLeft, y_topLeft, 125, 125);
-    cv::Mat objImage = frameCopy(objROI).clone();
-    extractObjColorMean(objImage);
+    if (newFrameAvaviable)
+    {
+        cv::Mat objImage = frameCopy(objROI).clone();
+        extractObjColorMean(objImage);
+    }
 }
 
 void CalibratorForm::on_pushButtonBGStart_clicked()
@@ -105,16 +106,16 @@ void CalibratorForm::extractBGColorMean()
     cv::Mat roiFrameHSV, roiFrameGS;
     cv::cvtColor(roiBGFrame, roiFrameHSV, COLOR_BGR2HSV_FULL);
     cv::cvtColor(roiBGFrame, roiFrameGS, COLOR_BGR2GRAY);
-    meanGS = cv::mean(roiFrameGS);
-    meanBGR = cv::mean(roiBGFrame); // B G R order
-    meanHSV = cv::mean(roiFrameHSV); // H S V order
-    QString grayVauleStr = QString::number(int(meanGS[0]));
-    QString bgrValueStr = QString::number(int(meanBGR[0])) + "," + QString::number(int(meanBGR[1]))
-                          + "," + QString::number(int(meanBGR[2]));
-    QString hsvValueStr = QString::number(int(meanHSV[0])) + "," + QString::number(int(meanHSV[1]))
-                          + "," + QString::number(int(meanHSV[2]));
-    QString rgbValueSS =  "background-color: rgb(" + QString::number(int(meanBGR[2])) + ", "
-                          + QString::number(int(meanBGR[1])) + ", " + QString::number(int(meanBGR[0])) + ");";
+    bgMeanGS = cv::mean(roiFrameGS);
+    bgMeanBGR = cv::mean(roiBGFrame); // B G R order
+    bgMeanHSV = cv::mean(roiFrameHSV); // H S V order
+    QString grayVauleStr = QString::number(int(bgMeanGS[0]));
+    QString bgrValueStr = QString::number(int(bgMeanBGR[0])) + "," + QString::number(int(bgMeanBGR[1]))
+                          + "," + QString::number(int(bgMeanBGR[2]));
+    QString hsvValueStr = QString::number(int(bgMeanHSV[0])) + "," + QString::number(int(bgMeanHSV[1]))
+                          + "," + QString::number(int(bgMeanHSV[2]));
+    QString rgbValueSS =  "background-color: rgb(" + QString::number(int(bgMeanBGR[2])) + ", "
+                          + QString::number(int(bgMeanBGR[1])) + ", " + QString::number(int(bgMeanBGR[0])) + ");";
     ui->labelShowRGB->setText(bgrValueStr);
     ui->labelShowHSV->setText(hsvValueStr);
     ui->labelShowGS->setText(grayVauleStr);
@@ -145,9 +146,6 @@ void CalibratorForm::extractObjColorMean(cv::Mat image)
 
 void CalibratorForm::on_pushButtonRulerStart_clicked()
 {
-    //emit sendFrameRequest(); // require 2nd frame for step 2
-    //usleep(2000);
-
     if (newFrameAvaviable)
     {
         roiRLFrame = frameCopy(ROI).clone();
@@ -203,7 +201,7 @@ void CalibratorForm::hsvThreshold()
     cv::Mat roiRLHSV, thresholdHSV, roiRLFrameB;
     cv::GaussianBlur(roiRLFrame, roiRLFrameB, Size(3, 3), 0);
     cv::cvtColor(roiRLFrameB, roiRLHSV, COLOR_BGR2HSV_FULL);
-    int h = meanHSV[0], s = meanHSV[1], v = meanHSV[2];
+    int h = bgMeanHSV[0], s = bgMeanHSV[1], v = bgMeanHSV[2];
     cv::inRange(roiRLHSV, Scalar(h-40, s-100, v-100), Scalar(h+40, s+100, v+100), thresholdHSV);
     cv::bitwise_not(thresholdHSV, thresholdImg);
     // kernel shape: MORPH_RECT   MORPH_CROSS  MORPH_ELLIPSE
@@ -223,7 +221,7 @@ void CalibratorForm::grayscaleThreshold()
 
     bool invert = false;
 
-    if ( meanGS[0] > objMeanGS[0])
+    if (bgMeanGS[0] > objMeanGS[0])
     {
         invert = true;
     }
@@ -235,13 +233,13 @@ void CalibratorForm::grayscaleThreshold()
     if (invert)
     {
         invFlag = THRESH_BINARY_INV;
-        threshValue = meanGS[0] - 60;
+        threshValue = bgMeanGS[0] - int(abs(bgMeanGS[0]-objMeanGS[0])/2);
     }
     else
     {
 
         invFlag = THRESH_BINARY;
-        threshValue = meanGS[0] + 60;
+        threshValue = bgMeanGS[0] + int(abs(bgMeanGS[0]-objMeanGS[0])/2);
     }
 
     cv::threshold(roiRLGray, thresholdImg, threshValue, 255, invFlag);

@@ -54,7 +54,7 @@ private:
     Ui::CalibratorForm *ui;
     cv::Mat frameCopy, roiBGFrame, roiRLFrame, roiRLFrame2Show;
     cv::Mat thresholdImg, contourImg;
-    cv::Scalar meanBGR, meanHSV, meanGS;
+    cv::Scalar bgMeanBGR, bgMeanHSV, bgMeanGS;
     cv::Scalar objMeanBGR, objMeanHSV, objMeanGS;
     cv::Rect ROI;
     bool newFrameAvaviable = false;

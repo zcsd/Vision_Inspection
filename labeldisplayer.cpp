@@ -116,6 +116,7 @@ void LabelDisplayer::mousePressEvent(QMouseEvent *mouseQEvent)
         if (selectStart)
         {
             emit sendMousePressedPosition(tempPoint);
+            update();
         }
     }
 }
@@ -160,6 +161,7 @@ void LabelDisplayer::receiveCaliCommand(QString command)
     else if (command == "SelectStop")
     {
         selectStart = false;
+        update();
     }
 }
 
