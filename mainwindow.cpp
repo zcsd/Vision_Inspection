@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     frameGrabber = new FrameGrabber();
+    measureTool = new MeasureTool();
     pyClassification = new PyClassification();
     fdTester = new FDTester();
 
@@ -19,12 +20,15 @@ MainWindow::~MainWindow()
     delete pyClassification;
     delete fdTester;
     delete frameGrabber;
+    delete measureTool;
     //delete calibratorForm;
     delete ui;
 }
 
 void MainWindow::initialSetup()
 {
+    ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
+                                      + "    Vision Inspection System started.");
     ui->labelShowFrame->setScaledContents(true);
     ui->scrollArea->setBackgroundRole(QPalette::Dark);
     ui->scrollArea->setWidget(ui->labelShowFrame);
@@ -60,8 +64,8 @@ void MainWindow::initialSetup()
     connect(frameGrabber, SIGNAL(sendCaptureFrame(cv::Mat)), this, SLOT(receiveRawFrame(cv::Mat)));
     connect(ui->labelShowFrame, SIGNAL(sendMousePosition(QPoint&)), this, SLOT(receiveShowMousePosition(QPoint&)));
 
-    ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
-                                      + "    Vision Inspection System started.");
+    connect(this, SIGNAL(sendFrameToMeasurement(cv::Mat)), measureTool, SLOT(receiveFrame(cv::Mat)));
+
     ui->comboBoxMatchMethod->addItems({"Machine Learning", "Image Processing"});
 }
 
@@ -400,7 +404,7 @@ void MainWindow::receiveShowMousePosition(QPoint &pos)
 
 void MainWindow::receiveFrameRequest()
 {
-    emit sendFrametoCalibrator(cvRawFrameCopy);
+    emit sendFrameToCalibrator(cvRawFrameCopy);
 }
 
 void MainWindow::on_actionOpenImage_triggered()
@@ -424,6 +428,8 @@ void MainWindow::on_actionAutoRulerStart_triggered()
 {
     autoMeasure = true;
     frameToMeasure = cvRawFrameCopy.clone();
+
+    /*
     MeasureTool *measureTool = new MeasureTool(frameToMeasure, currentPPMM);
     delete measureTool;
 
@@ -431,6 +437,7 @@ void MainWindow::on_actionAutoRulerStart_triggered()
     cv::cvtColor(cvRGBFrame, cvRGBFrame, cv::COLOR_BGR2RGB);
     qDisplayedFrame = QImage((uchar*)cvRGBFrame.data, cvRGBFrame.cols, cvRGBFrame.rows, cvRGBFrame.step, QImage::Format_RGB888);
     ui->labelShowFrame->setPixmap(QPixmap::fromImage(qDisplayedFrame));
+    */
 }
 
 void MainWindow::on_actionAutoRulerStop_triggered()
@@ -523,13 +530,18 @@ void MainWindow::on_pushButtonMatch_clicked()
 
 void MainWindow::on_actionCalibration_triggered()
 {
-    calibratorForm = new CalibratorForm();
+    calibratorForm = new CalibratorForm(this);
     calibratorForm->show();
 
     connect(calibratorForm, SIGNAL(sendFrameRequest()), this, SLOT(receiveFrameRequest()));
-    connect(this, SIGNAL(sendFrametoCalibrator(cv::Mat)), calibratorForm, SLOT(receiveFrame(cv::Mat)));
+    connect(this, SIGNAL(sendFrameToCalibrator(cv::Mat)), calibratorForm, SLOT(receiveFrame(cv::Mat)));
     connect(calibratorForm, SIGNAL(sendFrameToShow(cv::Mat)), this, SLOT(receiveRawFrame(cv::Mat)));
     connect(calibratorForm, SIGNAL(sendUpdateConfig()), this, SLOT(receiveReadCaliConf()));
     connect(calibratorForm, SIGNAL(sendCaliCommand(QString)), this->ui->labelShowFrame, SLOT(receiveCaliCommand(QString)));
     connect(this->ui->labelShowFrame, SIGNAL(sendMousePressedPosition(QPoint&)), calibratorForm, SLOT(receiveMousePressedPosition(QPoint&)));
+}
+
+void MainWindow::on_pushButtonMeasure_clicked()
+{
+    emit sendFrameToMeasurement(cvRawFrameCopy);
 }

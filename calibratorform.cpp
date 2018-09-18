@@ -6,7 +6,7 @@ CalibratorForm::CalibratorForm(QWidget *parent) :
     ui(new Ui::CalibratorForm)
 {
     ui->setupUi(this);
-    this->setWindowFlag(Qt::WindowStaysOnTopHint); // always on top
+    this->setWindowFlags(Qt::WindowStaysOnTopHint | Qt::Tool); // always on top
     initialSetup();
 }
 
@@ -124,7 +124,6 @@ void CalibratorForm::extractBGColorMean()
 
 void CalibratorForm::extractObjColorMean(cv::Mat image)
 {
-    cv::imwrite("../images/testa.jpg", image);
     cv::Mat imageHSV, imageGS;
     cv::cvtColor(image, imageHSV, COLOR_BGR2HSV_FULL);
     cv::cvtColor(image, imageGS, COLOR_BGR2GRAY);

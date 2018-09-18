@@ -47,7 +47,8 @@ signals:
     void sendCaptureMode();
     void sendStreamMode();
     void sendStopGrabbing();
-    void sendFrametoCalibrator(cv::Mat cvRawFrame);
+    void sendFrameToCalibrator(cv::Mat cvRawFrame);
+    void sendFrameToMeasurement(cv::Mat cvRawFrame);
 
 private slots:
     void on_pushButtonConnect_clicked();
@@ -72,6 +73,7 @@ private slots:
     void on_actionCalibration_triggered();
     void receiveRawFrame(cv::Mat cvRawFrame);
     void receiveReadCaliConf();
+    void on_pushButtonMeasure_clicked();
 
 public slots:
     void receiveShowMousePosition(QPoint& pos);
@@ -80,6 +82,7 @@ public slots:
 private:
     Ui::MainWindow *ui;
     FrameGrabber *frameGrabber;
+    MeasureTool *measureTool;
     PyClassification *pyClassification;
     FDTester *fdTester;
     CalibratorForm *calibratorForm;

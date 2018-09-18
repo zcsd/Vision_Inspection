@@ -46,25 +46,25 @@ SOURCES += \
         mainwindow.cpp \
     framegrabber.cpp \
     labeldisplayer.cpp \
-    measuretool.cpp \
     settingdialog.cpp \
     fourierdescriptor.cpp \
     fdtester.cpp \
     pyclassification.cpp \
     py_cv_wrapper/pycvconverter.cpp \
-    calibratorform.cpp
+    calibratorform.cpp \
+    measuretool.cpp
 
 HEADERS += \
         mainwindow.h \
     framegrabber.h \
     labeldisplayer.h \
-    measuretool.h \
     settingdialog.h \
     fourierdescriptor.h \
     fdtester.h \
     pyclassification.h \
     py_cv_wrapper/pycvconverter.h \
-    calibratorform.h
+    calibratorform.h \
+    measuretool.h
 
 FORMS += \
         mainwindow.ui \
