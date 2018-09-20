@@ -74,6 +74,7 @@ private slots:
     void on_actionCalibration_triggered();
     void receiveRawFrame(cv::Mat cvRawFrame);
     void receiveReadCaliConf();
+    void receiveMeasurement(double length);
     void on_pushButtonMeasure_clicked();
 
 public slots:

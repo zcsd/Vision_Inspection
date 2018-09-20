@@ -10,6 +10,14 @@ void MeasureTool::receiveFrame(Mat frame)
 {
     frameCopy = frame.clone();
     diffSegmentation();
+    getContours();
+
+    cv::Mat frameToSend = frameCopy.clone();
+    roiShow.copyTo(frameToSend(ROI));
+    //cv::imwrite("../images/tes.jpg", frameToSend);
+
+    emit sendFrameToShow(frameToSend);
+    emit sendMeasurement(realDistance);
 }
 
 void MeasureTool::receiveCalibrationPara(double pPmm, int test)
@@ -22,6 +30,7 @@ void MeasureTool::diffSegmentation()
 {
     Mat roiBG = bgImage(ROI).clone();
     Mat roiObj = frameCopy(ROI).clone();
+    roiShow = frameCopy(ROI).clone();
 
     cv::cvtColor(roiBG, roiBG, COLOR_BGR2HSV);
     cv::cvtColor(roiObj, roiObj, COLOR_BGR2HSV);
@@ -42,12 +51,16 @@ void MeasureTool::diffSegmentation()
     merge(channels1, 3, roiBG);
     //cv::cvtColor(roiBG, roiBG, COLOR_HSV2BGR);
 
-    cv::Mat resImage, thresholdImage;
+    cv::Mat resImage;
     cv::absdiff(roiObj, roiBG, resImage);
     cv::cvtColor(resImage, resImage, COLOR_HSV2BGR);
     cv::cvtColor(resImage,resImage, COLOR_BGR2GRAY);
-    cv::threshold(resImage, thresholdImage, 32, 255, THRESH_BINARY);
+    cv::threshold(resImage, thresholdImage, 30, 255, THRESH_BINARY);
 
+    cv::Mat kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, Size(3,3));
+    cv::erode(thresholdImage, thresholdImage, kernel);
+    cv::dilate(thresholdImage, thresholdImage, kernel);
+/*
     cv::Mat showImg;
     cv::resize(thresholdImage, showImg, cv::Size(), 0.5, 0.5);
     cv::namedWindow("test", 1);
@@ -56,5 +69,77 @@ void MeasureTool::diffSegmentation()
         cv::imshow("test", showImg);
         if ( (cv::waitKey(1) & 0xFF) == 27 ) break;
     }
-    cv::destroyWindow("test");
+    cv::destroyWindow("test");*/
+}
+
+void MeasureTool::getContours()
+{
+    vector<vector<Point>> contours;
+    vector<Point> maxCtr;
+    vector<Vec4i> hierarchy;
+    cv::RotatedRect rotatedRect;
+
+    cv::findContours(thresholdImage, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point(0, 0));
+    maxCtr = getMaxContour(contours);
+
+    rotatedRect = cv::minAreaRect(Mat(maxCtr));
+    Point2f rectPoints[4];
+    rotatedRect.points(rectPoints);
+    for (int j = 0; j < 4; j++)
+       cv::line(roiShow, rectPoints[j], rectPoints[(j+1)%4], Scalar(255, 0, 0), 2, 8);
+
+    double maxLengh = 0.0;
+
+    if (rotatedRect.size.height >= rotatedRect.size.width)
+    {
+        maxLengh = rotatedRect.size.height;
+    }
+    else
+    {
+        maxLengh = rotatedRect.size.width;
+    }
+
+    realDistance = maxLengh / pixelPERmm;
+
+    // Create an output string stream
+    std::ostringstream streamObj3;
+    // Set Fixed -Point Notation
+    streamObj3 << std::fixed;
+    // Set precision to 1 digits
+    streamObj3 << std::setprecision(2);
+    //Add double to stream
+    streamObj3 << realDistance;
+    // Get string from output string stream
+    std::string strObj3 = streamObj3.str();
+    string printDistance = strObj3 + "mm";
+    cv::putText(roiShow, printDistance, rotatedRect.center, 2, 4.0, Scalar(0, 255, 0), 2, 8);
+/*
+    cv::Mat showImg;
+    cv::resize(roiShow, showImg, cv::Size(), 0.5, 0.5);
+    cv::namedWindow("test", 1);
+    while (true)
+    {
+        cv::imshow("test", showImg);
+        if ( (cv::waitKey(1) & 0xFF) == 'q' ) break;
+    }
+    cv::destroyWindow("test");*/
+}
+
+vector<Point> MeasureTool::getMaxContour(vector<vector<Point> > allContours)
+{
+    std::vector<cv::Point> maxContour;
+    double maxArea = -999999.99;
+    int maxIndex = -1;
+    for (size_t i = 0; i < allContours.size(); i++)
+    {
+        if (cv::contourArea(allContours[i]) >= maxArea)
+        {
+            maxArea = cv::contourArea(allContours[i]);
+            maxContour = allContours[i];
+            maxIndex = int(i);
+        }
+    }
+    //cv::drawContours(roiShow, allContours, maxIndex, Scalar(0, 0, 255), 2, 8, vector<Vec4i>(), 0, Point());
+
+    return maxContour;
 }

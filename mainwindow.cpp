@@ -66,6 +66,8 @@ void MainWindow::initialSetup()
 
     connect(this, SIGNAL(sendFrameToMeasurement(cv::Mat)), measureTool, SLOT(receiveFrame(cv::Mat)));
     connect(this, SIGNAL(sendCalibrationPara(double, int)), measureTool, SLOT(receiveCalibrationPara(double, int)));
+    connect(measureTool, SIGNAL(sendFrameToShow(cv::Mat)), this, SLOT(receiveRawFrame(cv::Mat)));
+    connect(measureTool, SIGNAL(sendMeasurement(double)), this, SLOT(receiveMeasurement(double)));
     emit sendCalibrationPara(currentPPMM, 3);
 
     ui->comboBoxMatchMethod->addItems({"Machine Learning", "Image Processing"});
@@ -88,7 +90,12 @@ void MainWindow::receiveReadCaliConf()
         caliConfFile.close();
         ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
                                           + "    Loaded ruler configuration: " + line + " pixel/mm");
-    }  
+    }
+}
+
+void MainWindow::receiveMeasurement(double length)
+{
+    ui->labelShowMeasurement->setText(QString::number(length, 'f', 2) + " mm");
 }
 
 void MainWindow::on_pushButtonConnect_clicked()
