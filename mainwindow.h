@@ -49,6 +49,7 @@ signals:
     void sendStopGrabbing();
     void sendFrameToCalibrator(cv::Mat cvRawFrame);
     void sendFrameToMeasurement(cv::Mat cvRawFrame);
+    void sendCalibrationPara(double pPmm, int test1);
 
 private slots:
     void on_pushButtonConnect_clicked();

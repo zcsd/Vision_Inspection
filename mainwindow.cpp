@@ -65,6 +65,8 @@ void MainWindow::initialSetup()
     connect(ui->labelShowFrame, SIGNAL(sendMousePosition(QPoint&)), this, SLOT(receiveShowMousePosition(QPoint&)));
 
     connect(this, SIGNAL(sendFrameToMeasurement(cv::Mat)), measureTool, SLOT(receiveFrame(cv::Mat)));
+    connect(this, SIGNAL(sendCalibrationPara(double, int)), measureTool, SLOT(receiveCalibrationPara(double, int)));
+    emit sendCalibrationPara(currentPPMM, 3);
 
     ui->comboBoxMatchMethod->addItems({"Machine Learning", "Image Processing"});
 }
@@ -411,7 +413,7 @@ void MainWindow::on_actionOpenImage_triggered()
 {
     grabMode = 'C';
 
-    QString openFilePath = QFileDialog::getOpenFileName(this, "Open an image", "../");
+    QString openFilePath = QFileDialog::getOpenFileName(this, "Open an image", "../images/");
     QByteArray ba = openFilePath.toLatin1();
     const char *imagePath = ba.data();
     if (openFilePath.isEmpty())  imagePath = "../resource/logo.png";
