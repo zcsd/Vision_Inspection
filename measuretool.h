@@ -33,6 +33,7 @@ private:
     void diffSegmentation();
     void getContours();
     vector<Point> getMaxContour(vector<vector<Point>> allContours);
+    void cannySegmentation();
 };
 
 #endif // MEASURETOOL_H

@@ -9,6 +9,8 @@ MeasureTool::MeasureTool(QObject *parent) : QObject(parent)
 void MeasureTool::receiveFrame(Mat frame)
 {
     frameCopy = frame.clone();
+    //cannySegmentation();
+
     diffSegmentation();
     getContours();
 
@@ -52,15 +54,16 @@ void MeasureTool::diffSegmentation()
     //cv::cvtColor(roiBG, roiBG, COLOR_HSV2BGR);
 
     cv::Mat resImage;
-    cv::absdiff(roiObj, roiBG, resImage);
-    cv::cvtColor(resImage, resImage, COLOR_HSV2BGR);
-    cv::cvtColor(resImage,resImage, COLOR_BGR2GRAY);
-    cv::threshold(resImage, thresholdImage, 30, 255, THRESH_BINARY);
+    cv::absdiff(channels[0], channels1[0], resImage);
+    //cv::cvtColor(resImage, resImage, COLOR_HSV2BGR);
+    //cv::cvtColor(resImage,resImage, COLOR_BGR2GRAY);
+    cv::threshold(resImage, thresholdImage, 20, 255, THRESH_BINARY);
 
     cv::Mat kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, Size(3,3));
     cv::erode(thresholdImage, thresholdImage, kernel);
     cv::dilate(thresholdImage, thresholdImage, kernel);
-/*
+    cv::dilate(thresholdImage, thresholdImage, kernel);
+
     cv::Mat showImg;
     cv::resize(thresholdImage, showImg, cv::Size(), 0.5, 0.5);
     cv::namedWindow("test", 1);
@@ -69,7 +72,7 @@ void MeasureTool::diffSegmentation()
         cv::imshow("test", showImg);
         if ( (cv::waitKey(1) & 0xFF) == 27 ) break;
     }
-    cv::destroyWindow("test");*/
+    cv::destroyWindow("test");
 }
 
 void MeasureTool::getContours()
@@ -142,4 +145,37 @@ vector<Point> MeasureTool::getMaxContour(vector<vector<Point> > allContours)
     //cv::drawContours(roiShow, allContours, maxIndex, Scalar(0, 0, 255), 2, 8, vector<Vec4i>(), 0, Point());
 
     return maxContour;
+}
+
+void MeasureTool::cannySegmentation()
+{
+    Mat roiObj = frameCopy(ROI).clone();
+    roiShow = frameCopy(ROI).clone();
+
+    Mat grayImage, cannyImage;
+    cv::cvtColor(roiObj, roiObj, COLOR_BGR2HSV);
+
+    cv::Mat channels[3];
+    split(roiObj,channels);
+    //channels[0] = Mat::zeros(roiBG.rows, roiBG.cols, CV_8UC1);
+    channels[1] = Mat::zeros(roiObj.rows, roiObj.cols, CV_8UC1);
+    //channels[2] = Mat::zeros(roiBG.rows, roiBG.cols, CV_8UC1);
+    merge(channels, 3, roiObj);
+    cv::cvtColor(roiObj, roiObj, COLOR_HSV2BGR);
+    cv::cvtColor(roiObj, roiObj, COLOR_BGR2GRAY);
+
+    cv::Canny(roiObj, cannyImage, 20, 60, 3);
+    cv::Mat kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, Size(3,3));
+    cv::dilate(cannyImage, cannyImage, kernel);
+    cv::erode(cannyImage, cannyImage, kernel);
+
+    cv::Mat showImg;
+    cv::resize(cannyImage, showImg, cv::Size(), 0.5, 0.5);
+    cv::namedWindow("test", 1);
+    while (true)
+    {
+        cv::imshow("test", showImg);
+        if ( (cv::waitKey(1) & 0xFF) == 'q' ) break;
+    }
+    cv::destroyWindow("test");
 }
