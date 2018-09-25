@@ -33,7 +33,7 @@ void MeasureTool::diffSegmentation()
     Mat roiBG = bgImage(ROI).clone();
     Mat roiObj = frameCopy(ROI).clone();
     roiShow = frameCopy(ROI).clone();
-
+    //cv::imwrite("../images/tes.jpg", roiObj);
     cv::cvtColor(roiBG, roiBG, COLOR_BGR2HSV);
     cv::cvtColor(roiObj, roiObj, COLOR_BGR2HSV);
 
@@ -63,7 +63,7 @@ void MeasureTool::diffSegmentation()
     cv::erode(thresholdImage, thresholdImage, kernel);
     cv::dilate(thresholdImage, thresholdImage, kernel);
     cv::dilate(thresholdImage, thresholdImage, kernel);
-
+/*
     cv::Mat showImg;
     cv::resize(thresholdImage, showImg, cv::Size(), 0.5, 0.5);
     cv::namedWindow("test", 1);
@@ -72,7 +72,7 @@ void MeasureTool::diffSegmentation()
         cv::imshow("test", showImg);
         if ( (cv::waitKey(1) & 0xFF) == 27 ) break;
     }
-    cv::destroyWindow("test");
+    cv::destroyWindow("test");*/
 }
 
 void MeasureTool::getContours()
