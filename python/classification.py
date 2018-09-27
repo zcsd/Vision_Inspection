@@ -1,4 +1,4 @@
-import cv2 # Version must be = 3.1.0.0
+import cv2 # Version must be = 3.1.0.4
 import numpy as np
 import tensorflow as tf
 import keras
