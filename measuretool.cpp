@@ -62,7 +62,7 @@ void MeasureTool::diffSegmentation()
     cv::Mat kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, Size(3,3));
     cv::erode(thresholdImage, thresholdImage, kernel);
     cv::dilate(thresholdImage, thresholdImage, kernel);
-    cv::dilate(thresholdImage, thresholdImage, kernel);
+    //cv::dilate(thresholdImage, thresholdImage, kernel);
 /*
     cv::Mat showImg;
     cv::resize(thresholdImage, showImg, cv::Size(), 0.5, 0.5);
@@ -70,13 +70,21 @@ void MeasureTool::diffSegmentation()
     while (true)
     {
         cv::imshow("test", showImg);
-        if ( (cv::waitKey(1) & 0xFF) == 27 ) break;
+        if ( (cv::waitKey(1) & 0xFF) == 'q' ) break;
     }
     cv::destroyWindow("test");*/
 }
 
 void MeasureTool::getContours()
 {
+    //***************TEST********************//
+/*    cv::Mat test = imread("../images/test.png", 0);
+    threshold(test, thresholdImage, 20, 255, THRESH_BINARY);
+    cv::Mat kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, Size(3,3));
+    cv::erode(thresholdImage, thresholdImage, kernel);
+    cv::dilate(thresholdImage, thresholdImage, kernel);*/
+    //**************TEST END*****************//
+
     vector<vector<Point>> contours;
     vector<Point> maxCtr;
     vector<Vec4i> hierarchy;
@@ -95,11 +103,11 @@ void MeasureTool::getContours()
 
     if (rotatedRect.size.height >= rotatedRect.size.width)
     {
-        maxLengh = rotatedRect.size.height;
+        maxLengh = double(rotatedRect.size.height);
     }
     else
     {
-        maxLengh = rotatedRect.size.width;
+        maxLengh = double(rotatedRect.size.width);
     }
 
     realDistance = maxLengh / pixelPERmm;
@@ -116,7 +124,7 @@ void MeasureTool::getContours()
     std::string strObj3 = streamObj3.str();
     string printDistance = strObj3 + "mm";
     cv::putText(roiShow, printDistance, rotatedRect.center, 2, 4.0, Scalar(0, 255, 0), 2, 8);
-/*
+
     cv::Mat showImg;
     cv::resize(roiShow, showImg, cv::Size(), 0.5, 0.5);
     cv::namedWindow("test", 1);
@@ -125,7 +133,7 @@ void MeasureTool::getContours()
         cv::imshow("test", showImg);
         if ( (cv::waitKey(1) & 0xFF) == 'q' ) break;
     }
-    cv::destroyWindow("test");*/
+    cv::destroyWindow("test");
 }
 
 vector<Point> MeasureTool::getMaxContour(vector<vector<Point> > allContours)
@@ -142,7 +150,7 @@ vector<Point> MeasureTool::getMaxContour(vector<vector<Point> > allContours)
             maxIndex = int(i);
         }
     }
-    //cv::drawContours(roiShow, allContours, maxIndex, Scalar(0, 0, 255), 2, 8, vector<Vec4i>(), 0, Point());
+    //cv::drawContours(roiShow, allContours, maxIndex, Scalar(0, 0, 255), 2, 8, vector<Vec4i>(), 0, Point(0,0));
 
     return maxContour;
 }
