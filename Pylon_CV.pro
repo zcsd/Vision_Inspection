@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui concurrent
+QT       += core gui concurrent serialbus
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -17,7 +17,7 @@ LIBS += -L/usr/local/lib/python3.6 -lpython3.6m
 
 # OpenCV 3.4.0, 3.4.2, 3.4.3 tested
 INCLUDEPATH += /usr/local/include/opencv
-LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lopencv_highgui
+LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lopencv_videoio -lopencv_highgui
 
 # Pylon 5.1.0 SDK
 INCLUDEPATH += /opt/pylon5/include
@@ -52,7 +52,8 @@ SOURCES += \
     pyclassification.cpp \
     py_cv_wrapper/pycvconverter.cpp \
     calibratorform.cpp \
-    measuretool.cpp
+    measuretool.cpp \
+    triggerform.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -64,12 +65,14 @@ HEADERS += \
     pyclassification.h \
     py_cv_wrapper/pycvconverter.h \
     calibratorform.h \
-    measuretool.h
+    measuretool.h \
+    triggerform.h
 
 FORMS += \
         mainwindow.ui \
     settingdialog.ui \
-    calibratorform.ui
+    calibratorform.ui \
+    triggerform.ui
 
 DISTFILES += \
     python/classification.py

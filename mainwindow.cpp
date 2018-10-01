@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     measureTool = new MeasureTool();
     pyClassification = new PyClassification();
     fdTester = new FDTester();
+    triggerForm = new TriggerForm(this);
 
     initialSetup();
 }
@@ -22,6 +23,7 @@ MainWindow::~MainWindow()
     delete frameGrabber;
     delete measureTool;
     //delete calibratorForm;
+    delete triggerForm;
     delete ui;
 }
 
@@ -553,4 +555,9 @@ void MainWindow::on_actionCalibration_triggered()
 void MainWindow::on_pushButtonMeasure_clicked()
 {
     emit sendFrameToMeasurement(cvRawFrameCopy);
+}
+
+void MainWindow::on_actionTrigger_triggered()
+{
+    triggerForm->show();
 }

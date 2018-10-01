@@ -314,7 +314,7 @@
      <string/>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -415,6 +415,7 @@
     <addaction name="menuAuto_Ruler"/>
     <addaction name="separator"/>
     <addaction name="actionCalibration"/>
+    <addaction name="actionTrigger"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -564,6 +565,11 @@
   <action name="actionCalibration">
    <property name="text">
     <string>Calibration</string>
+   </property>
+  </action>
+  <action name="actionTrigger">
+   <property name="text">
+    <string>Trigger</string>
    </property>
   </action>
  </widget>

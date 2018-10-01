@@ -6,7 +6,7 @@ CalibratorForm::CalibratorForm(QWidget *parent) :
     ui(new Ui::CalibratorForm)
 {
     ui->setupUi(this);
-    this->setWindowFlags(Qt::WindowStaysOnTopHint | Qt::Tool); // always on top
+    this->setWindowFlags(Qt::WindowStaysOnTopHint | Qt::Window); // always on top
     initialSetup();
 }
 

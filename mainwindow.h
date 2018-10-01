@@ -28,6 +28,7 @@ using namespace cv;
 #include "pyclassification.h"
 #include "settingdialog.h"
 #include "calibratorform.h"
+#include "triggerform.h"
 
 namespace Ui {
 class MainWindow;
@@ -77,6 +78,8 @@ private slots:
     void receiveMeasurement(double length);
     void on_pushButtonMeasure_clicked();
 
+    void on_actionTrigger_triggered();
+
 public slots:
     void receiveShowMousePosition(QPoint& pos);
     void receiveFrameRequest();
@@ -88,6 +91,7 @@ private:
     PyClassification *pyClassification;
     FDTester *fdTester;
     CalibratorForm *calibratorForm;
+    TriggerForm *triggerForm;
     QPixmap bgImg;
     QString defaultSavePath = "../images";
     QString matchMethod = "Machine Learning";
