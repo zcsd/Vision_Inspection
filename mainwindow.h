@@ -77,8 +77,8 @@ private slots:
     void receiveReadCaliConf();
     void receiveMeasurement(double length);
     void on_pushButtonMeasure_clicked();
-
     void on_actionTrigger_triggered();
+    void receiveTrigger();
 
 public slots:
     void receiveShowMousePosition(QPoint& pos);

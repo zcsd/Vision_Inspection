@@ -3,13 +3,17 @@
 
 #include <QWidget>
 #include <QDebug>
+#include <QTimer>
+#include <QTime>
 
 #include "opencv2/core.hpp"
 #include "opencv2/imgproc.hpp"
 #include "opencv2/highgui.hpp"
 #include "opencv2/videoio.hpp"
-
 using namespace cv;
+
+#include <stdio.h>
+using namespace std;
 
 namespace Ui {
 class TriggerForm;
@@ -23,17 +27,23 @@ public:
     explicit TriggerForm(QWidget *parent = nullptr);
     ~TriggerForm();
 
+signals:
+    void sendTrigger();
+
 private slots:
     void on_pushButtonStart_clicked();
-
     void on_pushButtonStop_clicked();
+    void receiveUpdateFrame();
 
 private:
     Ui::TriggerForm *ui;
     cv::VideoCapture capture;
-    cv::Mat frame;
+    QPixmap whitePixmap;
+    cv::Mat bgImg;
+    QTimer *camTrigger;
     void initUSBCam();
     void releaseUSBCam();
+    cv::Mat processFrame(cv::Mat img);
 };
 
 #endif // TRIGGERFORM_H
