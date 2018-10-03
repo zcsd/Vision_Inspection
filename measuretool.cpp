@@ -3,7 +3,7 @@
 MeasureTool::MeasureTool(QObject *parent) : QObject(parent)
 {
     bgImage = imread("../images/BG_green.jpg", 1);
-    ROI = Rect(10, 150, 2428, 1600); //2448x2048, 10, 150, 2428, 1600
+    ROI = Rect(50, 200, 2348, 1550); //2448x2048, 10, 150, 2428, 1600
 }
 
 void MeasureTool::receiveFrame(Mat frame)
@@ -124,7 +124,7 @@ void MeasureTool::getContours()
     std::string strObj3 = streamObj3.str();
     string printDistance = strObj3 + "mm";
     cv::putText(roiShow, printDistance, rotatedRect.center, 2, 4.0, Scalar(0, 255, 0), 2, 8);
-
+/*
     cv::Mat showImg;
     cv::resize(roiShow, showImg, cv::Size(), 0.5, 0.5);
     cv::namedWindow("test", 1);
@@ -133,7 +133,7 @@ void MeasureTool::getContours()
         cv::imshow("test", showImg);
         if ( (cv::waitKey(1) & 0xFF) == 'q' ) break;
     }
-    cv::destroyWindow("test");
+    cv::destroyWindow("test");*/
 }
 
 vector<Point> MeasureTool::getMaxContour(vector<vector<Point> > allContours)
@@ -176,7 +176,7 @@ void MeasureTool::cannySegmentation()
     cv::Mat kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, Size(3,3));
     cv::dilate(cannyImage, cannyImage, kernel);
     cv::erode(cannyImage, cannyImage, kernel);
-
+/*
     cv::Mat showImg;
     cv::resize(cannyImage, showImg, cv::Size(), 0.5, 0.5);
     cv::namedWindow("test", 1);
@@ -185,5 +185,5 @@ void MeasureTool::cannySegmentation()
         cv::imshow("test", showImg);
         if ( (cv::waitKey(1) & 0xFF) == 'q' ) break;
     }
-    cv::destroyWindow("test");
+    cv::destroyWindow("test");*/
 }

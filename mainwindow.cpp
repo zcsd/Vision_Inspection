@@ -567,4 +567,7 @@ void MainWindow::on_actionTrigger_triggered()
 void MainWindow::receiveTrigger()
 {
     qDebug() << "Receive Trigger";
+    usleep(2000000); // 2s
+    on_pushButtonCapture_clicked();
+    on_pushButtonMeasure_clicked();
 }

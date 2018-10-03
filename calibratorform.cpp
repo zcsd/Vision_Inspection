@@ -26,7 +26,7 @@ void CalibratorForm::initialSetup()
     receiveSetButtonVisible(ui->comboBoxCaliMethod->currentText());
     connect(ui->comboBoxCaliMethod, SIGNAL(activated(QString)), this, SLOT(receiveSetButtonVisible(QString)));
     // @ZC, temp using!!! for step 1 and 2
-    ROI = Rect(10, 150, 2428, 1600); // original 2448x2048, now 2428x1600
+    ROI = Rect(50, 200, 2348, 1550); // original 2448x2048, now 2428x1600
 }
 
 void CalibratorForm::receiveFrame(cv::Mat frame)

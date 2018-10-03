@@ -35,11 +35,16 @@ private slots:
     void on_pushButtonStop_clicked();
     void receiveUpdateFrame();
 
+    void on_pushButtonReset_clicked();
+
 private:
     Ui::TriggerForm *ui;
     cv::VideoCapture capture;
     QPixmap whitePixmap;
     cv::Mat bgImg;
+    int partsCounter = 0;
+    int frameCounter = 0;
+    bool startCount = false;
     QTimer *camTrigger;
     void initUSBCam();
     void releaseUSBCam();

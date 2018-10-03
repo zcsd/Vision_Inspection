@@ -35,7 +35,7 @@ border-color: rgb(0, 0, 0);</string>
     <rect>
      <x>30</x>
      <y>360</y>
-     <width>89</width>
+     <width>81</width>
      <height>25</height>
     </rect>
    </property>
@@ -46,9 +46,9 @@ border-color: rgb(0, 0, 0);</string>
   <widget class="QPushButton" name="pushButtonStop">
    <property name="geometry">
     <rect>
-     <x>140</x>
+     <x>130</x>
      <y>360</y>
-     <width>89</width>
+     <width>81</width>
      <height>25</height>
     </rect>
    </property>
@@ -81,6 +81,45 @@ border-color: rgb(0, 0, 0);</string>
    </property>
    <property name="text">
     <string>Message Log</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>360</y>
+     <width>67</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Counter:</string>
+   </property>
+  </widget>
+  <widget class="QLCDNumber" name="lcdNumberCounter">
+   <property name="geometry">
+    <rect>
+     <x>300</x>
+     <y>360</y>
+     <width>64</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(0, 0, 0);</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButtonReset">
+   <property name="geometry">
+    <rect>
+     <x>380</x>
+     <y>360</y>
+     <width>71</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Reset</string>
    </property>
   </widget>
  </widget>

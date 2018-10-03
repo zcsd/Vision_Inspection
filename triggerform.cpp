@@ -69,15 +69,35 @@ Mat TriggerForm::processFrame(Mat img)
 
     cv::findContours(thresholdImg, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point(0, 0));
 
+    if (startCount)
+    {
+        frameCounter++;
+    }
+    else
+    {
+        frameCounter = 0;
+    }
+
+    if (frameCounter >= 90)
+    {
+        frameCounter = 0;
+        startCount = false;
+    }
+
     for (size_t i = 0; i < contours.size(); i++)
     {
         double area = cv::contourArea(contours[i]);
         if (area >= 100)
         {
             cv::drawContours(img, contours, int(i), Scalar(255, 0, 0), -1, 8, vector<Vec4i>(), 0, Point(0,0));
-            if (area > 200)
+            if (area > 2000 && !startCount)
             {
+                startCount = true;
                 emit sendTrigger();
+                partsCounter ++;
+                ui->lcdNumberCounter->display(partsCounter);
+                ui->listWidget->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
+                                                  + "    " + "[" + QString::number(partsCounter) + "]Trigger sent.");
             }
         }
     }
@@ -124,4 +144,12 @@ void TriggerForm::receiveUpdateFrame()
         qDisplayedFrame = QImage((uchar*)processedImg.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
         ui->labelShowUSBFrame->setPixmap(QPixmap::fromImage(qDisplayedFrame));
     }
+}
+
+void TriggerForm::on_pushButtonReset_clicked()
+{
+    partsCounter = 0;
+    ui->lcdNumberCounter->display(partsCounter);
+    ui->listWidget->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
+                                      + "    Trigger counter reset.");
 }
