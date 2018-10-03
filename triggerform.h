@@ -41,7 +41,8 @@ private:
     Ui::TriggerForm *ui;
     cv::VideoCapture capture;
     QPixmap whitePixmap;
-    cv::Mat bgImg;
+    cv::Mat bgImg, bgImgROI;
+    cv::Rect ROI;
     int partsCounter = 0;
     int frameCounter = 0;
     bool startCount = false;

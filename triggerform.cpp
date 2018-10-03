@@ -13,6 +13,8 @@ TriggerForm::TriggerForm(QWidget *parent) :
     whitePixmap.fill(Qt::white);
 
     bgImg = cv::imread("../images/bg.png", 0);
+    ROI = Rect(300, 150, 300, 200);
+    bgImgROI = bgImg(ROI).clone();
     connect(ui->listWidget->model(), SIGNAL(rowsInserted(QModelIndex,int,int)),
             ui->listWidget, SLOT(scrollToBottom()));
 }
@@ -56,12 +58,14 @@ void TriggerForm::releaseUSBCam()
 
 Mat TriggerForm::processFrame(Mat img)
 {
-    cv::Mat grayImg;
-    cv::cvtColor(img, grayImg, cv::COLOR_BGR2GRAY);
-    cv::GaussianBlur(grayImg, grayImg, Size(3,3), 0);
+    cv::Mat imgROI,grayImgROI;
+    imgROI = img(ROI).clone();
+
+    cv::cvtColor(imgROI, grayImgROI, cv::COLOR_BGR2GRAY);
+    cv::GaussianBlur(grayImgROI, grayImgROI, Size(3,3), 0);
 
     cv::Mat resImg, thresholdImg;
-    cv::absdiff(grayImg, bgImg, resImg);
+    cv::absdiff(grayImgROI, bgImgROI, resImg);
     cv::threshold(resImg, thresholdImg, 20, 255, THRESH_BINARY);
 
     vector<vector<Point>> contours;
@@ -89,9 +93,9 @@ Mat TriggerForm::processFrame(Mat img)
         double area = cv::contourArea(contours[i]);
         if (area >= 100)
         {
-            cv::drawContours(img, contours, int(i), Scalar(255, 0, 0), -1, 8, vector<Vec4i>(), 0, Point(0,0));
-            if (area > 2000 && !startCount)
+            if (area > 5000 && !startCount)
             {
+                cv::drawContours(img(ROI), contours, int(i), Scalar(255, 0, 0), -1, 8, vector<Vec4i>(), 0, Point(0,0));
                 startCount = true;
                 emit sendTrigger();
                 partsCounter ++;
