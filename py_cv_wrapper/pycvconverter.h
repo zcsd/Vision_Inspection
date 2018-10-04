@@ -1,5 +1,5 @@
 ﻿// This wrapper is used to convert python numpy array <==> c++ Mat
-// Editor: @ZC  edited from opencv/modules/python/src2/cv2.cpp
+// Editor: @ZC  adapt from opencv/modules/python/src2/cv2.cpp
 // Date: created on 31 Jul 2018
 #ifndef PYCVCONVERTER_H
 #define PYCVCONVERTER_H
@@ -13,7 +13,7 @@
 namespace pycvt{
 
 using namespace cv;
-static PyObject* opencv_error = 0;
+static PyObject* opencv_error = nullptr;
 // == MACRO ==
 #define ERRWRAP2(expr) \
 try \

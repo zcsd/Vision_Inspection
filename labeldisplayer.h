@@ -19,7 +19,7 @@ class LabelDisplayer : public QLabel
     Q_OBJECT
 
 public:
-    LabelDisplayer(QWidget *parent = 0);
+    LabelDisplayer(QWidget *parent = nullptr);
     ~LabelDisplayer();
     void startMCalibration();
     void redoMCalibration();

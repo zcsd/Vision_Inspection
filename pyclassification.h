@@ -36,11 +36,11 @@ private:
     void PyInit();
     void PyClose();
     bool is_processed = false;
-    PyObject* pModule = NULL;
-    PyObject* pFunc = NULL;
-    //PyObject* pParam = NULL;
-    PyObject* pNDArray = NULL;
-    PyObject* pResult = NULL;
+    PyObject* pModule = nullptr;
+    PyObject* pFunc = nullptr;
+    //PyObject* pParam = nullptr;
+    PyObject* pNDArray = nullptr;
+    PyObject* pResult = nullptr;
 
 };
 

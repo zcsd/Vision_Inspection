@@ -29,6 +29,7 @@ using namespace cv;
 #include "settingdialog.h"
 #include "calibratorform.h"
 #include "triggerform.h"
+#include "communication/modbusclient.h"
 
 namespace Ui {
 class MainWindow;
@@ -39,7 +40,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 signals:
@@ -92,6 +93,7 @@ private:
     FDTester *fdTester;
     CalibratorForm *calibratorForm;
     TriggerForm *triggerForm;
+    ModbusClient *modbusClient;
     QPixmap bgImg;
     QString defaultSavePath = "../images";
     QString matchMethod = "Machine Learning";

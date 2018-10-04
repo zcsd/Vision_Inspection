@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     pyClassification = new PyClassification();
     fdTester = new FDTester();
     triggerForm = new TriggerForm(this);
+    modbusClient = new ModbusClient(this); // using default ip:port
 
     initialSetup();
 }
@@ -24,6 +25,7 @@ MainWindow::~MainWindow()
     delete measureTool;
     //delete calibratorForm;
     delete triggerForm;
+    delete modbusClient;
     delete ui;
 }
 

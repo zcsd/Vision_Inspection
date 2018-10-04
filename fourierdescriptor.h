@@ -28,7 +28,7 @@ class FDShapeMatching
 public:
     FDShapeMatching(int ctr=128,int fd=12);
     ~FDShapeMatching();
-    void estimateTransformation(Mat _srcFD, Mat _refFD, Mat *alphaPhiST, double *dist=0);
+    void estimateTransformation(Mat _srcFD, Mat _refFD, Mat *alphaPhiST, double *dist=nullptr);
     void setCtrSize(int n);
     void setFDSize(int n);
     int getCtrSize();

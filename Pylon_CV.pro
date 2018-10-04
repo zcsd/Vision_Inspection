@@ -53,7 +53,8 @@ SOURCES += \
     py_cv_wrapper/pycvconverter.cpp \
     calibratorform.cpp \
     measuretool.cpp \
-    triggerform.cpp
+    triggerform.cpp \
+    communication/modbusclient.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -66,13 +67,15 @@ HEADERS += \
     py_cv_wrapper/pycvconverter.h \
     calibratorform.h \
     measuretool.h \
-    triggerform.h
+    triggerform.h \
+    communication/modbusclient.h
 
 FORMS += \
         mainwindow.ui \
     settingdialog.ui \
     calibratorform.ui \
-    triggerform.ui
+    triggerform.ui \
+    communication/modbusclient.ui
 
 DISTFILES += \
     python/classification.py

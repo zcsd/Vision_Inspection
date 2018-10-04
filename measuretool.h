@@ -1,3 +1,6 @@
+// MeasureTool class: measure part size
+// Author: @ZC
+// Date: created on 20 Sep 2018
 #ifndef MEASURETOOL_H
 #define MEASURETOOL_H
 

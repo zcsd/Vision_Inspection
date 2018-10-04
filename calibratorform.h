@@ -27,7 +27,7 @@ class CalibratorForm : public QWidget
     Q_OBJECT
 
 public:
-    explicit CalibratorForm(QWidget *parent = 0);
+    explicit CalibratorForm(QWidget *parent = nullptr);
     ~CalibratorForm();
 
 signals:

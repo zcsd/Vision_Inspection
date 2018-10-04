@@ -1,3 +1,6 @@
+// TriggerForm class: detect coming parts to trigger basler camera to capture
+// Author: @ZC
+// Date: created on 02 Oct 2018
 #ifndef TRIGGERFORM_H
 #define TRIGGERFORM_H
 
