@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     pyClassification = new PyClassification();
     fdTester = new FDTester();
     triggerForm = new TriggerForm(this);
+    modbusTest = new ModbusTest(this);
     //modbusClient = new ModbusClient(this); // using default ip:port
 
     initialSetup();
@@ -575,5 +576,5 @@ void MainWindow::receiveTrigger()
 
 void MainWindow::on_actionModbus_triggered()
 {
-     //modbusClient->readFromPLC(37768);
+    modbusTest->show();
 }

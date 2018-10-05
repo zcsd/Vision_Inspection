@@ -63,6 +63,7 @@ void ModbusClient::onStateChanged(int state)
     if (state == QModbusDevice::UnconnectedState)
     {
         connectionStatus = false;
+        emit sendConnectionStatus(connectionStatus);
         if (keepAlive)
         {
             // auto connect to PLC if connection lose
@@ -72,6 +73,7 @@ void ModbusClient::onStateChanged(int state)
     else if (state == QModbusDevice::ConnectedState)
     {
         connectionStatus = true;
+        emit sendConnectionStatus(connectionStatus);
     }
 }
 

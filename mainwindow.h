@@ -30,6 +30,7 @@ using namespace cv;
 #include "calibratorform.h"
 #include "triggerform.h"
 #include "communication/modbusclient.h"
+#include "test/modbustest.h"
 
 namespace Ui {
 class MainWindow;
@@ -80,7 +81,6 @@ private slots:
     void on_pushButtonMeasure_clicked();
     void on_actionTrigger_triggered();
     void receiveTrigger();
-
     void on_actionModbus_triggered();
 
 public slots:
@@ -95,7 +95,8 @@ private:
     FDTester *fdTester;
     CalibratorForm *calibratorForm;
     TriggerForm *triggerForm;
-    ModbusClient *modbusClient;
+    ModbusTest *modbusTest;
+    //ModbusClient *modbusClient;
     QPixmap bgImg;
     QString defaultSavePath = "../images";
     QString matchMethod = "Machine Learning";

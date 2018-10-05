@@ -25,6 +25,7 @@ public:
 
 signals:
     void sendReadMsg(QString ip, int regAddress, int msgRead);
+    void sendConnectionStatus(bool connected);
 
 public slots:
 

@@ -54,7 +54,8 @@ SOURCES += \
     calibratorform.cpp \
     measuretool.cpp \
     triggerform.cpp \
-    communication/modbusclient.cpp
+    communication/modbusclient.cpp \
+    test/modbustest.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -68,13 +69,15 @@ HEADERS += \
     calibratorform.h \
     measuretool.h \
     triggerform.h \
-    communication/modbusclient.h
+    communication/modbusclient.h \
+    test/modbustest.h
 
 FORMS += \
         mainwindow.ui \
     settingdialog.ui \
     calibratorform.ui \
-    triggerform.ui
+    triggerform.ui \
+    test/modbustest.ui
 
 DISTFILES += \
     python/classification.py
