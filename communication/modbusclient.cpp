@@ -1,17 +1,12 @@
 #include "modbusclient.h"
-#include "ui_modbusclient.h"
 
-ModbusClient::ModbusClient(QWidget *parent, QString _ip, QString _port) :
-    QWidget(parent),
-    ui(new Ui::ModbusClient)
+ModbusClient::ModbusClient(QObject *parent, QString _ip, QString _port, bool _keepAlive) :
+    QObject(parent)
 {
-    ui->setupUi(this);
-    this->setWindowFlags(Qt::WindowStaysOnTopHint | Qt::Window);
-
     ip = QVariant(_ip);
     port = QVariant(_port);
+    keepAlive = _keepAlive;
     initSetup();
-    connectToPLC();
 }
 
 ModbusClient::~ModbusClient()
@@ -19,15 +14,12 @@ ModbusClient::~ModbusClient()
     if (modbusDevice)
         modbusDevice->disconnectDevice();
     delete modbusDevice;
-    delete ui;
 }
 
 void ModbusClient::initSetup()
 {
     if (modbusDevice)
     {
-        modbusDevice->disconnectDevice();
-        delete modbusDevice;
         modbusDevice = nullptr;
     }
     modbusDevice = new QModbusTcpClient(this);
@@ -52,7 +44,6 @@ void ModbusClient::connectToPLC()
             qDebug() << "Modbus connection failure.";
         }
     }
-
 }
 
 void ModbusClient::disconnectToPLC()
@@ -72,8 +63,11 @@ void ModbusClient::onStateChanged(int state)
     if (state == QModbusDevice::UnconnectedState)
     {
         connectionStatus = false;
-        // auto connect to PLC if connection lose
-        connectToPLC();
+        if (keepAlive)
+        {
+            // auto connect to PLC if connection lose
+            connectToPLC();
+        }
     }
     else if (state == QModbusDevice::ConnectedState)
     {
@@ -177,7 +171,7 @@ void ModbusClient::readReady()
             const unsigned int parsedValue = QString::number(unit.value(i),
                                                              unit.registerType() <= QModbusDataUnit::Coils ? 10 : 16).toUInt(&ok, 16);
             qDebug() << "Read from" << startAdd << ":" << QString::number(parsedValue);
-            emit sendReadMsg(startAdd.toInt(), int(parsedValue));
+            emit sendReadMsg(ip.toString(), startAdd.toInt(), int(parsedValue));
         }
     }
     else if (reply->error() == QModbusDevice::ProtocolError)

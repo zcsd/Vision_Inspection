@@ -416,6 +416,7 @@
     <addaction name="separator"/>
     <addaction name="actionCalibration"/>
     <addaction name="actionTrigger"/>
+    <addaction name="actionModbus"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -570,6 +571,11 @@
   <action name="actionTrigger">
    <property name="text">
     <string>Trigger</string>
+   </property>
+  </action>
+  <action name="actionModbus">
+   <property name="text">
+    <string>Modbus</string>
    </property>
   </action>
  </widget>

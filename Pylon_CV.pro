@@ -74,8 +74,7 @@ FORMS += \
         mainwindow.ui \
     settingdialog.ui \
     calibratorform.ui \
-    triggerform.ui \
-    communication/modbusclient.ui
+    triggerform.ui
 
 DISTFILES += \
     python/classification.py

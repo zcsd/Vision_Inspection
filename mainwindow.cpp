@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     pyClassification = new PyClassification();
     fdTester = new FDTester();
     triggerForm = new TriggerForm(this);
-    modbusClient = new ModbusClient(this); // using default ip:port
+    //modbusClient = new ModbusClient(this); // using default ip:port
 
     initialSetup();
 }
@@ -25,7 +25,7 @@ MainWindow::~MainWindow()
     delete measureTool;
     //delete calibratorForm;
     delete triggerForm;
-    delete modbusClient;
+    //delete modbusClient;
     delete ui;
 }
 
@@ -571,4 +571,9 @@ void MainWindow::receiveTrigger()
     usleep(2000000); // 2s
     on_pushButtonCapture_clicked();
     on_pushButtonMeasure_clicked();
+}
+
+void MainWindow::on_actionModbus_triggered()
+{
+     //modbusClient->readFromPLC(37768);
 }

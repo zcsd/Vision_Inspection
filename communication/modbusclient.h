@@ -5,29 +5,26 @@
 #define MODBUSCLIENT_H
 
 #include <QObject>
-#include <QWidget>
 #include <QModbusClient>
 #include <QModbusTcpClient>
 #include <QModbusDataUnit>
 #include <QDebug>
 
-namespace Ui {
-class ModbusClient;
-}
-
-class ModbusClient : public QWidget
+class ModbusClient : public QObject
 {
     Q_OBJECT
-
 public:
-    explicit ModbusClient(QWidget *parent = nullptr, QString _ip = "172.19.80.32", QString _port = "502");
+    explicit ModbusClient(QObject *parent = nullptr,
+                          QString _ip = "172.19.80.32", QString _port = "502", bool _keepAlive = false);
     ~ModbusClient();
+    void connectToPLC();
+    void disconnectToPLC();
     bool connected();
     void writeToPLC(int regAddress, int msgToSend);
     void readFromPLC(int regAddress);
 
 signals:
-    void sendReadMsg(int regAddress, int msgRead);
+    void sendReadMsg(QString ip, int regAddress, int msgRead);
 
 public slots:
 
@@ -36,13 +33,11 @@ private slots:
     void readReady();
 
 private:
-    Ui::ModbusClient *ui;
     QModbusClient *modbusDevice;
     QVariant ip, port;
     bool connectionStatus = false;
+    bool keepAlive = false;
     void initSetup();
-    void connectToPLC();
-    void disconnectToPLC();
 };
 
 #endif // MODBUSCLIENT_H

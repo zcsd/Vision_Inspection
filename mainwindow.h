@@ -81,6 +81,8 @@ private slots:
     void on_actionTrigger_triggered();
     void receiveTrigger();
 
+    void on_actionModbus_triggered();
+
 public slots:
     void receiveShowMousePosition(QPoint& pos);
     void receiveFrameRequest();
