@@ -23,15 +23,17 @@ public:
     explicit ModbusClient(QWidget *parent = nullptr, QString _ip = "172.19.80.32", QString _port = "502");
     ~ModbusClient();
     bool connected();
-    bool writeToPLC(int regAddress, int msgToSend);
-    int readFromPLC(int regAddress);
+    void writeToPLC(int regAddress, int msgToSend);
+    void readFromPLC(int regAddress);
 
 signals:
+    void sendReadMsg(int regAddress, int msgRead);
 
 public slots:
 
 private slots:
     void onStateChanged(int state);
+    void readReady();
 
 private:
     Ui::ModbusClient *ui;
@@ -40,7 +42,7 @@ private:
     bool connectionStatus = false;
     void initSetup();
     void connectToPLC();
-
+    void disconnectToPLC();
 };
 
 #endif // MODBUSCLIENT_H

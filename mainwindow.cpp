@@ -562,7 +562,6 @@ void MainWindow::on_pushButtonMeasure_clicked()
 void MainWindow::on_actionTrigger_triggered()
 {
     triggerForm->show();
-
     connect(triggerForm, SIGNAL(sendTrigger()), this, SLOT(receiveTrigger()));
 }
 
