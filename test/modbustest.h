@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QtDebug>
 #include <QObject>
+#include <QMessageBox>
 
 #include <communication/modbusclient.h>
 

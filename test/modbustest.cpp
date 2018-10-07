@@ -20,8 +20,10 @@ void ModbusTest::initSetup()
 {
     ui->lineEditIP->setText("172.19.80.32");
     ui->lineEditPort->setText("502");
-    ui->lineEditReadAddress->setText("37768");
+    ui->lineEditReadAddress->setText("38268");
     ui->lineEditSendAddress->setText("37768");
+
+    receiveConnectionStatus(false);
 }
 
 void ModbusTest::on_pushButtonConnect_clicked()
@@ -51,18 +53,32 @@ void ModbusTest::receiveConnectionStatus(bool connected)
         isConnected = true;
         ui->pushButtonConnect->setDisabled(true);
         ui->pushButtonDisconnect->setEnabled(true);
+        ui->pushButtonConnect->setStyleSheet("background-color: rgb(100, 255, 100);");
+        ui->pushButtonRead->setEnabled(true);
+        ui->pushButtonSend->setEnabled(true);
     }
     else
     {
         isConnected = false;
         ui->pushButtonConnect->setEnabled(true);
         ui->pushButtonDisconnect->setDisabled(true);
+        ui->pushButtonConnect->setStyleSheet("background-color: rgb(225, 225, 225);");
+        ui->pushButtonRead->setDisabled(true);
+        ui->pushButtonSend->setDisabled(true);
     }
 }
 
 void ModbusTest::on_pushButtonSend_clicked()
 {
-    modbusClient->writeToPLC(ui->lineEditSendAddress->text().toInt(), ui->lineEditSend->text().toInt());
+    if(!ui->lineEditSend->text().isEmpty() && !ui->lineEditSend->text().isEmpty())
+    {
+        modbusClient->writeToPLC(ui->lineEditSendAddress->text().toInt(), ui->lineEditSend->text().toInt());
+    }
+    else
+    {
+       QMessageBox::warning(this, "No enough information", "Please fill in address and content to send.");
+    }
+
 }
 
 void ModbusTest::on_pushButtonClearSend_clicked()
@@ -72,7 +88,15 @@ void ModbusTest::on_pushButtonClearSend_clicked()
 
 void ModbusTest::on_pushButtonRead_clicked()
 {
-    modbusClient->readFromPLC(ui->lineEditReadAddress->text().toInt());
+    if(!ui->lineEditReadAddress->text().isEmpty())
+    {
+        modbusClient->readFromPLC(ui->lineEditReadAddress->text().toInt());
+    }
+    else
+    {
+        QMessageBox::warning(this, "No enough information", "Please fill in address.");
+    }
+
 }
 
 void ModbusTest::on_pushButtonClearRead_clicked()
