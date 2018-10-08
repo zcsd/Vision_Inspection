@@ -17,9 +17,10 @@ public:
     explicit ModbusClient(QObject *parent = nullptr,
                           QString _ip = "172.19.80.32", QString _port = "502", bool _keepAlive = false);
     ~ModbusClient();
+
+    bool connected();
     void connectToPLC();
     void disconnectToPLC();
-    bool connected();
     void writeToPLC(int regAddress, int msgToSend);
     void readFromPLC(int regAddress);
 
