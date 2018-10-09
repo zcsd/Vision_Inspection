@@ -23,6 +23,8 @@
 
 - sudo apt-get install python3-numpy
 
+- sudo apt install libcurl4-openssl-dev
+
 ## **TODO**
 
 - Move connect/disconnect/capture/stream to upper menu.
