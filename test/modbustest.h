@@ -1,3 +1,6 @@
+// ModbusTest class: test Modbus connection and function
+// Author: @ZC
+// Date: created on 05 Oct 2018
 #ifndef MODBUSTEST_H
 #define MODBUSTEST_H
 

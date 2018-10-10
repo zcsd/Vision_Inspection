@@ -32,6 +32,7 @@ using namespace cv;
 #include "communication/modbusclient.h"
 #include "communication/mqttclient.h"
 #include "test/modbustest.h"
+#include "test/mqtttest.h"
 
 namespace Ui {
 class MainWindow;
@@ -98,6 +99,7 @@ private:
     CalibratorForm *calibratorForm;
     TriggerForm *triggerForm;
     ModbusTest *modbusTest;
+    MqttTest *mqttTest;
     QPixmap bgImg;
     QString defaultSavePath = "../images";
     QString matchMethod = "Machine Learning";

@@ -59,7 +59,8 @@ SOURCES += \
     triggerform.cpp \
     communication/modbusclient.cpp \
     test/modbustest.cpp \
-    communication/mqttclient.cpp
+    communication/mqttclient.cpp \
+    test/mqtttest.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -75,14 +76,16 @@ HEADERS += \
     triggerform.h \
     communication/modbusclient.h \
     test/modbustest.h \
-    communication/mqttclient.h
+    communication/mqttclient.h \
+    test/mqtttest.h
 
 FORMS += \
         mainwindow.ui \
     settingdialog.ui \
     calibratorform.ui \
     triggerform.ui \
-    test/modbustest.ui
+    test/modbustest.ui \
+    test/mqtttest.ui
 
 DISTFILES += \
     python/classification.py
