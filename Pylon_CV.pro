@@ -37,6 +37,9 @@ LIBS += -llog4cpp_gcc_v3_1_Basler_pylon_v5_1
 LIBS += -lLog_gcc_v3_1_Basler_pylon_v5_1
 LIBS += -lXmlParser_gcc_v3_1_Basler_pylon_v5_1
 
+# libcurl, to get token from http
+LIBS += -lcurl
+
 # boost
 #INCLUDEPATH += /usr/include/boost
 #LIBS += -L/usr/include/boost -lboost_python -lboost_system
@@ -55,7 +58,8 @@ SOURCES += \
     measuretool.cpp \
     triggerform.cpp \
     communication/modbusclient.cpp \
-    test/modbustest.cpp
+    test/modbustest.cpp \
+    communication/mqttclient.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -70,7 +74,8 @@ HEADERS += \
     measuretool.h \
     triggerform.h \
     communication/modbusclient.h \
-    test/modbustest.h
+    test/modbustest.h \
+    communication/mqttclient.h
 
 FORMS += \
         mainwindow.ui \

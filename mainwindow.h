@@ -30,6 +30,7 @@ using namespace cv;
 #include "calibratorform.h"
 #include "triggerform.h"
 #include "communication/modbusclient.h"
+#include "communication/mqttclient.h"
 #include "test/modbustest.h"
 
 namespace Ui {
@@ -82,6 +83,7 @@ private slots:
     void on_actionTrigger_triggered();
     void receiveTrigger();
     void on_actionModbus_triggered();
+    void on_actionMQTT_triggered();
 
 public slots:
     void receiveShowMousePosition(QPoint& pos);
@@ -96,7 +98,6 @@ private:
     CalibratorForm *calibratorForm;
     TriggerForm *triggerForm;
     ModbusTest *modbusTest;
-    //ModbusClient *modbusClient;
     QPixmap bgImg;
     QString defaultSavePath = "../images";
     QString matchMethod = "Machine Learning";

@@ -578,3 +578,8 @@ void MainWindow::on_actionModbus_triggered()
 {
     modbusTest->show();
 }
+
+void MainWindow::on_actionMQTT_triggered()
+{
+
+}

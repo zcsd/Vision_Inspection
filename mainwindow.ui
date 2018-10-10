@@ -417,6 +417,7 @@
     <addaction name="actionCalibration"/>
     <addaction name="actionTrigger"/>
     <addaction name="actionModbus"/>
+    <addaction name="actionMQTT"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -576,6 +577,11 @@
   <action name="actionModbus">
    <property name="text">
     <string>Modbus</string>
+   </property>
+  </action>
+  <action name="actionMQTT">
+   <property name="text">
+    <string>MQTT</string>
    </property>
   </action>
  </widget>
