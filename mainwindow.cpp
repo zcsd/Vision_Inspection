@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
     fdTester = new FDTester();
     triggerForm = new TriggerForm(this);
     modbusTest = new ModbusTest(this);
+    mqttTest = new MqttTest(this);
 
     initialSetup();
 }
@@ -580,6 +581,5 @@ void MainWindow::on_actionModbus_triggered()
 
 void MainWindow::on_actionMQTT_triggered()
 {
-    mqttTest = new MqttTest(this);
     mqttTest->show();
 }

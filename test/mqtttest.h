@@ -7,6 +7,7 @@
 #include <QWidget>
 #include <QObject>
 #include <QDebug>
+#include <QDateTime>
 
 #include "communication/mqttclient.h"
 

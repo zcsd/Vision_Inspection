@@ -14,15 +14,14 @@ MqttTest::MqttTest(QWidget *parent) :
 MqttTest::~MqttTest()
 {
     delete ui;
-    delete mqttClient;
+    if (mqttClient)
+        delete mqttClient;
 }
 
 void MqttTest::initSetup()
 {
     receiveConState(0);
     receiveSubState(0);
-    mqttClient = new MqttClient(this);
-    connect(mqttClient, SIGNAL(sendConState(int)), this, SLOT(receiveConState(int)));
     connect(ui->listWidgetStatus->model(), SIGNAL(rowsInserted(QModelIndex,int,int)),
             ui->listWidgetStatus, SLOT(scrollToBottom()));
     connect(ui->listWidgetMsgSub->model(), SIGNAL(rowsInserted(QModelIndex,int,int)),
@@ -31,6 +30,9 @@ void MqttTest::initSetup()
 
 void MqttTest::on_pushButtonConnect_clicked()
 {
+    mqttClient = new MqttClient(this);
+    connect(mqttClient, SIGNAL(sendConState(int)), this, SLOT(receiveConState(int)));
+
     if (mqttClient->isConnected())
     {
         isConnected = true;
@@ -54,6 +56,7 @@ void MqttTest::on_pushButtonDisconnect_clicked()
         }
         mqttClient->disconnect();
     }
+    delete mqttClient;
 }
 
 void MqttTest::on_pushButtonPublish_clicked()
@@ -161,5 +164,5 @@ void MqttTest::receiveSubState(int state)
 void MqttTest::receiveSubMsg(QString topic, QString msg)
 {
     ui->listWidgetMsgSub->addItem("[Msg]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss    ")
-                                  + msg);
+                                  + "Request " + topic.split("/")[5] + ": " + msg);
 }

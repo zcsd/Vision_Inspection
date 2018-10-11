@@ -1,4 +1,4 @@
-// MqttClient class: communicate with IoT thingsboard server
+// MqttClient class: communicate with IoT thingsboard server by MQTT
 // Author: @ZC
 // Date: created on 10 Oct 2018
 #ifndef MQTTCLIENT_H
@@ -6,8 +6,6 @@
 
 #include <QObject>
 #include <QDebug>
-#include <QDateTime>
-#include <QMessageBox>
 
 #include <QtMqtt/QMqttClient>
 #include <QtMqtt/QMqttMessage>
@@ -38,7 +36,6 @@ signals:
     void sendSubMsg(QString topic, QString msg);
     void sendConState(int state);
     void sendSubState(int state);
-    void sendUnsubCmd();
 
 public slots:
 

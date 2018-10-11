@@ -125,6 +125,9 @@
    <property name="text">
     <string>tenant</string>
    </property>
+   <property name="echoMode">
+    <enum>QLineEdit::Password</enum>
+   </property>
   </widget>
   <widget class="QLabel" name="label_3">
    <property name="geometry">

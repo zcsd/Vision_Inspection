@@ -15,17 +15,11 @@ void MqttClient::initSetup()
 {
     connect(mqttClient, &QMqttClient::stateChanged, this, &MqttClient::updateConStateChange);
     connect(mqttClient, &QMqttClient::disconnected, this, &MqttClient::brokerDisconnected);
-    /*
+
     connect(mqttClient, &QMqttClient::messageReceived, this, [this](const QByteArray &message, const QMqttTopicName &topic)
     {
-        const QString content = QDateTime::currentDateTime().toString()
-                    + QLatin1String(" Received Topic: ")
-                    + topic.name()
-                    + QLatin1String(" Message: ")
-                    + message
-                    + QLatin1Char('\n');
-        qDebug() << content;
-    });*/
+        emit sendSubMsg(topic.name(), QString::fromUtf8(message));
+    });
     /*
     connect(mqttClient, &QMqttClient::pingResponseReceived, this, [this]()
     {
@@ -94,9 +88,8 @@ void MqttClient::subscribe(QString topic, int QoS)
         }
         currentTopic = subscription->topic().filter();
         updateSubState(subscription->state());
-        connect(subscription, &QMqttSubscription::messageReceived, this, &MqttClient::updateSubMessage);
+        //connect(subscription, &QMqttSubscription::messageReceived, this, &MqttClient::updateSubMessage);
         connect(subscription, &QMqttSubscription::stateChanged, this, &MqttClient::updateSubState);
-        connect(this, SIGNAL(sendUnsubCmd()), subscription, SLOT(unsubscribe()));
     }
     else
     {
@@ -108,7 +101,7 @@ void MqttClient::unsubscribe(QString topic)
 {
     if (mqttClient->state() == QMqttClient::Connected)
     {
-        emit sendUnsubCmd();
+        mqttClient->unsubscribe(topic);
     }
 }
 
@@ -121,13 +114,7 @@ void MqttClient::keepAlive(int interval)
 }
 
 void MqttClient::updateConStateChange()
-{   /*
-    const QString content = QDateTime::currentDateTime().toString()
-                    + QLatin1String(": State Change")
-                    + QString::number(mqttClient->state())
-                    + QLatin1Char('\n');
-    qDebug() << content;*/
-
+{
     if (mqttClient->state() == QMqttClient::Connected)
     {
         connectionStatus = true;
@@ -182,6 +169,8 @@ void MqttClient::updateSubState(QMqttSubscription::SubscriptionState state)
     //qDebug() << "subscription state changes to:" << subState;
 }
 
+
+//NOT USED
 void MqttClient::updateSubMessage(const QMqttMessage &msg)
 {
     //qDebug() << "Message Receive:" << msg.payload();
