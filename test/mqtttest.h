@@ -29,8 +29,15 @@ private slots:
     void on_pushButtonSub_clicked();
     void on_pushButtonUnsub_clicked();
 
+    void receiveConState(int state);
+    void receiveSubState(int state);
+    void receiveSubMsg(QString topic, QString msg);
+
 private:
     Ui::MqttTest *ui;
+    MqttClient *mqttClient;
+    bool isConnected = false, isSub = false;
+    void initSetup();
 };
 
 #endif // MQTTTEST_H

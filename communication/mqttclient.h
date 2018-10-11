@@ -25,10 +25,10 @@ class MqttClient : public QObject
 public:
     explicit MqttClient(QObject *parent = nullptr);
     ~MqttClient();
-    void connectToBroker(QString _ip = "172.19.80.25", QString _mqttPort = "1883",
-                 QString _username = "tenant@thingsboard.org", QString _password = "tenant",
-                 QString _tokenPort = "8080", QString _deviceID = "624facf0-cb6e-11e8-8891-05a8a3fcf36e");
+    void connectToBroker(QString _ip, QString _mqttPort, QString _username, QString _password,
+                         QString _deviceID, QString _tokenPort = "8080");
     void disconnect();
+    bool isConnected();
     void publish(QString topic, QString msg, int QoS = 0, bool isRetain = false);
     void subscribe(QString topic, int QoS = 0);
     void unsubscribe(QString topic);
@@ -37,6 +37,8 @@ public:
 signals:
     void sendSubMsg(QString topic, QString msg);
     void sendConState(int state);
+    void sendSubState(int state);
+    void sendUnsubCmd();
 
 public slots:
 
@@ -49,6 +51,8 @@ private slots:
 private:
     QMqttClient *mqttClient;
     QString ip, mqttPort, username, password, tokenPort, deviceID;
+    QString currentTopic;
+    bool connectionStatus = false;
     void initSetup();
     QString getJWT();
     QString getToken();
