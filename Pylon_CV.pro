@@ -42,8 +42,8 @@ LIBS += -lcurl
 
 # RFID reader, using relative path
 INCLUDEPATH += ./lib/rfid_s8
-LIBS += -L./lib/rfid_s8 -ls8
-#/home/zclin/pylon_cv/lib/rfid_s8
+LIBS += -L/lib -ls8
+
 # boost
 #INCLUDEPATH += /usr/include/boost
 #LIBS += -L/usr/include/boost -lboost_python -lboost_system
@@ -65,7 +65,6 @@ SOURCES += \
     test/modbustest.cpp \
     communication/mqttclient.cpp \
     test/mqtttest.cpp \
-    communication/rfidtest.cpp \
     communication/rfidtool.cpp
 
 HEADERS += \
