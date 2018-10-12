@@ -40,6 +40,10 @@ LIBS += -lXmlParser_gcc_v3_1_Basler_pylon_v5_1
 # libcurl, to get token from http
 LIBS += -lcurl
 
+# RFID reader, using relative path
+INCLUDEPATH += ./lib/rfid_s8
+LIBS += -L./lib/rfid_s8 -ls8
+#/home/zclin/pylon_cv/lib/rfid_s8
 # boost
 #INCLUDEPATH += /usr/include/boost
 #LIBS += -L/usr/include/boost -lboost_python -lboost_system
@@ -60,7 +64,9 @@ SOURCES += \
     communication/modbusclient.cpp \
     test/modbustest.cpp \
     communication/mqttclient.cpp \
-    test/mqtttest.cpp
+    test/mqtttest.cpp \
+    communication/rfidtest.cpp \
+    communication/rfidtool.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -77,7 +83,8 @@ HEADERS += \
     communication/modbusclient.h \
     test/modbustest.h \
     communication/mqttclient.h \
-    test/mqtttest.h
+    test/mqtttest.h \
+    communication/rfidtool.h
 
 FORMS += \
         mainwindow.ui \

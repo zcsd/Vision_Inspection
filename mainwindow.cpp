@@ -583,3 +583,9 @@ void MainWindow::on_actionMQTT_triggered()
 {
     mqttTest->show();
 }
+
+void MainWindow::on_actionRFID_triggered()
+{
+    RFIDTool *rfidTool = new RFIDTool(this);
+    rfidTool->initDevice();
+}

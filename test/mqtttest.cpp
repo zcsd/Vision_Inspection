@@ -14,8 +14,6 @@ MqttTest::MqttTest(QWidget *parent) :
 MqttTest::~MqttTest()
 {
     delete ui;
-    if (mqttClient)
-        delete mqttClient;
 }
 
 void MqttTest::initSetup()

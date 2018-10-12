@@ -31,6 +31,7 @@ using namespace cv;
 #include "triggerform.h"
 #include "communication/modbusclient.h"
 #include "communication/mqttclient.h"
+#include "communication/rfidtool.h"
 #include "test/modbustest.h"
 #include "test/mqtttest.h"
 
@@ -85,6 +86,8 @@ private slots:
     void receiveTrigger();
     void on_actionModbus_triggered();
     void on_actionMQTT_triggered();
+
+    void on_actionRFID_triggered();
 
 public slots:
     void receiveShowMousePosition(QPoint& pos);

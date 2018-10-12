@@ -418,6 +418,8 @@
     <addaction name="actionTrigger"/>
     <addaction name="actionModbus"/>
     <addaction name="actionMQTT"/>
+    <addaction name="separator"/>
+    <addaction name="actionRFID"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -582,6 +584,11 @@
   <action name="actionMQTT">
    <property name="text">
     <string>MQTT</string>
+   </property>
+  </action>
+  <action name="actionRFID">
+   <property name="text">
+    <string>RFID</string>
    </property>
   </action>
  </widget>
