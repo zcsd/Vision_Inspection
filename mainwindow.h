@@ -34,6 +34,7 @@ using namespace cv;
 #include "communication/rfidtool.h"
 #include "test/modbustest.h"
 #include "test/mqtttest.h"
+#include "test/rfidtest.h"
 
 namespace Ui {
 class MainWindow;
@@ -103,6 +104,7 @@ private:
     TriggerForm *triggerForm;
     ModbusTest *modbusTest;
     MqttTest *mqttTest;
+    RFIDtest *rfidTest;
     QPixmap bgImg;
     QString defaultSavePath = "../images";
     QString matchMethod = "Machine Learning";

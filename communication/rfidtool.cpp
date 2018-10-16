@@ -5,9 +5,9 @@ RFIDTool::RFIDTool(QObject *parent) : QObject(parent)
 
 }
 
-int RFIDTool::initDevice()
+void RFIDTool::initDevice()
 {
-    int icdev,st,number;
+    int st, number;
     unsigned char szVer[128];
     int iNode = 0;
     char szNode[128];
@@ -46,28 +46,27 @@ int RFIDTool::initDevice()
         iNode++;
         if((icdev=fw_init_ex(1,szNode,115200))== -1)
         {
-            printf("fw_init_ex ERR %d\n",icdev);
-            return 0;
+            qDebug() << "fw_init_ex ERR" << icdev;
+            return;
         }
         else
         {
             st = fw_getver(icdev, szVer);
-            if(st ==0)
+            if (st == 0)
             {
                 break;
             }
             else
             {
-                printf("%s init error\n",szNode);
+                qDebug() << szNode << "init error";
             }
         }
     }while(icdev != -1);
 
+    qDebug() << szNode << "init ok";
 
-    printf("%s init ok\n",szNode);
-
-    fw_beep(icdev,10);
-
+    fw_beep(icdev, 10);
+/*
     printf("1---Device\n");
     printf("2--ICODE2\n");
     printf("0---Quit\n");
@@ -85,12 +84,11 @@ int RFIDTool::initDevice()
         default:
         break;
     }
-
-       fw_exit(icdev);
-       return 0;
+*/
+    //fw_exit(icdev);
 }
 
-int RFIDTool::testDevice(int icdev)
+void RFIDTool::testDevice()
 {
     int st;//the state of each operation
     unsigned char rdata[1024];
@@ -126,10 +124,10 @@ int RFIDTool::testDevice(int icdev)
     //st = fw_lcd_dispstr(icdev, L"字符串测试123ab完毕", 1);
     //if(st)printf("fw_lcd_dispstr error:0x%x\n",st);
 DO_EXIT:
-    return st;
+    return;
 }
 
-int RFIDTool::icode2(int icdev)
+void RFIDTool::icode2()
 {
     int st;
     unsigned char rlen[17]={0};
@@ -146,52 +144,49 @@ int RFIDTool::icode2(int icdev)
     st= fw_inventory(icdev,0x36,0,0,rlen,rbuffer);        //find single card
     if(st)
     {
-        printf("Find single card ERROR!\n");
-        return 0;
+        qDebug() << "Find single card ERROR!";
+        return;
     }
 
     hex_a(szCardSn, &rbuffer[0], 2* rlen[0]);
 
-    printf("Find card %s \n", (char *)szCardSn);
+    qDebug() << "Find card" << (char *)szCardSn;
 
     memcpy(UID,(char*)&rbuffer[0], 8);
 
-
-    st=fw_select_uid(icdev,0x22,&UID[0]);
-    if(st)
+    st = fw_select_uid(icdev,0x22,&UID[0]);
+    if (st)
     {
-        printf("fw_select_uid ERROR!\n");
-        return 0;
+        qDebug() << "fw_select_uid ERROR!";
+        return;
     }
 
-        st=fw_reset_to_ready(icdev,0x22,&UID[0]);
-        if(st)
+    st = fw_reset_to_ready(icdev,0x22,&UID[0]);
+    if (st)
     {
-        printf("fw_reset_to_ready ERROR!\n");
-        return 0;
+        qDebug() << "fw_reset_to_ready ERROR!";
+        return;
     }
 
 
     st = fw_get_securityinfo(icdev,0x22,0x04,0x02, &UID[0],rlen,rbuffer);
-    if(st)
+    if (st)
     {
-        printf("fw_get_securityinfo ERROR!\n");
-        return 0;
+        qDebug() << "fw_get_securityinfo ERROR!";
+        return;
     }
 
     st=fw_readblock(icdev,0x22,m_StaAddr,m_Blockno,&UID[0],rlen,rbuffer);  //read block data
     if(st)
     {
-        printf("Read data ERROR! \n");
-        return 0;
+        qDebug() << "Read data ERROR!";
+        return;
     }
 
     for(i=0;i<m_Blockno;i++)
     {
         sprintf((char *)tmp,"BlockAddr:[%2d] Data:[%02X %02X %02X %02X]",m_StaAddr+i,rbuffer[i*4],rbuffer[i*4+1],rbuffer[i*4+2],rbuffer[i*4+3]);
-        printf("%s\n", (const char *)tmp);
+        qDebug() << (const char *)tmp;
     }
-
-
-    return 0;
+    fw_beep(icdev, 10);
 }

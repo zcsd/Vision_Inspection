@@ -65,7 +65,8 @@ SOURCES += \
     test/modbustest.cpp \
     communication/mqttclient.cpp \
     test/mqtttest.cpp \
-    communication/rfidtool.cpp
+    communication/rfidtool.cpp \
+    test/rfidtest.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -83,7 +84,8 @@ HEADERS += \
     test/modbustest.h \
     communication/mqttclient.h \
     test/mqtttest.h \
-    communication/rfidtool.h
+    communication/rfidtool.h \
+    test/rfidtest.h
 
 FORMS += \
         mainwindow.ui \
@@ -91,7 +93,8 @@ FORMS += \
     calibratorform.ui \
     triggerform.ui \
     test/modbustest.ui \
-    test/mqtttest.ui
+    test/mqtttest.ui \
+    test/rfidtest.ui
 
 DISTFILES += \
     python/classification.py

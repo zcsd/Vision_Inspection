@@ -25,6 +25,12 @@
 
 - sudo apt install libcurl4-openssl-dev
 
+- for RFID lib, serial port ttyUSBx only can be accessed by root by default, you need to add your username to dialout group, and reboot.
+
+sudo usermod -a -G dialout $USER
+
+
+
 ## **TODO**
 
 - Move connect/disconnect/capture/stream to upper menu.

@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     triggerForm = new TriggerForm(this);
     modbusTest = new ModbusTest(this);
     mqttTest = new MqttTest(this);
+    rfidTest = new RFIDtest(this);
 
     initialSetup();
 }
@@ -586,6 +587,5 @@ void MainWindow::on_actionMQTT_triggered()
 
 void MainWindow::on_actionRFID_triggered()
 {
-    RFIDTool *rfidTool = new RFIDTool(this);
-    rfidTool->initDevice();
+    rfidTest->show();
 }
