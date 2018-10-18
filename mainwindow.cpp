@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     triggerForm = new TriggerForm(this);
     modbusTest = new ModbusTest(this);
     mqttTest = new MqttTest(this);
+    opcuaTest = new OpcUaTest(this);
     rfidTest = new RFIDtest(this);
 
     initialSetup();
@@ -588,4 +589,9 @@ void MainWindow::on_actionMQTT_triggered()
 void MainWindow::on_actionRFID_triggered()
 {
     rfidTest->show();
+}
+
+void MainWindow::on_actionOPC_UA_triggered()
+{
+    opcuaTest->show();
 }

@@ -4,14 +4,21 @@
 #### Install open62541 as opcua backend
 
 sudo apt install python-pip (for python2, python3 can not)
+
 pip install six (for open62541)
 
 git clone https://github.com/open62541/open62541.git
+
 cd open62541
+
 git checkout 0.3 
+
 mkdir build && cd build
+
 cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DUA_ENABLE_AMALGAMATION=ON ..
+
 make
+
 sudo make install
 
 

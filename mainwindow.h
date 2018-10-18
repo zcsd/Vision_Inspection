@@ -35,6 +35,7 @@ using namespace cv;
 #include "test/modbustest.h"
 #include "test/mqtttest.h"
 #include "test/rfidtest.h"
+#include "test/opcuatest.h"
 
 namespace Ui {
 class MainWindow;
@@ -90,6 +91,8 @@ private slots:
 
     void on_actionRFID_triggered();
 
+    void on_actionOPC_UA_triggered();
+
 public slots:
     void receiveShowMousePosition(QPoint& pos);
     void receiveFrameRequest();
@@ -104,6 +107,7 @@ private:
     TriggerForm *triggerForm;
     ModbusTest *modbusTest;
     MqttTest *mqttTest;
+    OpcUaTest *opcuaTest;
     RFIDtest *rfidTest;
     QPixmap bgImg;
     QString defaultSavePath = "../images";

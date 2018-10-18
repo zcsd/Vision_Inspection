@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui concurrent serialbus network mqtt
+QT       += core gui concurrent serialbus network mqtt opcua
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -66,7 +66,8 @@ SOURCES += \
     communication/mqttclient.cpp \
     test/mqtttest.cpp \
     communication/rfidtool.cpp \
-    test/rfidtest.cpp
+    test/rfidtest.cpp \
+    test/opcuatest.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -85,7 +86,8 @@ HEADERS += \
     communication/mqttclient.h \
     test/mqtttest.h \
     communication/rfidtool.h \
-    test/rfidtest.h
+    test/rfidtest.h \
+    test/opcuatest.h
 
 FORMS += \
         mainwindow.ui \
@@ -94,7 +96,8 @@ FORMS += \
     triggerform.ui \
     test/modbustest.ui \
     test/mqtttest.ui \
-    test/rfidtest.ui
+    test/rfidtest.ui \
+    test/opcuatest.ui
 
 DISTFILES += \
     python/classification.py

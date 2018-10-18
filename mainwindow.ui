@@ -419,6 +419,7 @@
     <addaction name="actionModbus"/>
     <addaction name="actionMQTT"/>
     <addaction name="separator"/>
+    <addaction name="actionOPC_UA"/>
     <addaction name="actionRFID"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -589,6 +590,11 @@
   <action name="actionRFID">
    <property name="text">
     <string>RFID</string>
+   </property>
+  </action>
+  <action name="actionOPC_UA">
+   <property name="text">
+    <string>OPC UA</string>
    </property>
   </action>
  </widget>
