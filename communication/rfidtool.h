@@ -17,17 +17,20 @@ class RFIDTool : public QObject
     Q_OBJECT
 public:
     explicit RFIDTool(QObject *parent = nullptr);
-    void initDevice();
+    bool initDevice();
     void closeDevice();
-    void testDevice();
+    bool testDevice();
     void icode2();
 
 signals:
+    void sendDeviceInfo(QString);
+    void sendReadInfo(bool, QString, QString);
 
 public slots:
 
 private:
     int icdev;
+
 };
 
 #endif // RFIDTOOL_H

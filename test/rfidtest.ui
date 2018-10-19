@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>233</height>
+    <width>491</width>
+    <height>273</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,35 +17,35 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>130</y>
-     <width>371</width>
-     <height>91</height>
+     <y>110</y>
+     <width>461</width>
+     <height>151</height>
     </rect>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: rgb(255, 255, 255);</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButtonOpen">
+  <widget class="QPushButton" name="pushButtonConnect">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>20</y>
-     <width>89</width>
-     <height>25</height>
+     <x>21</x>
+     <y>51</y>
+     <width>111</width>
+     <height>51</height>
     </rect>
    </property>
    <property name="text">
-    <string>Open</string>
+    <string>Connect</string>
    </property>
   </widget>
   <widget class="QPushButton" name="pushButtonRead">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>60</y>
-     <width>89</width>
-     <height>25</height>
+     <x>200</x>
+     <y>50</y>
+     <width>111</width>
+     <height>51</height>
     </rect>
    </property>
    <property name="text">
@@ -55,14 +55,43 @@
   <widget class="QPushButton" name="pushButtonClose">
    <property name="geometry">
     <rect>
-     <x>130</x>
-     <y>20</y>
-     <width>89</width>
-     <height>25</height>
+     <x>360</x>
+     <y>50</y>
+     <width>121</width>
+     <height>51</height>
     </rect>
    </property>
    <property name="text">
     <string>Close</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>10</y>
+     <width>91</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Device Port:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelShowPort">
+   <property name="geometry">
+    <rect>
+     <x>130</x>
+     <y>10</y>
+     <width>101</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string/>
    </property>
   </widget>
  </widget>

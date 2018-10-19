@@ -203,5 +203,4 @@ void OpcUaTest::on_pushButtonWrite_clicked()
         QObject::connect(node3, &QOpcUaNode::attributeWritten, this, &OpcUaTest::nodeWritten);
         node3Write();
     }
-
 }

@@ -6,6 +6,8 @@
 
 #include <QWidget>
 #include <QObject>
+#include <QDateTime>
+
 #include <communication/rfidtool.h>
 
 namespace Ui {
@@ -21,11 +23,12 @@ public:
     ~RFIDtest();
 
 private slots:
-    void on_pushButtonOpen_clicked();
-
+    void on_pushButtonConnect_clicked();
     void on_pushButtonClose_clicked();
-
     void on_pushButtonRead_clicked();
+
+    void receiveDeviceInfo(QString port);
+    void receiveReadInfo(bool isValid, QString card, QString data);
 
 private:
     Ui::RFIDtest *ui;
