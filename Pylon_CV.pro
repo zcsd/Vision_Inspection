@@ -87,7 +87,8 @@ HEADERS += \
     test/mqtttest.h \
     communication/rfidtool.h \
     test/rfidtest.h \
-    test/opcuatest.h
+    test/opcuatest.h \
+    communication/httpauth.h
 
 FORMS += \
         mainwindow.ui \
