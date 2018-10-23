@@ -67,7 +67,8 @@ SOURCES += \
     test/mqtttest.cpp \
     communication/rfidtool.cpp \
     test/rfidtest.cpp \
-    test/opcuatest.cpp
+    test/opcuatest.cpp \
+    pocworker.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -88,7 +89,8 @@ HEADERS += \
     communication/rfidtool.h \
     test/rfidtest.h \
     test/opcuatest.h \
-    communication/httpauth.h
+    communication/httpauth.h \
+    pocworker.h
 
 FORMS += \
         mainwindow.ui \

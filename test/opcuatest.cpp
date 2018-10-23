@@ -184,7 +184,13 @@ void OpcUaTest::on_pushButtonMonitor_clicked()
     if (connected)
     {
         node1 = opcuaClient->node(ui->lineEditnode1->text());
-        connect(node1, &QOpcUaNode::attributeUpdated, this, &OpcUaTest::node1Updated);
+        //connect(node1, &QOpcUaNode::attributeUpdated, this, &OpcUaTest::node1Updated);
+        connect(node1, &QOpcUaNode::attributeUpdated, this, [this](QOpcUa::NodeAttribute attr, const QVariant &value)
+        {
+            Q_UNUSED(attr);
+            //qDebug() << "Read Node1:" << value.toInt();
+            ui->labelShowNode1->setText(value.toString());
+        });
         node1->enableMonitoring(QOpcUa::NodeAttribute::Value, QOpcUaMonitoringParameters(100));
         QObject::connect(node1, &QOpcUaNode::enableMonitoringFinished, this, &OpcUaTest::enableMonitoringFinished);
 
