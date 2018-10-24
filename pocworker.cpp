@@ -8,137 +8,30 @@ PoCWorker::PoCWorker(QObject *parent) : QObject(parent)
 PoCWorker::~PoCWorker()
 {
     diconnectToOPCUAServer();
-    //delete opcuaClient;
-    //delete opcuaProvider;
+    delete opcuaClient;
+    delete opcuaProvider;
+    delete httpRest;
 }
 
 void PoCWorker::initSetup()
 {
     connect(this, SIGNAL(readyToGetHMIAuth()), this, SLOT(prepareToGetHMIAuth()));
-    connect(this, SIGNAL(sendAuthResult(int, QString, QString)), this, SLOT(writeAuthResultToOpcua(int, QString, QString)));
+    connect(this, SIGNAL(sendAuthResult(int, QString, int)), this, SLOT(writeAuthResultToOpcua(int, QString, int)));
     connect(this, SIGNAL(authResultWrittenToOpcUa()), this, SLOT(finishWrittenToOpcUa()));
 
     opcuaProvider = new QOpcUaProvider(this);
-    connectToOPCUAServer();
+    httpRest = new QNetworkAccessManager(this);
 
-    if (isOpcUaConnected)
+    if (!isOpcUaConnected)
     {
-        authRightNodeW = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.autho_approve"); //int16
-        connect(authRightNodeW, &QOpcUaNode::attributeWritten, this, [this](QOpcUa::NodeAttribute attr, QOpcUa::UaStatusCode status)
-        {
-            if (attr == QOpcUa::NodeAttribute::Value && status == QOpcUa::UaStatusCode::Good)
-            {
-                qDebug() << "Write auth right to opcua server successfully.";
-                authRightWritten = true;
-            }
-            else if (attr == QOpcUa::NodeAttribute::Value && status != QOpcUa::UaStatusCode::Good)
-            {
-                qDebug() << "Failed to write auth right to opcua server.";
-                authRightWritten = false;
-            }
-        });
-
-        displayUsernameNodeW = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.autho_name"); //string
-        connect(displayUsernameNodeW, &QOpcUaNode::attributeWritten, this, [this](QOpcUa::NodeAttribute attr, QOpcUa::UaStatusCode status)
-        {
-            if (attr == QOpcUa::NodeAttribute::Value && status == QOpcUa::UaStatusCode::Good)
-            {
-                qDebug() << "Write display-username to opcua server successfully.";
-                displayUsernameWritten = true;
-            }
-            else if (attr == QOpcUa::NodeAttribute::Value && status != QOpcUa::UaStatusCode::Good)
-            {
-                qDebug() << "Failed to write display-username to opcua server.";
-                displayUsernameWritten = false;
-            }
-        });
-
-        accessLevelNodeW = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.autho_accessLevel");//int16
-        connect(accessLevelNodeW, &QOpcUaNode::attributeWritten, this, [this](QOpcUa::NodeAttribute attr, QOpcUa::UaStatusCode status)
-        {
-            if (attr == QOpcUa::NodeAttribute::Value && status == QOpcUa::UaStatusCode::Good)
-            {
-                qDebug() << "Write access level to opcua server successfully.";
-                accessLevelWritten = true;
-            }
-            else if (attr == QOpcUa::NodeAttribute::Value && status != QOpcUa::UaStatusCode::Good)
-            {
-                qDebug() << "Failed to write access level to opcua server.";
-                accessLevelWritten = false;
-            }
-        });
-
-        usernameNodeR = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.username"); // string
-        //usernameNodeR->disableMonitoring(QOpcUa::NodeAttribute::Value);
-        connect(usernameNodeR, &QOpcUaNode::attributeUpdated, this, [this](QOpcUa::NodeAttribute attr, const QVariant &value)
-        {
-            Q_UNUSED(attr);
-            qDebug() << "Read username node:" << value.toString();
-            if (value.toString().length() >= 2)
-            {
-                hmiUsername = value.toString();
-                hmiUsernameReady = true;
-                emit readyToGetHMIAuth();
-            }
-        });
-
-        passwordNodeR = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.password"); // string
-        //passwordNodeR->disableMonitoring(QOpcUa::NodeAttribute::Value);
-        connect(passwordNodeR, &QOpcUaNode::attributeUpdated, this, [this](QOpcUa::NodeAttribute attr, const QVariant &value)
-        {
-            Q_UNUSED(attr);
-            qDebug() << "Read password node:" << value.toString();
-            if (value.toString().length() >= 2)
-            {
-                hmiPassword = value.toString();
-                hmiPasswordReady = true;
-                emit readyToGetHMIAuth();
-            }
-        });
-
-        // HMI Login Request Node (read and write)
-        hmiLoginRequestNodeRW = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.autho_request"); // int16
-        connect(hmiLoginRequestNodeRW, &QOpcUaNode::attributeUpdated, this, [this](QOpcUa::NodeAttribute attr, const QVariant &value)
-        {
-            Q_UNUSED(attr);
-            qDebug() << "Read autho-requset node:" << value.toInt();
-            if (value.toInt() == 1)
-            {
-                requestToLogin = true;
-                usernameNodeR->enableMonitoring(QOpcUa::NodeAttribute::Value, QOpcUaMonitoringParameters(100));
-                passwordNodeR->enableMonitoring(QOpcUa::NodeAttribute::Value, QOpcUaMonitoringParameters(100));
-            }
-        });
-        connect(hmiLoginRequestNodeRW, &QOpcUaNode::enableMonitoringFinished, this, &PoCWorker::enableMonitoringFinished);
-        hmiLoginRequestNodeRW->enableMonitoring(QOpcUa::NodeAttribute::Value, QOpcUaMonitoringParameters(100));
-        connect(hmiLoginRequestNodeRW, &QOpcUaNode::attributeWritten, this, [this](QOpcUa::NodeAttribute attr, QOpcUa::UaStatusCode status)
-        {
-            if (attr == QOpcUa::NodeAttribute::Value && status == QOpcUa::UaStatusCode::Good)
-            {
-                qDebug() << "Write(Change) auth request to opcua server successfully.";
-                usernameNodeR->disableMonitoring(QOpcUa::NodeAttribute::Value);
-                passwordNodeR->disableMonitoring(QOpcUa::NodeAttribute::Value);
-                requestToLogin = false;
-                authRightWritten = false;
-                displayUsernameWritten = false;
-                accessLevelWritten = false;
-                hmiUsernameReady = false;
-                hmiPasswordReady = false;
-                hmiUsername = "";
-                hmiPassword = "";
-                qDebug() << "Finish HMI login auth process.";
-            }
-            else if (attr == QOpcUa::NodeAttribute::Value && status != QOpcUa::UaStatusCode::Good)
-            {
-                qDebug() << "Failed to write auth request to opcua server.";
-            }
-        });
+        connectToOPCUAServer();
     }
 }
 
 void PoCWorker::connectToOPCUAServer()
 {
     const static QUrl opcuaServer(QLatin1String("opc.tcp://172.19.80.34:4840"));
+    // default plugin is open62541
     opcuaClient = opcuaProvider->createClient(opcuaProvider->availableBackends()[0]);
 
     if (!opcuaClient)
@@ -152,7 +45,7 @@ void PoCWorker::connectToOPCUAServer()
     connect(opcuaClient, &QOpcUaClient::errorChanged, this, &PoCWorker::opcuaError);
     connect(opcuaClient, &QOpcUaClient::stateChanged, this, &PoCWorker::opcuaState);
 
-    opcuaClient->connectToEndpoint(opcuaServer);
+    opcuaClient->connectToEndpoint(opcuaServer); // connect action
 }
 
 void PoCWorker::diconnectToOPCUAServer()
@@ -163,10 +56,121 @@ void PoCWorker::diconnectToOPCUAServer()
     }
 }
 
-
 void PoCWorker::opcuaConnected()
 {
     isOpcUaConnected = true;
+
+    authRightNodeW = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.autho_approve"); //int16
+    connect(authRightNodeW, &QOpcUaNode::attributeWritten, this, [this](QOpcUa::NodeAttribute attr, QOpcUa::UaStatusCode status)
+    {
+        if (attr == QOpcUa::NodeAttribute::Value && status == QOpcUa::UaStatusCode::Good)
+        {
+            qDebug() << "Write autho_approve to opcua server successfully.";
+            authRightWritten = true;
+            emit authResultWrittenToOpcUa();
+        }
+        else if (attr == QOpcUa::NodeAttribute::Value && status != QOpcUa::UaStatusCode::Good)
+        {
+            qDebug() << "Failed to write autho_approve to opcua server.";
+            authRightWritten = false;
+        }
+    });
+
+    displayUsernameNodeW = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.autho_name"); //string
+    connect(displayUsernameNodeW, &QOpcUaNode::attributeWritten, this, [this](QOpcUa::NodeAttribute attr, QOpcUa::UaStatusCode status)
+    {
+        if (attr == QOpcUa::NodeAttribute::Value && status == QOpcUa::UaStatusCode::Good)
+        {
+            qDebug() << "Write display-username to opcua server successfully.";
+            displayUsernameWritten = true;
+            emit authResultWrittenToOpcUa();
+        }
+        else if (attr == QOpcUa::NodeAttribute::Value && status != QOpcUa::UaStatusCode::Good)
+        {
+            qDebug() << "Failed to write display-username to opcua server.";
+            displayUsernameWritten = false;
+        }
+    });
+
+    accessLevelNodeW = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.autho_accessLevel"); //int16
+    connect(accessLevelNodeW, &QOpcUaNode::attributeWritten, this, [this](QOpcUa::NodeAttribute attr, QOpcUa::UaStatusCode status)
+    {
+        if (attr == QOpcUa::NodeAttribute::Value && status == QOpcUa::UaStatusCode::Good)
+        {
+            qDebug() << "Write accesslevel to opcua server successfully.";
+            accessLevelWritten = true;
+            emit authResultWrittenToOpcUa();
+        }
+        else if (attr == QOpcUa::NodeAttribute::Value && status != QOpcUa::UaStatusCode::Good)
+        {
+            qDebug() << "Failed to write accesslevel to opcua server.";
+            accessLevelWritten = false;
+        }
+    });
+
+    usernameNodeR = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.username"); // string
+    connect(usernameNodeR, &QOpcUaNode::attributeUpdated, this, [this](QOpcUa::NodeAttribute attr, const QVariant &value)
+    {
+        Q_UNUSED(attr);
+        qDebug() << "Read username node:" << value.toString().replace(" ", "");
+        if (value.toString().length() >= 2)
+        {
+            hmiUsername = value.toString().replace(" ", "");
+            hmiUsernameReady = true;
+            emit readyToGetHMIAuth();
+        }
+    });
+
+    passwordNodeR = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.password"); // string
+    connect(passwordNodeR, &QOpcUaNode::attributeUpdated, this, [this](QOpcUa::NodeAttribute attr, const QVariant &value)
+    {
+        Q_UNUSED(attr);
+        qDebug() << "Read password node:" << value.toString();
+        if (value.toString().length() >= 2)
+        {
+            hmiPassword = value.toString();
+            hmiPasswordReady = true;
+            emit readyToGetHMIAuth();
+        }
+    });
+
+    // HMI Login Request Node (read and write)
+    hmiLoginRequestNodeRW = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.autho_request"); // int16
+    connect(hmiLoginRequestNodeRW, &QOpcUaNode::attributeUpdated, this, [this](QOpcUa::NodeAttribute attr, const QVariant &value)
+    {
+        Q_UNUSED(attr);
+        qDebug() << "Read autho-requset node:" << value.toInt();
+        if (value.toInt() == 1)
+        {
+            requestToLogin = true;
+            usernameNodeR->enableMonitoring(QOpcUa::NodeAttribute::Value, QOpcUaMonitoringParameters(100));
+            passwordNodeR->enableMonitoring(QOpcUa::NodeAttribute::Value, QOpcUaMonitoringParameters(100));
+        }
+    });
+    connect(hmiLoginRequestNodeRW, &QOpcUaNode::enableMonitoringFinished, this, &PoCWorker::enableMonitoringFinished);
+    hmiLoginRequestNodeRW->enableMonitoring(QOpcUa::NodeAttribute::Value, QOpcUaMonitoringParameters(100));
+    connect(hmiLoginRequestNodeRW, &QOpcUaNode::attributeWritten, this, [this](QOpcUa::NodeAttribute attr, QOpcUa::UaStatusCode status)
+    {
+        if (attr == QOpcUa::NodeAttribute::Value && status == QOpcUa::UaStatusCode::Good)
+        {
+            qDebug() << "Write(Change) auth_request(reset to 0) to opcua server successfully.";
+            usernameNodeR->disableMonitoring(QOpcUa::NodeAttribute::Value);
+            passwordNodeR->disableMonitoring(QOpcUa::NodeAttribute::Value);
+            requestToLogin = false;
+            authRightWritten = false;
+            displayUsernameWritten = false;
+            accessLevelWritten = false;
+            hmiUsernameReady = false;
+            hmiPasswordReady = false;
+            hmiUsername = "";
+            hmiPassword = "";
+            qDebug() << "Finish HMI login auth process.";
+        }
+        else if (attr == QOpcUa::NodeAttribute::Value && status != QOpcUa::UaStatusCode::Good)
+        {
+            qDebug() << "Failed to write(change) auth_request to opcua server.";
+        }
+    });
 }
 
 void PoCWorker::opcuaDisconnected()
@@ -184,7 +188,7 @@ void PoCWorker::opcuaState(QOpcUaClient::ClientState state)
 {
     if (state == QOpcUaClient::ClientState::Connected)
     {
-        qDebug() << "Successfully connected to OPCUA server";
+        qDebug() << "Successfully connected to OPCUA server.";
         isOpcUaConnected = true;
     }
     else if (state == QOpcUaClient::ClientState::Connecting)
@@ -202,6 +206,7 @@ void PoCWorker::opcuaState(QOpcUaClient::ClientState state)
 void PoCWorker::enableMonitoringFinished(QOpcUa::NodeAttribute attr, QOpcUa::UaStatusCode status)
 {
     Q_UNUSED(attr);
+
     if (!sender())
     {
         return;
@@ -225,7 +230,7 @@ void PoCWorker::prepareToGetHMIAuth()
     }
 }
 
-void PoCWorker::writeAuthResultToOpcua(int isAuth, QString displayUserName, QString accessLevel)
+void PoCWorker::writeAuthResultToOpcua(int isAuth, QString displayUserName, int accessLevel)
 {
     if (authRightNodeW)
     {
@@ -237,7 +242,7 @@ void PoCWorker::writeAuthResultToOpcua(int isAuth, QString displayUserName, QStr
     }
     if (accessLevelNodeW)
     {
-        accessLevelNodeW->writeAttribute(QOpcUa::NodeAttribute::Value, accessLevel, QOpcUa::String);
+        accessLevelNodeW->writeAttribute(QOpcUa::NodeAttribute::Value, accessLevel, QOpcUa::Int16);
     }
 }
 
@@ -254,10 +259,10 @@ void PoCWorker::finishWrittenToOpcUa()
 
 void PoCWorker::getHMILoginAuth(QString username, QString password, QString service)
 {
+    qDebug() << "Sending http requset to get autho information for PLC HMI...";
     //use http rest api to get auth right, with json
     const static QUrl authServer(QLatin1String("http://sat-mes/server/auth/authenticate"));
 
-    httpRest = new QNetworkAccessManager(this);
     QNetworkRequest request(authServer);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
@@ -274,25 +279,22 @@ void PoCWorker::getHMILoginAuth(QString username, QString password, QString serv
         const QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
         const QJsonObject obj = doc.object();
 
-        //qDebug() << obj.value(QLatin1String("result")).toInt();
-        //qDebug() << obj.value(QLatin1String("displayName")).toString();
-        //qDebug() << obj.value(QLatin1String("rights")).toObject().value(QLatin1String("mespoc")).toObject().value(QLatin1String("mespoc")).toObject().value(QLatin1String("User")).toString();
-        int isAuth = obj.value(QLatin1String("result")).toInt();
+        int authCode = obj.value(QLatin1String("result")).toInt();
         QString displayUserName = obj.value(QLatin1String("displayName")).toString();
         QString accessLevel = obj.value(QLatin1String("rights")).toObject().value(QLatin1String("mespoc")).toObject().value(QLatin1String("mespoc")).toObject().value(QLatin1String("User")).toString();
 
-        qDebug() << isAuth << displayUserName << accessLevel;
-        if (isAuth == 1)
+        qDebug() << "Get autho result from autho server:" << authCode << displayUserName << accessLevel;
+        if (authCode == 1)
         {
-            emit sendAuthResult(isAuth, displayUserName, accessLevel);
+            authCode = 8; // int 8 for approve in PLC
+            emit sendAuthResult(authCode, displayUserName, accessLevel.toInt());
         }
         else
         {
-            emit sendAuthResult(isAuth, "NA", "8");
+            authCode = 7; // int 7 for rejected in PLC
+            emit sendAuthResult(authCode, "NA", 0);
         }
 
     });
-
-    delete httpRest;
 }
 

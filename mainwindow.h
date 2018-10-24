@@ -37,6 +37,8 @@ using namespace cv;
 #include "test/rfidtest.h"
 #include "test/opcuatest.h"
 
+#include "pocworker.h"
+
 namespace Ui {
 class MainWindow;
 }

@@ -25,7 +25,7 @@ public:
 
 
 signals:
-    void sendAuthResult(int, QString, QString);
+    void sendAuthResult(int, QString, int);
     void readyToGetHMIAuth();
     void authResultWrittenToOpcUa();
 
@@ -39,7 +39,7 @@ private slots:
     void enableMonitoringFinished(QOpcUa::NodeAttribute attr, QOpcUa::UaStatusCode status);
 
     void prepareToGetHMIAuth();
-    void writeAuthResultToOpcua(int isAuth, QString displayUserName, QString accessLevel);
+    void writeAuthResultToOpcua(int isAuth, QString displayUserName, int accessLevel);
     void finishWrittenToOpcUa();
 
 private:

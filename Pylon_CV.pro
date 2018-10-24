@@ -89,7 +89,6 @@ HEADERS += \
     communication/rfidtool.h \
     test/rfidtest.h \
     test/opcuatest.h \
-    communication/httpauth.h \
     pocworker.h
 
 FORMS += \
