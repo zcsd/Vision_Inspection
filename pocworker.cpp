@@ -164,7 +164,7 @@ void PoCWorker::opcuaConnected()
             hmiPasswordReady = false;
             hmiUsername = "";
             hmiPassword = "";
-            qDebug() << "Finish HMI login auth process.";
+            qDebug() << "Finish HMI login auth gateway process.";
         }
         else if (attr == QOpcUa::NodeAttribute::Value && status != QOpcUa::UaStatusCode::Good)
         {

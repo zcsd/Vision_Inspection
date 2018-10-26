@@ -111,7 +111,7 @@ void RFIDTool::icode2()
     if (st)
     {
         //qDebug() << "Find single card ERROR!";
-        emit sendReadInfo(false, "Find single card ERROR", "");
+        //emit sendReadInfo(false, "Find single card ERROR", "");
         return;
     }
 
@@ -125,7 +125,7 @@ void RFIDTool::icode2()
     if (st)
     {
         //qDebug() << "fw_select_uid ERROR!";
-        emit sendReadInfo(false, "fw_select_uid ERROR", "");
+        //emit sendReadInfo(false, "fw_select_uid ERROR", "");
         return;
     }
 
@@ -133,7 +133,7 @@ void RFIDTool::icode2()
     if (st)
     {
         //qDebug() << "fw_reset_to_ready ERROR!";
-        emit sendReadInfo(false, "fw_reset_to_ready ERROR", "");
+        //emit sendReadInfo(false, "fw_reset_to_ready ERROR", "");
         return;
     }
 
@@ -141,7 +141,7 @@ void RFIDTool::icode2()
     if (st)
     {
         //qDebug() << "fw_get_securityinfo ERROR!";
-        emit sendReadInfo(false, "fw_get_securityinfo ERROR", "");
+        //emit sendReadInfo(false, "fw_get_securityinfo ERROR", "");
         return;
     }
 
@@ -149,7 +149,7 @@ void RFIDTool::icode2()
     if (st)
     {
         //qDebug() << "Read data ERROR!";
-        emit sendReadInfo(false, "Read data ERROR", "");
+        //emit sendReadInfo(false, "Read data ERROR", "");
         return;
     }
 

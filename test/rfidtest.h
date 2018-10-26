@@ -7,6 +7,8 @@
 #include <QWidget>
 #include <QObject>
 #include <QDateTime>
+#include <QTimer>
+#include <QThread>
 
 #include <communication/rfidtool.h>
 
@@ -33,6 +35,8 @@ private slots:
 private:
     Ui::RFIDtest *ui;
     RFIDTool *rfidTool;
+    QTimer *readTrigger;
+    QThread *readThread;
 };
 
 #endif // RFIDTEST_H

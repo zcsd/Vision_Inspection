@@ -20,13 +20,14 @@ public:
     bool initDevice();
     void closeDevice();
     bool testDevice();
-    void icode2();
+
 
 signals:
     void sendDeviceInfo(QString);
     void sendReadInfo(bool, QString, QString);
 
 public slots:
+    void icode2();
 
 private:
     int icdev;

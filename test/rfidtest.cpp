@@ -18,6 +18,8 @@ RFIDtest::RFIDtest(QWidget *parent) :
 
 RFIDtest::~RFIDtest()
 {
+    delete readThread;
+    delete readTrigger;
     delete ui;
 }
 
@@ -27,11 +29,27 @@ void RFIDtest::on_pushButtonConnect_clicked()
     {
         ui->listWidget->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss    ")
                                           + "Connect to RFID Scanner.");
+        readThread = new QThread(this);
+        readThread->start();
+
+        readTrigger = new QTimer();
+        readTrigger->setInterval(500);
+
+        connect(readTrigger, SIGNAL(timeout()), rfidTool, SLOT(icode2()), Qt::DirectConnection);
+        connect(readThread, SIGNAL(finished()), readTrigger, SLOT(stop()));
+
+        readTrigger->start();
+        //run timer work(loop reading RFID tag) in thread
+        readTrigger->moveToThread(readThread);
     }
 }
 
 void RFIDtest::on_pushButtonClose_clicked()
 {
+    //readTrigger->stop();
+    readThread->quit();
+    readThread->wait();
+
     rfidTool->closeDevice();
     ui->labelShowPort->clear();
     ui->listWidget->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss    ")

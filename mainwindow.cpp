@@ -589,7 +589,7 @@ void MainWindow::on_actionMQTT_triggered()
 void MainWindow::on_actionRFID_triggered()
 {
     rfidTest->show();
-    PoCWorker *pocWorker = new PoCWorker(this);
+    //PoCWorker *pocWorker = new PoCWorker(this);
 }
 
 void MainWindow::on_actionOPC_UA_triggered()
