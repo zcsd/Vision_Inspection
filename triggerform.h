@@ -40,6 +40,8 @@ private slots:
 
     void on_pushButtonReset_clicked();
 
+    void on_pushButtonWork_clicked();
+
 private:
     Ui::TriggerForm *ui;
     cv::VideoCapture capture;

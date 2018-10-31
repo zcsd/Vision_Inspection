@@ -571,9 +571,9 @@ void MainWindow::on_actionTrigger_triggered()
 void MainWindow::receiveTrigger()
 {
     qDebug() << "Receive Trigger";
-    usleep(2000000); // 2s
-    on_pushButtonCapture_clicked();
-    on_pushButtonMeasure_clicked();
+    //usleep(2000000); // 2s
+    //on_pushButtonCapture_clicked();
+    //on_pushButtonMeasure_clicked();
 }
 
 void MainWindow::on_actionModbus_triggered()
@@ -589,7 +589,6 @@ void MainWindow::on_actionMQTT_triggered()
 void MainWindow::on_actionRFID_triggered()
 {
     rfidTest->show();
-    //PoCWorker *pocWorker = new PoCWorker(this);
 }
 
 void MainWindow::on_actionOPC_UA_triggered()

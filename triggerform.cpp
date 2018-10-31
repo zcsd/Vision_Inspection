@@ -7,14 +7,10 @@ TriggerForm::TriggerForm(QWidget *parent) :
 {
     ui->setupUi(this);
     this->setWindowFlags(Qt::WindowStaysOnTopHint | Qt::Window); // always on top
-    initUSBCam();
 
     whitePixmap= QPixmap(640, 480);
     whitePixmap.fill(Qt::white);
 
-    bgImg = cv::imread("../images/bg.png", 0);
-    ROI = Rect(300, 150, 300, 200);
-    bgImgROI = bgImg(ROI).clone();
     connect(ui->listWidget->model(), SIGNAL(rowsInserted(QModelIndex,int,int)),
             ui->listWidget, SLOT(scrollToBottom()));
 }
@@ -111,13 +107,22 @@ Mat TriggerForm::processFrame(Mat img)
 
 void TriggerForm::on_pushButtonStart_clicked()
 {
-    if(!capture.isOpened())
+    initUSBCam();
+    if (!capture.isOpened())
     {
         initUSBCam();
     }
+    else
+    {
+        capture >> bgImg;
+        cv::cvtColor(bgImg, bgImg, cv::COLOR_BGR2GRAY);
+        //bgImg = cv::imread("../images/bg.png", 0);
+        ROI = Rect(300, 150, 300, 200);
+        bgImgROI = bgImg(ROI).clone();
+    }
 
     camTrigger = new QTimer(); // use timer to loop usb webcam stream
-    camTrigger->setInterval(1);
+    camTrigger->setInterval(5);
     connect(camTrigger, SIGNAL(timeout()), this, SLOT(receiveUpdateFrame()));
 
     camTrigger->start(); // loop start
@@ -140,6 +145,7 @@ void TriggerForm::receiveUpdateFrame()
     cv::Mat frame, processedImg;
     QImage qDisplayedFrame;
     capture >> frame;
+
     //cv::imwrite("../images/bg.png", frame);
     if(!frame.empty())
     {
@@ -156,4 +162,9 @@ void TriggerForm::on_pushButtonReset_clicked()
     ui->lcdNumberCounter->display(partsCounter);
     ui->listWidget->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
                                       + "    Trigger counter reset.");
+}
+
+void TriggerForm::on_pushButtonWork_clicked()
+{
+
 }
