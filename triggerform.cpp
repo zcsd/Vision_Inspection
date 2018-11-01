@@ -11,6 +11,13 @@ TriggerForm::TriggerForm(QWidget *parent) :
     whitePixmap= QPixmap(640, 480);
     whitePixmap.fill(Qt::white);
 
+    if (!capture.isOpened())
+    {
+        ui->pushButtonStart->setEnabled(true);
+        ui->pushButtonWork->setDisabled(true);
+        ui->pushButtonStop->setDisabled(true);
+    }
+
     connect(ui->listWidget->model(), SIGNAL(rowsInserted(QModelIndex,int,int)),
             ui->listWidget, SLOT(scrollToBottom()));
 }
@@ -21,6 +28,8 @@ TriggerForm::~TriggerForm()
     {
         releaseUSBCam();
     }
+    delete workThread;
+    delete camTrigger;
     delete ui;
 }
 
@@ -54,7 +63,7 @@ void TriggerForm::releaseUSBCam()
 
 Mat TriggerForm::processFrame(Mat img)
 {
-    cv::Mat imgROI,grayImgROI;
+    cv::Mat imgROI, grayImgROI;
     imgROI = img(ROI).clone();
 
     cv::cvtColor(imgROI, grayImgROI, cv::COLOR_BGR2GRAY);
@@ -114,27 +123,41 @@ void TriggerForm::on_pushButtonStart_clicked()
     }
     else
     {
-        capture >> bgImg;
-        cv::cvtColor(bgImg, bgImg, cv::COLOR_BGR2GRAY);
-        //bgImg = cv::imread("../images/bg.png", 0);
-        ROI = Rect(300, 150, 300, 200);
-        bgImgROI = bgImg(ROI).clone();
+        ui->pushButtonWork->setEnabled(true);
+        ui->pushButtonStart->setDisabled(true);
+        ui->pushButtonStop->setEnabled(true);
+        ui->pushButtonStart->setStyleSheet("background-color: rgb(100, 255, 100);");
     }
+
+    workThread = new QThread(this);
+    workThread->start();
 
     camTrigger = new QTimer(); // use timer to loop usb webcam stream
     camTrigger->setInterval(5);
-    connect(camTrigger, SIGNAL(timeout()), this, SLOT(receiveUpdateFrame()));
+
+    connect(camTrigger, SIGNAL(timeout()), this, SLOT(receiveUpdateFrame()), Qt::DirectConnection);
+    connect(workThread, SIGNAL(finished()), camTrigger, SLOT(stop()));
 
     camTrigger->start(); // loop start
+    camTrigger->moveToThread(workThread);
     ui->listWidget->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
-                                      + "    Trigger start to work.");
+                                      + "    Webcam is capturing.");
 }
 
 void TriggerForm::on_pushButtonStop_clicked()
 {
+    //camTrigger->stop();
+    //delete camTrigger;
+    workThread->quit();
+    workThread->wait();
+
     ui->labelShowUSBFrame->setPixmap(whitePixmap);
-    camTrigger->stop();
-    delete camTrigger;
+    ui->pushButtonStart->setEnabled(true);
+    ui->pushButtonStop->setDisabled(true);
+    ui->pushButtonWork->setDisabled(true);
+    ui->pushButtonStart->setStyleSheet("background-color: rgb(225, 225, 225);");
+    ui->pushButtonWork->setStyleSheet("background-color: rgb(225, 225, 225);");
+    startWork = false;
     ui->listWidget->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
                                       + "    Trigger stop.");
     releaseUSBCam();
@@ -142,14 +165,21 @@ void TriggerForm::on_pushButtonStop_clicked()
 
 void TriggerForm::receiveUpdateFrame()
 {
-    cv::Mat frame, processedImg;
+    cv::Mat processedImg;
     QImage qDisplayedFrame;
     capture >> frame;
 
-    //cv::imwrite("../images/bg.png", frame);
     if(!frame.empty())
     {
-        processedImg = processFrame(frame);
+        if (startWork)
+        {
+            processedImg = processFrame(frame);
+        }
+        else
+        {
+            processedImg = frame.clone();
+        }
+
         cv::cvtColor(processedImg, processedImg, cv::COLOR_BGR2RGB);
         qDisplayedFrame = QImage((uchar*)processedImg.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
         ui->labelShowUSBFrame->setPixmap(QPixmap::fromImage(qDisplayedFrame));
@@ -166,5 +196,15 @@ void TriggerForm::on_pushButtonReset_clicked()
 
 void TriggerForm::on_pushButtonWork_clicked()
 {
+    if (capture.isOpened())
+    {
+        cv::cvtColor(frame, bgImg, cv::COLOR_BGR2GRAY);
+        ROI = Rect(120, 90, 400, 300);
+        bgImgROI = bgImg(ROI).clone();
+        startWork = true;
+        ui->pushButtonWork->setStyleSheet("background-color: rgb(100, 255, 100);");
+        ui->listWidget->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
+                                          + "    Trigger start to work.");
+    }
 
 }
