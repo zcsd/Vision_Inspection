@@ -60,9 +60,11 @@ void OpcUaTest::diconnectToServer()
 void OpcUaTest::node3Write()
 {
     QString msg = ui->lineEditNode3Write->text();
+
     if (node3)
     {
-       if (node3->writeAttribute(QOpcUa::NodeAttribute::Value, msg, QOpcUa::String))
+        uint16_t test = 1;
+       if (node3->writeAttribute(QOpcUa::NodeAttribute::Value, msg.toUInt(), QOpcUa::UInt16))
        {
            ui->listWidgetLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss    ")
                                              + "Write " + msg + " to " + node2->nodeId());
