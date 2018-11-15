@@ -3,7 +3,7 @@
 MeasureTool::MeasureTool(QObject *parent) : QObject(parent)
 {
     bgImage = imread("../images/BG_green.jpg", 1);
-    ROI = Rect(50, 200, 2348, 1550); //2448x2048, 10, 150, 2428, 1600
+    ROI = Rect(4, 4, 2440, 2040); //2448x2048
 }
 
 void MeasureTool::receiveFrame(Mat frame)
@@ -57,13 +57,13 @@ void MeasureTool::diffSegmentation()
     cv::absdiff(channels[0], channels1[0], resImage);
     //cv::cvtColor(resImage, resImage, COLOR_HSV2BGR);
     //cv::cvtColor(resImage,resImage, COLOR_BGR2GRAY);
-    cv::threshold(resImage, thresholdImage, 20, 255, THRESH_BINARY);
+    cv::threshold(resImage, thresholdImage, 30, 255, THRESH_BINARY);
 
     cv::Mat kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, Size(3,3));
     cv::erode(thresholdImage, thresholdImage, kernel);
     cv::dilate(thresholdImage, thresholdImage, kernel);
     //cv::dilate(thresholdImage, thresholdImage, kernel);
-/*
+
     cv::Mat showImg;
     cv::resize(thresholdImage, showImg, cv::Size(), 0.5, 0.5);
     cv::namedWindow("test", 1);
@@ -72,7 +72,7 @@ void MeasureTool::diffSegmentation()
         cv::imshow("test", showImg);
         if ( (cv::waitKey(1) & 0xFF) == 'q' ) break;
     }
-    cv::destroyWindow("test");*/
+    cv::destroyWindow("test");
 }
 
 void MeasureTool::getContours()

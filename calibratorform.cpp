@@ -26,7 +26,8 @@ void CalibratorForm::initialSetup()
     receiveSetButtonVisible(ui->comboBoxCaliMethod->currentText());
     connect(ui->comboBoxCaliMethod, SIGNAL(activated(QString)), this, SLOT(receiveSetButtonVisible(QString)));
     // @ZC, temp using!!! for step 1 and 2
-    ROI = Rect(50, 200, 2348, 1550); // original 2448x2048, now 2428x1600
+    //ROI = Rect(50, 200, 2348, 1550); // original 2448x2048, now 2428x1600
+    ROI = Rect(4, 4, 2440, 2040);
 }
 
 void CalibratorForm::receiveFrame(cv::Mat frame)
@@ -49,34 +50,34 @@ void CalibratorForm::receiveMousePressedPosition(QPoint &pos)
     int y = pos.y();
 
     int x_topLeft, y_topLeft;
-    // 2322 = 2448 - 125 -1
-    if ((x/0.4 - 62.5) >= 2322 )
+    // 2387 = 2488 - 100 -1
+    if ((x/0.4 - 50) >= 2387 )
     {
-        x_topLeft = 2322;
+        x_topLeft = 2387;
     }
-    else if ((x/0.4 - 62.5) <= 1)
+    else if ((x/0.4 - 50) <= 1)
     {
         x_topLeft = 1;
     }
     else
     {
-        x_topLeft = int(x/0.4 - 62.5);
+        x_topLeft = int(x/0.4 - 50);
     }
-
-    if ((y/0.4 - 62.5) >= 1922 )
+    // 1947 = 2048 - 100 -1
+    if ((y/0.4 - 50) >= 1947 )
     {
-        y_topLeft = 1922;
+        y_topLeft = 1947;
     }
-    else if ((y/0.4 - 62.5) <= 1)
+    else if ((y/0.4 - 50) <= 1)
     {
         y_topLeft = 1;
     }
     else
     {
-        y_topLeft = int(y/0.4 - 62.5);
+        y_topLeft = int(y/0.4 - 50);
     }
 
-    cv::Rect objROI = Rect(x_topLeft, y_topLeft, 125, 125);
+    cv::Rect objROI = Rect(x_topLeft, y_topLeft, 100, 100);
     if (newFrameAvaviable)
     {
         cv::Mat objImage = frameCopy(objROI).clone();
@@ -253,13 +254,17 @@ void CalibratorForm::diffThreshold()
     cv::Mat src1, src2, res;
     cv::cvtColor(roiRLFrame, src1, COLOR_BGR2GRAY);
     cv::cvtColor(roiBGFrame, src2, COLOR_BGR2GRAY);
+    cv::imwrite("../images/src1.jpg", src1);
+    cv::imwrite("../images/src2.jpg", src2);
     cv::GaussianBlur(src1, src1, Size(3, 3), 0);
     cv::GaussianBlur(src2, src2, Size(3, 3), 0);
     cv::absdiff(src1, src2, res);
-    cv::threshold(res, thresholdImg, 70, 255, THRESH_BINARY);
+    cv::imwrite("../images/res.jpg", res);
+    cv::threshold(res, thresholdImg, 30, 255, THRESH_BINARY);
     cv::Mat kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, Size(3,3));
     cv::erode(thresholdImg, thresholdImg, kernel);
     cv::dilate(thresholdImg, thresholdImg, kernel);
+    cv::imwrite("../images/threshold.jpg", thresholdImg);
     //cv::imwrite("../images/test.jpg", thresholdImg);
 }
 

@@ -82,7 +82,7 @@ ColorTransformationSelector	RGBtoRGB
 ColorTransformationValueSelector	Gain00
 ShutterMode	Global
 ExposureMode	Timed
-ExposureTime	25000.0
+ExposureTime	27000.0
 AcquisitionBurstFrameCount	1
 TriggerSelector	FrameBurstStart
 TriggerMode	Off
