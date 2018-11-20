@@ -17,6 +17,9 @@
 #include <QFile>
 #include <QTextStream>
 #include <QElapsedTimer>
+#include <QOpcUaClient>
+#include <QOpcUaNode>
+#include <QtOpcUa>
 
 #include "opencv2/opencv.hpp"
 #include "opencv2/imgproc.hpp"
@@ -90,10 +93,13 @@ private slots:
     void receiveTrigger();
     void on_actionModbus_triggered();
     void on_actionMQTT_triggered();
-
     void on_actionRFID_triggered();
-
     void on_actionOPC_UA_triggered();
+
+    void opcuaConnected();
+    void opcuaDisconnected();
+    void opcuaClientError(QOpcUaClient::ClientError error);
+    void opcuaClientState(QOpcUaClient::ClientState state);
 
 public slots:
     void receiveShowMousePosition(QPoint& pos);
@@ -107,10 +113,10 @@ private:
     FDTester *fdTester;
     CalibratorForm *calibratorForm;
     TriggerForm *triggerForm;
-    ModbusTest *modbusTest;
-    MqttTest *mqttTest;
-    OpcUaTest *opcuaTest;
-    RFIDtest *rfidTest;
+    //ModbusTest *modbusTest;
+    //MqttTest *mqttTest;
+    //OpcUaTest *opcuaTest;
+    //RFIDtest *rfidTest;
     QPixmap bgImg;
     QString defaultSavePath = "../images";
     QString matchMethod = "Machine Learning";
@@ -129,6 +135,13 @@ private:
     QTimer *streamTrigger;
     void initialSetup();
     void displayFrame();
+
+    QOpcUaProvider *opcuaProvider;
+    QOpcUaClient *opcuaClient;
+    QOpcUaNode *visionStatusNodeW, *visionResultNodeW, *machinePLCReadyNodeRW, *resultReadNodeRW;
+    bool isOpcUaConnected = false;
+    void connectToOPCUA();
+    void diconnectToOPCUA();
 };
 
 #endif // MAINWINDOW_H

@@ -12,16 +12,21 @@ MainWindow::MainWindow(QWidget *parent) :
     pyClassification = new PyClassification();
     fdTester = new FDTester();
     triggerForm = new TriggerForm(this);
-    modbusTest = new ModbusTest(this);
-    mqttTest = new MqttTest(this);
-    opcuaTest = new OpcUaTest(this);
-    rfidTest = new RFIDtest(this);
+    //modbusTest = new ModbusTest(this);
+    //mqttTest = new MqttTest(this);
+    //opcuaTest = new OpcUaTest(this);
+    //rfidTest = new RFIDtest(this);
 
     initialSetup();
 }
 
 MainWindow::~MainWindow()
 {
+    if (isOpcUaConnected)
+    {
+        visionStatusNodeW->writeAttribute(QOpcUa::NodeAttribute::Value, 0, QOpcUa::UInt16);
+        diconnectToOPCUA();
+    }
     delete pyClassification;
     delete fdTester;
     delete frameGrabber;
@@ -41,6 +46,7 @@ void MainWindow::initialSetup()
     ui->scrollArea->setWidget(ui->labelShowFrame);
     ui->scrollArea->setVisible(true);
 
+    opcuaProvider = new QOpcUaProvider(this);
     receiveReadCaliConf();
 
     bgImg.load("../resource/logo.png");
@@ -78,6 +84,7 @@ void MainWindow::initialSetup()
     emit sendCalibrationPara(currentPPMM, 3);
 
     ui->comboBoxMatchMethod->addItems({"Machine Learning", "Image Processing"});
+    connectToOPCUA();
 }
 
 void MainWindow::receiveReadCaliConf()
@@ -112,6 +119,7 @@ void MainWindow::on_pushButtonConnect_clicked()
 
     if (frameGrabber->cameraConnected)
     {
+        visionStatusNodeW->writeAttribute(QOpcUa::NodeAttribute::Value, 1, QOpcUa::UInt16);
         ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
                                           + "    Camera is open.");
 
@@ -139,6 +147,7 @@ void MainWindow::on_pushButtonDisconnect_clicked()
 
         if (!frameGrabber->cameraConnected)
         {
+            visionStatusNodeW->writeAttribute(QOpcUa::NodeAttribute::Value, 0, QOpcUa::UInt16);
             ui->pushButtonDisconnect->setEnabled(false);
             ui->pushButtonConnect->setEnabled(true);
             ui->pushButtonConnect->setStyleSheet("background-color: rgb(225, 225, 225);"); // Make it gray color
@@ -170,6 +179,7 @@ void MainWindow::on_pushButtonDisconnect_clicked()
             if (!frameGrabber->cameraConnected)
             {
                 on_pushButtonStop_clicked();
+                visionStatusNodeW->writeAttribute(QOpcUa::NodeAttribute::Value, 0, QOpcUa::UInt16);
                 ui->pushButtonCapture->setEnabled(false);
                 ui->pushButtonStream->setEnabled(false);
                 ui->pushButtonStream->setStyleSheet("background-color: rgb(225, 225, 225);");
@@ -347,6 +357,37 @@ void MainWindow::displayFrame()
     cv::cvtColor(cvRGBFrame, cvRGBFrame, cv::COLOR_BGR2RGB);
     qDisplayedFrame = QImage((uchar*)cvRGBFrame.data, cvRGBFrame.cols, cvRGBFrame.rows, cvRGBFrame.step, QImage::Format_RGB888);
     ui->labelShowFrame->setPixmap(QPixmap::fromImage(qDisplayedFrame));
+}
+
+void MainWindow::connectToOPCUA()
+{
+    const static QUrl opcuaServer(QLatin1String("opc.tcp://172.19.80.34:4840"));
+    // default plugin is open62541
+    //qDebug() << "Available OPCUA plugins:" << opcuaProvider->availableBackends();
+    opcuaClient = opcuaProvider->createClient(opcuaProvider->availableBackends()[0]);
+
+    if (!opcuaClient)
+    {
+        qDebug() << "Fail to create OPCUA client.";
+        ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss    ")
+                                                  + "Fail to create OPCUA client.");
+        return;
+    }
+
+    connect(opcuaClient, &QOpcUaClient::connected, this, &MainWindow::opcuaConnected);
+    connect(opcuaClient, &QOpcUaClient::disconnected, this, &MainWindow::opcuaDisconnected);
+    connect(opcuaClient, &QOpcUaClient::errorChanged, this, &MainWindow::opcuaClientError);
+    connect(opcuaClient, &QOpcUaClient::stateChanged, this, &MainWindow::opcuaClientState);
+
+    opcuaClient->connectToEndpoint(opcuaServer); // connect action
+}
+
+void MainWindow::diconnectToOPCUA()
+{
+    if (isOpcUaConnected)
+    {
+        opcuaClient->disconnectFromEndpoint();
+    }
 }
 
 void MainWindow::on_actionChangeSavePath_triggered()
@@ -580,20 +621,83 @@ void MainWindow::receiveTrigger()
 
 void MainWindow::on_actionModbus_triggered()
 {
-    modbusTest->show();
+    //modbusTest->show();
 }
 
 void MainWindow::on_actionMQTT_triggered()
 {
-    mqttTest->show();
+    //mqttTest->show();
 }
 
 void MainWindow::on_actionRFID_triggered()
 {
-    rfidTest->show();
+    //rfidTest->show();
 }
 
 void MainWindow::on_actionOPC_UA_triggered()
 {
-    opcuaTest->show();
+    //opcuaTest->show();
+}
+
+void MainWindow::opcuaConnected()
+{
+    visionStatusNodeW = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.vision.VISION_STATUS"); // uint 16
+    visionResultNodeW = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.vision.RESULT"); // uint 16
+
+    resultReadNodeRW = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.vision.RESULT_READ"); // uint 16
+    connect(resultReadNodeRW, &QOpcUaNode::attributeUpdated, this, [this](QOpcUa::NodeAttribute attr, const QVariant &value)
+    {
+        Q_UNUSED(attr);
+        qDebug() << "Read result-read status node:" << value.toInt();
+        if (value.toInt() == 1)
+        {
+            visionResultNodeW->writeAttribute(QOpcUa::NodeAttribute::Value, 0, QOpcUa::UInt16);
+            resultReadNodeRW->writeAttribute(QOpcUa::NodeAttribute::Value, 0, QOpcUa::UInt16);
+        }
+    });
+
+    machinePLCReadyNodeRW = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.vision.MACHINE_READY"); // unit 16
+    connect(machinePLCReadyNodeRW, &QOpcUaNode::attributeUpdated, this, [this](QOpcUa::NodeAttribute attr, const QVariant &value)
+    {
+        Q_UNUSED(attr);
+        qDebug() << "Read PLC-Machine-Ready status node:" << value.toInt();
+
+    });
+
+}
+
+void MainWindow::opcuaDisconnected()
+{
+    isOpcUaConnected = false;
+    opcuaClient->deleteLater();
+}
+
+void MainWindow::opcuaClientError(QOpcUaClient::ClientError error)
+{
+    qDebug() << "OPCUA Client Error:" << error;
+    ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss    ")
+                                              + "OPCUA Client Error: " + error);
+}
+
+void MainWindow::opcuaClientState(QOpcUaClient::ClientState state)
+{
+    if (state == QOpcUaClient::ClientState::Connected)
+    {
+        qDebug() << "Connected to OPCUA server.";
+        isOpcUaConnected = true;
+        ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss    ")
+                                                  + "Connected to OPCUA server.");
+    }
+    else if (state == QOpcUaClient::ClientState::Connecting)
+    {
+        qDebug() << "Trying to connect OPCUA server now.";
+        isOpcUaConnected = false;
+    }
+    else if (state == QOpcUaClient::ClientState::Disconnected)
+    {
+        qDebug() << "Disconnected to OPCUA server.";
+        isOpcUaConnected = false;
+        ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss    ")
+                                                  + "Disconnected to OPCUA server.");
+    }
 }
