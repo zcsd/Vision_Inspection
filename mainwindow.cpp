@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -81,6 +81,8 @@ void MainWindow::initialSetup()
     connect(this, SIGNAL(sendCalibrationPara(double, int)), measureTool, SLOT(receiveCalibrationPara(double, int)));
     connect(measureTool, SIGNAL(sendFrameToShow(cv::Mat)), this, SLOT(receiveRawFrame(cv::Mat)));
     connect(measureTool, SIGNAL(sendMeasurement(double)), this, SLOT(receiveMeasurement(double)));
+
+    connect(this, SIGNAL(sendStatusToWriteResult()), this, SLOT(receiveStatusToWriteResult()));
     emit sendCalibrationPara(currentPPMM, 3);
 
     ui->comboBoxMatchMethod->addItems({"Machine Learning", "Image Processing"});
@@ -639,12 +641,22 @@ void MainWindow::on_actionOPC_UA_triggered()
     //opcuaTest->show();
 }
 
+void MainWindow::receiveStatusToWriteResult()
+{
+    if (isMachineReady && isResultReady)
+    {
+        visionResultNodeW->writeAttribute(QOpcUa::NodeAttribute::Value, visionResult, QOpcUa::UInt16);
+        isResultReady = false;
+    }
+}
+
 void MainWindow::opcuaConnected()
 {
     visionStatusNodeW = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.vision.VISION_STATUS"); // uint 16
     visionResultNodeW = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.vision.RESULT"); // uint 16
 
     resultReadNodeRW = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.vision.RESULT_READ"); // uint 16
+    resultReadNodeRW->enableMonitoring(QOpcUa::NodeAttribute::Value, QOpcUaMonitoringParameters(100));
     connect(resultReadNodeRW, &QOpcUaNode::attributeUpdated, this, [this](QOpcUa::NodeAttribute attr, const QVariant &value)
     {
         Q_UNUSED(attr);
@@ -657,10 +669,20 @@ void MainWindow::opcuaConnected()
     });
 
     machinePLCReadyNodeRW = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.vision.MACHINE_READY"); // unit 16
+    machinePLCReadyNodeRW->enableMonitoring(QOpcUa::NodeAttribute::Value, QOpcUaMonitoringParameters(100));
     connect(machinePLCReadyNodeRW, &QOpcUaNode::attributeUpdated, this, [this](QOpcUa::NodeAttribute attr, const QVariant &value)
     {
         Q_UNUSED(attr);
         qDebug() << "Read PLC-Machine-Ready status node:" << value.toInt();
+        if (value.toInt() == 0)
+        {
+            isMachineReady = false;
+        }
+        else if (value.toInt() == 1)
+        {
+            isMachineReady = true;
+            emit sendStatusToWriteResult();
+        }
 
     });
 
@@ -700,4 +722,12 @@ void MainWindow::opcuaClientState(QOpcUaClient::ClientState state)
         ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss    ")
                                                   + "Disconnected to OPCUA server.");
     }
+}
+
+void MainWindow::on_pushButtonVisionResultReady_clicked()
+{
+    visionResult = ui->lineEditVisionResult->text().toInt();
+    isResultReady = true;
+    emit sendStatusToWriteResult();
+    qDebug() << "visionResult:" << visionResult;
 }

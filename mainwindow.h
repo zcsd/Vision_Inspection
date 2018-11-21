@@ -63,6 +63,7 @@ signals:
     void sendFrameToCalibrator(cv::Mat cvRawFrame);
     void sendFrameToMeasurement(cv::Mat cvRawFrame);
     void sendCalibrationPara(double pPmm, int test1);
+    void sendStatusToWriteResult();
 
 private slots:
     void on_pushButtonConnect_clicked();
@@ -96,10 +97,13 @@ private slots:
     void on_actionRFID_triggered();
     void on_actionOPC_UA_triggered();
 
+    void receiveStatusToWriteResult();
     void opcuaConnected();
     void opcuaDisconnected();
     void opcuaClientError(QOpcUaClient::ClientError error);
     void opcuaClientState(QOpcUaClient::ClientState state);
+
+    void on_pushButtonVisionResultReady_clicked();
 
 public slots:
     void receiveShowMousePosition(QPoint& pos);
@@ -139,7 +143,8 @@ private:
     QOpcUaProvider *opcuaProvider;
     QOpcUaClient *opcuaClient;
     QOpcUaNode *visionStatusNodeW, *visionResultNodeW, *machinePLCReadyNodeRW, *resultReadNodeRW;
-    bool isOpcUaConnected = false;
+    bool isOpcUaConnected = false, isResultReady = false, isMachineReady = false;
+    int visionResult = 0;
     void connectToOPCUA();
     void diconnectToOPCUA();
 };
