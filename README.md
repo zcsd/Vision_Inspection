@@ -7,7 +7,7 @@
 - PC with USB3.0 port
 - Ubuntu(16.04+) (could extend to support Windows or other Linux)
 - Qt 5.12 (LTS)
-- OpenCV-3.4.3
+- OpenCV-4.0.0
 - Pylon 5.10 SDK
 
 **Recommend IDE**
@@ -15,7 +15,7 @@
 
 **Steps:**
 
-- Install OpenCV-3.4.2 from native building
+- Install OpenCV-4.0.0 from native building
 
 - Install Pylon 5 SDK
 
@@ -36,4 +36,4 @@ sudo usermod -a -G dialout $USER
 - Move connect/disconnect/capture/stream to upper menu.
 
 
-*Jul 12 2018*
+*Nov 22 2018*

@@ -15,8 +15,8 @@ TEMPLATE = app
 INCLUDEPATH += /usr/include/python3.6m
 LIBS += -L/usr/local/lib/python3.6 -lpython3.6m
 
-# OpenCV 3.4.0, 3.4.2, 3.4.3 tested
-INCLUDEPATH += /usr/local/include/opencv
+# OpenCV 4.0.0
+INCLUDEPATH += /usr/local/include/opencv4
 LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lopencv_videoio -lopencv_highgui
 
 # Pylon 5.1.0 SDK

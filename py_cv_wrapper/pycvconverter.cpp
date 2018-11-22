@@ -1,6 +1,6 @@
 #include "py_cv_wrapper/pycvconverter.h"
 
-#if CV_VERSION_MAJOR == 3
+#if CV_VERSION_MAJOR == 4
 
 namespace pycvt {
 
@@ -72,7 +72,7 @@ public:
     }
 
     UMatData* allocate(int dims0, const int* sizes, int type, void* data,
-            size_t* step, int flags, UMatUsageFlags usageFlags) const
+            size_t* step, AccessFlag flags, UMatUsageFlags usageFlags) const
     {
         if (data != 0)
         {
@@ -108,7 +108,7 @@ public:
         return allocate(o, dims0, sizes, type, step);
     }
 
-    bool allocate(UMatData* u, int accessFlags,
+    bool allocate(UMatData* u, AccessFlag accessFlags,
             UMatUsageFlags usageFlags) const
     {
         return stdAllocator->allocate(u, accessFlags, usageFlags);
