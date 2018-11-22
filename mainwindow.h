@@ -105,6 +105,8 @@ private slots:
 
     void on_pushButtonVisionResultReady_clicked();
 
+    void on_pushButtonPartPresent_clicked();
+
 public slots:
     void receiveShowMousePosition(QPoint& pos);
     void receiveFrameRequest();
@@ -142,7 +144,7 @@ private:
 
     QOpcUaProvider *opcuaProvider;
     QOpcUaClient *opcuaClient;
-    QOpcUaNode *visionStatusNodeW, *visionResultNodeW, *machinePLCReadyNodeRW, *resultReadNodeRW;
+    QOpcUaNode *visionStatusNodeW, *visionResultNodeW, *machinePLCReadyNodeRW, *resultReadNodeRW, *objectPresentNodeW;
     bool isOpcUaConnected = false, isResultReady = false, isMachineReady = false;
     int visionResult = 0;
     void connectToOPCUA();

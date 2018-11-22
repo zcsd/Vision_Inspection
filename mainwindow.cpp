@@ -121,7 +121,7 @@ void MainWindow::on_pushButtonConnect_clicked()
 
     if (frameGrabber->cameraConnected)
     {
-        visionStatusNodeW->writeAttribute(QOpcUa::NodeAttribute::Value, 1, QOpcUa::UInt16);
+        //visionStatusNodeW->writeAttribute(QOpcUa::NodeAttribute::Value, 1, QOpcUa::UInt16);
         ui->listWidgetMessageLog->addItem("[Info]    " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
                                           + "    Camera is open.");
 
@@ -149,7 +149,7 @@ void MainWindow::on_pushButtonDisconnect_clicked()
 
         if (!frameGrabber->cameraConnected)
         {
-            visionStatusNodeW->writeAttribute(QOpcUa::NodeAttribute::Value, 0, QOpcUa::UInt16);
+            //visionStatusNodeW->writeAttribute(QOpcUa::NodeAttribute::Value, 0, QOpcUa::UInt16);
             ui->pushButtonDisconnect->setEnabled(false);
             ui->pushButtonConnect->setEnabled(true);
             ui->pushButtonConnect->setStyleSheet("background-color: rgb(225, 225, 225);"); // Make it gray color
@@ -181,7 +181,7 @@ void MainWindow::on_pushButtonDisconnect_clicked()
             if (!frameGrabber->cameraConnected)
             {
                 on_pushButtonStop_clicked();
-                visionStatusNodeW->writeAttribute(QOpcUa::NodeAttribute::Value, 0, QOpcUa::UInt16);
+                //visionStatusNodeW->writeAttribute(QOpcUa::NodeAttribute::Value, 0, QOpcUa::UInt16);
                 ui->pushButtonCapture->setEnabled(false);
                 ui->pushButtonStream->setEnabled(false);
                 ui->pushButtonStream->setStyleSheet("background-color: rgb(225, 225, 225);");
@@ -201,6 +201,7 @@ void MainWindow::on_pushButtonDisconnect_clicked()
 
         if (!frameGrabber->cameraConnected)
         {
+            //visionStatusNodeW->writeAttribute(QOpcUa::NodeAttribute::Value, 0, QOpcUa::UInt16);
             ui->pushButtonCapture->setEnabled(false);
             ui->pushButtonStream->setEnabled(false);
             ui->pushButtonDisconnect->setEnabled(false);
@@ -654,6 +655,7 @@ void MainWindow::opcuaConnected()
 {
     visionStatusNodeW = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.vision.VISION_STATUS"); // uint 16
     visionResultNodeW = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.vision.RESULT"); // uint 16
+    objectPresentNodeW = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.objectPresent"); // uint 16
 
     resultReadNodeRW = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.vision.RESULT_READ"); // uint 16
     resultReadNodeRW->enableMonitoring(QOpcUa::NodeAttribute::Value, QOpcUaMonitoringParameters(100));
@@ -686,6 +688,8 @@ void MainWindow::opcuaConnected()
 
     });
 
+    // temp using
+    visionStatusNodeW->writeAttribute(QOpcUa::NodeAttribute::Value, 1, QOpcUa::UInt16);
 }
 
 void MainWindow::opcuaDisconnected()
@@ -730,4 +734,10 @@ void MainWindow::on_pushButtonVisionResultReady_clicked()
     isResultReady = true;
     emit sendStatusToWriteResult();
     qDebug() << "visionResult:" << visionResult;
+}
+
+void MainWindow::on_pushButtonPartPresent_clicked()
+{
+    objectPresentNodeW->writeAttribute(QOpcUa::NodeAttribute::Value, 1, QOpcUa::UInt16);
+    qDebug() << "Part Present Manually.";
 }
