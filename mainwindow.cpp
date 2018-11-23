@@ -83,6 +83,7 @@ void MainWindow::initialSetup()
     connect(measureTool, SIGNAL(sendMeasurement(double)), this, SLOT(receiveMeasurement(double)));
 
     connect(this, SIGNAL(sendStatusToWriteResult()), this, SLOT(receiveStatusToWriteResult()));
+    connect(this, SIGNAL(sendResultToCheck()), this, SLOT(receiveResultToCheck()));
     emit sendCalibrationPara(currentPPMM, 3);
 
     ui->comboBoxMatchMethod->addItems({"Machine Learning", "Image Processing"});
@@ -112,6 +113,9 @@ void MainWindow::receiveReadCaliConf()
 void MainWindow::receiveMeasurement(double length)
 {
     ui->labelShowMeasurement->setText(QString::number(length, 'f', 2) + " mm");
+    // for PoC
+    currentLength = length;
+    emit sendResultToCheck();
 }
 
 void MainWindow::on_pushButtonConnect_clicked()
@@ -554,6 +558,10 @@ void MainWindow::on_pushButtonMatch_clicked()
         QString matchResult = pyClassification->process(frameToTest);
         ui->labelMatchResult->setStyleSheet("color: blue; font: 20pt; background-color: white;");
         ui->labelMatchResult->setText(matchResult);
+
+        // for PoC
+        colorStatus = 8;
+        emit sendResultToCheck();
     }
     else if (matchMethod == "Image Processing")
     {
@@ -614,7 +622,8 @@ void MainWindow::on_actionTrigger_triggered()
 
 void MainWindow::receiveTrigger()
 {
-    qDebug() << "Receive Trigger";
+    objectPresentNodeW->writeAttribute(QOpcUa::NodeAttribute::Value, 1, QOpcUa::UInt16);
+    qDebug() << "Part Present by trigger.";
     // NOT GOOD, main thread will stop
     //usleep(2000000); // 2s
 
@@ -640,6 +649,33 @@ void MainWindow::on_actionRFID_triggered()
 void MainWindow::on_actionOPC_UA_triggered()
 {
     //opcuaTest->show();
+}
+
+void MainWindow::receiveResultToCheck()
+{
+    if (currentLength != 0.0 && colorStatus != 0)
+    {
+        if (colorStatus != 8)
+        {
+            visionResult = 10;
+            emit sendStatusToWriteResult();
+        }
+        else if (colorStatus == 8)
+        {
+            if (abs(currentLength-standardLengh) < 0.2)
+            {
+                visionResult = 8;
+                emit sendStatusToWriteResult();
+            }
+            else
+            {
+                visionResult = 9;
+                emit sendStatusToWriteResult();
+            }
+        }
+        currentLength = 0.0;
+        colorStatus = 0;
+    }
 }
 
 void MainWindow::receiveStatusToWriteResult()

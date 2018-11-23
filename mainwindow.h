@@ -64,6 +64,7 @@ signals:
     void sendFrameToMeasurement(cv::Mat cvRawFrame);
     void sendCalibrationPara(double pPmm, int test1);
     void sendStatusToWriteResult();
+    void sendResultToCheck();
 
 private slots:
     void on_pushButtonConnect_clicked();
@@ -97,6 +98,7 @@ private slots:
     void on_actionRFID_triggered();
     void on_actionOPC_UA_triggered();
 
+    void receiveResultToCheck();
     void receiveStatusToWriteResult();
     void opcuaConnected();
     void opcuaDisconnected();
@@ -104,7 +106,6 @@ private slots:
     void opcuaClientState(QOpcUaClient::ClientState state);
 
     void on_pushButtonVisionResultReady_clicked();
-
     void on_pushButtonPartPresent_clicked();
 
 public slots:
@@ -149,6 +150,12 @@ private:
     int visionResult = 0;
     void connectToOPCUA();
     void diconnectToOPCUA();
+
+    QString standardModel;
+    QString standardColor;
+    double standardLengh = 0.0;
+    double currentLength = 0.0;
+    int colorStatus = 0;
 };
 
 #endif // MAINWINDOW_H
