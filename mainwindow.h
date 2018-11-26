@@ -146,6 +146,7 @@ private:
     QOpcUaProvider *opcuaProvider;
     QOpcUaClient *opcuaClient;
     QOpcUaNode *visionStatusNodeW, *visionResultNodeW, *machinePLCReadyNodeRW, *resultReadNodeRW, *objectPresentNodeW;
+    QOpcUaNode *jobModelNodeR, *jobLengthNodeR, *jobColorNodeR;
     bool isOpcUaConnected = false, isResultReady = false, isMachineReady = false;
     int visionResult = 0;
     void connectToOPCUA();

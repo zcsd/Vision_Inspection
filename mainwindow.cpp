@@ -724,6 +724,33 @@ void MainWindow::opcuaConnected()
 
     });
 
+    jobModelNodeR = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.job.job_Model"); // string
+    jobModelNodeR->enableMonitoring(QOpcUa::NodeAttribute::Value, QOpcUaMonitoringParameters(100));
+    connect(jobModelNodeR, &QOpcUaNode::attributeUpdated, this, [this](QOpcUa::NodeAttribute attr, const QVariant &value)
+    {
+        Q_UNUSED(attr);
+        qDebug() << "Read job-model infor node:" << value.toString();
+        standardModel = value.toString();
+    });
+
+    jobLengthNodeR = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.job.job_Length"); // int 16
+    jobLengthNodeR->enableMonitoring(QOpcUa::NodeAttribute::Value, QOpcUaMonitoringParameters(100));
+    connect(jobLengthNodeR, &QOpcUaNode::attributeUpdated, this, [this](QOpcUa::NodeAttribute attr, const QVariant &value)
+    {
+        Q_UNUSED(attr);
+        qDebug() << "Read job-length node:" << value.toInt();
+        standardLengh = double(value.toInt());
+    });
+
+    jobColorNodeR = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.job.job_Color"); // string
+    jobColorNodeR->enableMonitoring(QOpcUa::NodeAttribute::Value, QOpcUaMonitoringParameters(100));
+    connect(jobColorNodeR, &QOpcUaNode::attributeUpdated, this, [this](QOpcUa::NodeAttribute attr, const QVariant &value)
+    {
+        Q_UNUSED(attr);
+        qDebug() << "Read job-color status node:" << value.toString();
+        standardColor = value.toString();
+    });
+
     // temp using
     visionStatusNodeW->writeAttribute(QOpcUa::NodeAttribute::Value, 1, QOpcUa::UInt16);
 }
