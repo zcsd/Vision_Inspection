@@ -625,10 +625,10 @@ void MainWindow::receiveTrigger()
     objectPresentNodeW->writeAttribute(QOpcUa::NodeAttribute::Value, 1, QOpcUa::UInt16);
     qDebug() << "Part Present by trigger.";
     // NOT GOOD, main thread will stop
-    //usleep(2000000); // 2s
+    usleep(2000000); // 2s
 
-    //on_pushButtonCapture_clicked();
-    //on_pushButtonMeasure_clicked();
+    on_pushButtonCapture_clicked();
+    on_pushButtonMeasure_clicked();
 }
 
 void MainWindow::on_actionModbus_triggered()
@@ -653,23 +653,27 @@ void MainWindow::on_actionOPC_UA_triggered()
 
 void MainWindow::receiveResultToCheck()
 {
+    colorStatus = 8; // remember to delete
     if (currentLength != 0.0 && colorStatus != 0)
     {
         if (colorStatus != 8)
         {
             visionResult = 10;
+            isResultReady = true;
             emit sendStatusToWriteResult();
         }
         else if (colorStatus == 8)
         {
-            if (abs(currentLength-standardLengh) < 0.2)
+            if (abs(currentLength-standardLengh) < 1.0)
             {
                 visionResult = 8;
+                isResultReady = true;
                 emit sendStatusToWriteResult();
             }
             else
             {
                 visionResult = 9;
+                isResultReady = true;
                 emit sendStatusToWriteResult();
             }
         }
@@ -690,6 +694,18 @@ void MainWindow::receiveStatusToWriteResult()
 void MainWindow::opcuaConnected()
 {
     visionStatusNodeW = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.vision.VISION_STATUS"); // uint 16
+    // temp using
+    visionStatusNodeW->writeAttribute(QOpcUa::NodeAttribute::Value, 1, QOpcUa::UInt16);
+    visionStatusNodeW->enableMonitoring(QOpcUa::NodeAttribute::Value, QOpcUaMonitoringParameters(100));
+    connect(visionStatusNodeW, &QOpcUaNode::attributeUpdated, this, [this](QOpcUa::NodeAttribute attr, const QVariant &value)
+    {
+        Q_UNUSED(attr);
+        if (value.toInt() != 1)
+        {
+            visionStatusNodeW->writeAttribute(QOpcUa::NodeAttribute::Value, 1, QOpcUa::UInt16);
+        }
+    });
+
     visionResultNodeW = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.vision.RESULT"); // uint 16
     objectPresentNodeW = opcuaClient->node("ns=2;s=|var|CPS-PCS341MB-DS1.Application.GVL.OPC_Machine_A0001.objectPresent"); // uint 16
 
@@ -750,9 +766,6 @@ void MainWindow::opcuaConnected()
         qDebug() << "Read job-color status node:" << value.toString();
         standardColor = value.toString();
     });
-
-    // temp using
-    visionStatusNodeW->writeAttribute(QOpcUa::NodeAttribute::Value, 1, QOpcUa::UInt16);
 }
 
 void MainWindow::opcuaDisconnected()
@@ -794,6 +807,8 @@ void MainWindow::opcuaClientState(QOpcUaClient::ClientState state)
 void MainWindow::on_pushButtonVisionResultReady_clicked()
 {
     visionResult = ui->lineEditVisionResult->text().toInt();
+    // temp using
+    colorStatus = visionResult;
     isResultReady = true;
     emit sendStatusToWriteResult();
     qDebug() << "visionResult:" << visionResult;
