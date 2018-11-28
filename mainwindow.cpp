@@ -80,7 +80,7 @@ void MainWindow::initialSetup()
     connect(this, SIGNAL(sendFrameToMeasurement(cv::Mat)), measureTool, SLOT(receiveFrame(cv::Mat)));
     connect(this, SIGNAL(sendCalibrationPara(double, int)), measureTool, SLOT(receiveCalibrationPara(double, int)));
     connect(measureTool, SIGNAL(sendFrameToShow(cv::Mat)), this, SLOT(receiveRawFrame(cv::Mat)));
-    connect(measureTool, SIGNAL(sendMeasurement(double)), this, SLOT(receiveMeasurement(double)));
+    connect(measureTool, SIGNAL(sendMeasurement(double, bool)), this, SLOT(receiveMeasurement(double, bool)));
 
     connect(this, SIGNAL(sendStatusToWriteResult()), this, SLOT(receiveStatusToWriteResult()));
     connect(this, SIGNAL(sendResultToCheck()), this, SLOT(receiveResultToCheck()));
@@ -110,10 +110,11 @@ void MainWindow::receiveReadCaliConf()
     }
 }
 
-void MainWindow::receiveMeasurement(double length)
+void MainWindow::receiveMeasurement(double length, bool color)
 {
     ui->labelShowMeasurement->setText(QString::number(length, 'f', 2) + " mm");
     // for PoC
+    isColorOK = color;
     currentLength = length;
     emit sendResultToCheck();
 }
@@ -653,16 +654,15 @@ void MainWindow::on_actionOPC_UA_triggered()
 
 void MainWindow::receiveResultToCheck()
 {
-    colorStatus = 8; // remember to delete
-    if (currentLength != 0.0 && colorStatus != 0)
+    if (currentLength != 0.0)
     {
-        if (colorStatus != 8)
+        if (!isColorOK)
         {
             visionResult = 10;
             isResultReady = true;
             emit sendStatusToWriteResult();
         }
-        else if (colorStatus == 8)
+        else if (isColorOK)
         {
             if (abs(currentLength-standardLengh) < 1.0)
             {
@@ -678,7 +678,7 @@ void MainWindow::receiveResultToCheck()
             }
         }
         currentLength = 0.0;
-        colorStatus = 0;
+        isColorOK = true;
     }
 }
 

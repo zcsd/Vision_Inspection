@@ -86,7 +86,7 @@ Mat TriggerForm::processFrame(Mat img)
     {
         frameCounter = 0;
     }
-
+    // skip how many frame (30fps)
     if (frameCounter >= 90)
     {
         frameCounter = 0;

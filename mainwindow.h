@@ -89,7 +89,7 @@ private slots:
     void on_actionCalibration_triggered();
     void receiveRawFrame(cv::Mat cvRawFrame);
     void receiveReadCaliConf();
-    void receiveMeasurement(double length);
+    void receiveMeasurement(double length, bool color);
     void on_pushButtonMeasure_clicked();
     void on_actionTrigger_triggered();
     void receiveTrigger();
@@ -157,6 +157,7 @@ private:
     double standardLengh = 0.0;
     double currentLength = 0.0;
     int colorStatus = 0;
+    bool isColorOK = true;
 };
 
 #endif // MAINWINDOW_H

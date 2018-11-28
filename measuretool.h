@@ -22,7 +22,7 @@ public:
     explicit MeasureTool(QObject *parent = nullptr);
 
 signals:
-    void sendMeasurement(double length);
+    void sendMeasurement(double length, bool color);
     void sendFrameToShow(cv::Mat image);
 
 public slots:
@@ -33,10 +33,12 @@ private:
     cv::Mat frameCopy, bgImage, roiShow, thresholdImage;
     cv::Rect ROI;
     double pixelPERmm, realDistance;
+    bool isColorOK = true;
     void diffSegmentation();
     void getContours();
     vector<Point> getMaxContour(vector<vector<Point>> allContours);
     void cannySegmentation();
+    bool checkColor(cv::Mat image);
 };
 
 #endif // MEASURETOOL_H

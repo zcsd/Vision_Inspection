@@ -10,6 +10,7 @@ void MeasureTool::receiveFrame(Mat frame)
 {
     frameCopy = frame.clone();
     //cannySegmentation();
+    isColorOK = true;
 
     diffSegmentation();
     getContours();
@@ -19,7 +20,7 @@ void MeasureTool::receiveFrame(Mat frame)
     //cv::imwrite("../images/tes.jpg", frameToSend);
 
     emit sendFrameToShow(frameToSend);
-    emit sendMeasurement(realDistance);
+    emit sendMeasurement(realDistance, isColorOK);
 }
 
 void MeasureTool::receiveCalibrationPara(double pPmm, int test)
@@ -94,6 +95,18 @@ void MeasureTool::getContours()
     maxCtr = getMaxContour(contours);
 
     rotatedRect = cv::minAreaRect(Mat(maxCtr));
+    cv::Mat colorCheckImage = roiShow(Rect(rotatedRect.center.x-40, rotatedRect.center.y-40, 80, 80)).clone();
+    if (checkColor(colorCheckImage))
+    {
+        isColorOK = false;
+    }
+    else
+    {
+        isColorOK = true;
+    }
+
+    //cv::imwrite("../images/colorcheck.jpg", colorCheckImage);
+
     Point2f rectPoints[4];
     rotatedRect.points(rectPoints);
     for (int j = 0; j < 4; j++)
@@ -134,6 +147,39 @@ void MeasureTool::getContours()
         if ( (cv::waitKey(1) & 0xFF) == 'q' ) break;
     }
     cv::destroyWindow("test");*/
+}
+// Only for PoC
+bool MeasureTool::checkColor(Mat image)
+{
+    cv::Mat grayImage, thImage;
+    cvtColor(image, grayImage, COLOR_BGR2GRAY);
+    cv::threshold(grayImage, thImage, 135, 255, THRESH_BINARY_INV);
+
+    qDebug() << thImage.at<uint8_t>(20, 20);
+    int totalCnt = 0, whiteCnt = 0;
+
+    for (int r = 0; r < thImage.rows; r++)
+    {
+        for (int c = 0; c < thImage.cols; c++)
+        {
+            totalCnt++;
+            if (thImage.at<uint8_t>(r,c) > 200)
+            {
+                whiteCnt++;
+            }
+        }
+    }
+
+    double whiteRate = double(whiteCnt) / double(totalCnt);
+    qDebug() << whiteCnt << totalCnt << whiteRate;
+    if (whiteRate > 0.1)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 vector<Point> MeasureTool::getMaxContour(vector<vector<Point> > allContours)
