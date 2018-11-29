@@ -626,6 +626,7 @@ void MainWindow::receiveTrigger()
     objectPresentNodeW->writeAttribute(QOpcUa::NodeAttribute::Value, 1, QOpcUa::UInt16);
     qDebug() << "Part Present by trigger.";
     ui->lineEditVisionResult->clear();
+    ui->labelShowPoCRes->clear();
     // NOT GOOD, main thread will stop
     usleep(2000000); // 2s
 
@@ -666,7 +667,7 @@ void MainWindow::receiveResultToCheck()
         }
         else if (isColorOK)
         {
-            if (abs(currentLength-standardLengh) < 1.0)
+            if (abs(currentLength-standardLengh) < 3.0)
             {
                 visionResult = 8; // ok
                 ui->lineEditVisionResult->setText(QString::number(visionResult));
@@ -690,6 +691,19 @@ void MainWindow::receiveStatusToWriteResult()
 {
     if (isMachineReady && isResultReady)
     {
+        if (visionResult == 8)
+        {
+            ui->labelShowPoCRes->setText("Pass");
+        }
+        else if (visionResult == 9)
+        {
+            ui->labelShowPoCRes->setText("Size Fail");
+        }
+        else if (visionResult == 10)
+        {
+            ui->labelShowPoCRes->setText("Color Fail");
+        }
+
         visionResultNodeW->writeAttribute(QOpcUa::NodeAttribute::Value, visionResult, QOpcUa::UInt16);
         isResultReady = false;
     }

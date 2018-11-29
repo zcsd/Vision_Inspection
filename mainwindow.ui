@@ -390,6 +390,27 @@ font: 57 18pt &quot;Ubuntu&quot;;</string>
      <string>Part Present</string>
     </property>
    </widget>
+   <widget class="QLabel" name="labelShowPoCRes">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>510</y>
+      <width>181</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 57 24pt &quot;Ubuntu&quot;;
+background-color: rgb(255, 255, 255);
+color: rgb(6, 24, 143);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">

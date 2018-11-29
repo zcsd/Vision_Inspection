@@ -33,7 +33,7 @@ private:
     cv::Mat frameCopy, bgImage, roiShow, thresholdImage;
     cv::Rect ROI;
     double pixelPERmm, realDistance;
-    bool isColorOK = true;
+    bool isColorOK = true, isContourExist = true;
     void diffSegmentation();
     void getContours();
     vector<Point> getMaxContour(vector<vector<Point>> allContours);

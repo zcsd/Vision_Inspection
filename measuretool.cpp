@@ -8,6 +8,7 @@ MeasureTool::MeasureTool(QObject *parent) : QObject(parent)
 
 void MeasureTool::receiveFrame(Mat frame)
 {
+    isContourExist = true;
     frameCopy = frame.clone();
     //cannySegmentation();
     isColorOK = true;
@@ -15,12 +16,16 @@ void MeasureTool::receiveFrame(Mat frame)
     diffSegmentation();
     getContours();
 
-    cv::Mat frameToSend = frameCopy.clone();
-    roiShow.copyTo(frameToSend(ROI));
-    //cv::imwrite("../images/tes.jpg", frameToSend);
+    if (isContourExist)
+    {
+        cv::Mat frameToSend = frameCopy.clone();
+        roiShow.copyTo(frameToSend(ROI));
+        //cv::imwrite("../images/tes.jpg", frameToSend);
 
-    emit sendFrameToShow(frameToSend);
-    emit sendMeasurement(realDistance, isColorOK);
+        emit sendFrameToShow(frameToSend);
+        emit sendMeasurement(realDistance, isColorOK);
+    }
+
 }
 
 void MeasureTool::receiveCalibrationPara(double pPmm, int test)
@@ -34,6 +39,8 @@ void MeasureTool::diffSegmentation()
     Mat roiBG = bgImage(ROI).clone();
     Mat roiObj = frameCopy(ROI).clone();
     roiShow = frameCopy(ROI).clone();
+
+    /*
     //cv::imwrite("../images/tes.jpg", roiObj);
     cv::cvtColor(roiBG, roiBG, COLOR_BGR2HSV);
     cv::cvtColor(roiObj, roiObj, COLOR_BGR2HSV);
@@ -57,8 +64,11 @@ void MeasureTool::diffSegmentation()
     cv::Mat resImage;
     cv::absdiff(channels[0], channels1[0], resImage);
     //cv::cvtColor(resImage, resImage, COLOR_HSV2BGR);
-    //cv::cvtColor(resImage,resImage, COLOR_BGR2GRAY);
-    cv::threshold(resImage, thresholdImage, 30, 255, THRESH_BINARY);
+    //cv::cvtColor(resImage,resImage, COLOR_BGR2GRAY);*/
+
+    cv::cvtColor(roiObj, roiObj, COLOR_BGR2GRAY);
+
+    cv::threshold(roiObj, thresholdImage, 75, 255, THRESH_BINARY);
 
     cv::Mat kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, Size(3,3));
     cv::erode(thresholdImage, thresholdImage, kernel);
@@ -92,61 +102,75 @@ void MeasureTool::getContours()
     cv::RotatedRect rotatedRect;
 
     cv::findContours(thresholdImage, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point(0, 0));
-    maxCtr = getMaxContour(contours);
-
-    rotatedRect = cv::minAreaRect(Mat(maxCtr));
-    cv::Mat colorCheckImage = roiShow(Rect(rotatedRect.center.x-40, rotatedRect.center.y-40, 80, 80)).clone();
-    if (checkColor(colorCheckImage))
+    if (contours.size() > 0)
     {
-        isColorOK = false;
+        isContourExist = true;
     }
     else
     {
-        isColorOK = true;
+        isContourExist = false;
     }
 
-    //cv::imwrite("../images/colorcheck.jpg", colorCheckImage);
-
-    Point2f rectPoints[4];
-    rotatedRect.points(rectPoints);
-    for (int j = 0; j < 4; j++)
-       cv::line(roiShow, rectPoints[j], rectPoints[(j+1)%4], Scalar(255, 0, 0), 2, 8);
-
-    double maxLengh = 0.0;
-
-    if (rotatedRect.size.height >= rotatedRect.size.width)
+    if (isContourExist)
     {
-        maxLengh = double(rotatedRect.size.height);
-    }
-    else
-    {
-        maxLengh = double(rotatedRect.size.width);
+        maxCtr = getMaxContour(contours);
+
+        rotatedRect = cv::minAreaRect(Mat(maxCtr));
+
+        cv::Mat colorCheckImage = roiShow(Rect(rotatedRect.center.x-40, rotatedRect.center.y-40, 80, 80)).clone();
+        if (checkColor(colorCheckImage))
+        {
+            isColorOK = false;
+        }
+        else
+        {
+            isColorOK = true;
+        }
+
+        //cv::imwrite("../images/colorcheck.jpg", colorCheckImage);
+
+        Point2f rectPoints[4];
+        rotatedRect.points(rectPoints);
+        for (int j = 0; j < 4; j++)
+           cv::line(roiShow, rectPoints[j], rectPoints[(j+1)%4], Scalar(255, 0, 0), 2, 8);
+
+        double maxLengh = 0.0;
+
+        if (rotatedRect.size.height >= rotatedRect.size.width)
+        {
+            maxLengh = double(rotatedRect.size.height);
+        }
+        else
+        {
+            maxLengh = double(rotatedRect.size.width);
+        }
+
+        realDistance = maxLengh / pixelPERmm;
+
+        // Create an output string stream
+        std::ostringstream streamObj3;
+        // Set Fixed -Point Notation
+        streamObj3 << std::fixed;
+        // Set precision to 1 digits
+        streamObj3 << std::setprecision(2);
+        //Add double to stream
+        streamObj3 << realDistance;
+        // Get string from output string stream
+        std::string strObj3 = streamObj3.str();
+        string printDistance = strObj3 + "mm";
+        cv::putText(roiShow, printDistance, rotatedRect.center, 2, 4.0, Scalar(0, 255, 0), 2, 8);
+    /*
+        cv::Mat showImg;
+        cv::resize(thresholdImage, showImg, cv::Size(), 0.5, 0.5);
+        cv::namedWindow("test", 1);
+        while (true)
+        {
+            cv::imshow("test", showImg);
+            if ( (cv::waitKey(1) & 0xFF) == 'q' ) break;
+        }
+        cv::destroyWindow("test");*/
     }
 
-    realDistance = maxLengh / pixelPERmm;
-
-    // Create an output string stream
-    std::ostringstream streamObj3;
-    // Set Fixed -Point Notation
-    streamObj3 << std::fixed;
-    // Set precision to 1 digits
-    streamObj3 << std::setprecision(2);
-    //Add double to stream
-    streamObj3 << realDistance;
-    // Get string from output string stream
-    std::string strObj3 = streamObj3.str();
-    string printDistance = strObj3 + "mm";
-    cv::putText(roiShow, printDistance, rotatedRect.center, 2, 4.0, Scalar(0, 255, 0), 2, 8);
-/*
-    cv::Mat showImg;
-    cv::resize(roiShow, showImg, cv::Size(), 0.5, 0.5);
-    cv::namedWindow("test", 1);
-    while (true)
-    {
-        cv::imshow("test", showImg);
-        if ( (cv::waitKey(1) & 0xFF) == 'q' ) break;
-    }
-    cv::destroyWindow("test");*/
 }
 // Only for PoC
 bool MeasureTool::checkColor(Mat image)
@@ -155,7 +179,6 @@ bool MeasureTool::checkColor(Mat image)
     cvtColor(image, grayImage, COLOR_BGR2GRAY);
     cv::threshold(grayImage, thImage, 135, 255, THRESH_BINARY_INV);
 
-    qDebug() << thImage.at<uint8_t>(20, 20);
     int totalCnt = 0, whiteCnt = 0;
 
     for (int r = 0; r < thImage.rows; r++)
