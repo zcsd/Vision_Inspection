@@ -71,7 +71,7 @@ Mat TriggerForm::processFrame(Mat img)
 
     cv::Mat resImg, thresholdImg;
     cv::absdiff(grayImgROI, bgImgROI, resImg);
-    cv::threshold(resImg, thresholdImg, 20, 255, THRESH_BINARY);
+    cv::threshold(resImg, thresholdImg, 40, 255, THRESH_BINARY);
 
     vector<vector<Point>> contours;
     vector<Vec4i> hierarchy;
