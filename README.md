@@ -123,4 +123,4 @@ sudo reboot
 - NOTE: It need longer time for first time using, program need to download model from internet.
 You may need to change .pro setting file for some library upgrade.
   
-*15 Jan 2018*
+*15 Jan 2019*
