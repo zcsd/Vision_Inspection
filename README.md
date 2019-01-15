@@ -8,10 +8,10 @@
 - OpenCV-4.0.0 or newer
 - Pylon 5.1.0 SDK
 
-##**IDE**
+## **IDE**
 - Qt Creator
 
-##**Installation:**
+## **Installation:**
 
 - Install OpenCV-4.0.0(or newer) from native building
 
@@ -114,7 +114,7 @@ sudo reboot
 - pip3 install opencv-python==3.1.0.4 imutils numpy tensorflow keras
 
 
-##**Project Setting:**
+## **Project Setting:**
 
 - Open Qt Creator, click "Open Project" and select "Pylon_CV.pro" in the project folder.
 - Use default compiler, wait configuration to be finished.
