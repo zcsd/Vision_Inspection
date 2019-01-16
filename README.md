@@ -125,5 +125,16 @@ sudo reboot
 - Then build and run the program.
 - NOTE: It need longer time for first time using, program need to download keras model from internet.
 You may need to change .pro setting file for some library upgrade.
+
+## **How to use:**
+1. Connect Basler Camera to PC USB3.0 port.
+2. Press to run the program in Qt Creator.
+3. After the GUI come out, press "Scan" button, connected camera list will display, select the camera you want to use, then press "Connect".
+4. Once connection ok, you can press "Capture" or "Stream" to see the view.
+5. Some camera setting can be found in upper menu (Camera/Setting)
+  **Training:** 
+  Training code example is in pylon_cv/python/example_train, easy to use.
+  Remember to copy trained model file to pylon_cv/python/model folder.
+
   
 *15 Jan 2019*
