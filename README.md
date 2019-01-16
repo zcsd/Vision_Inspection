@@ -4,7 +4,7 @@
 - Basler USB3.0 VISION Camera (Hardware)
 - PC with USB3.0 port (Hardware)
 - Ubuntu 18.04
-- Qt 5.12.0
+- Qt 5.12.0 LTS
 - OpenCV-4.0.0 or newer
 - Pylon 5.1.0 SDK
 
@@ -27,7 +27,7 @@ sudo apt install x264 libx264-dev ffmpeg
 sudo apt-get install v4l-utils libtbb-dev
 sudo apt-get install libvorbis-dev libxvidcore-dev
 
-cd $HOME
+cd ~
 wget -O opencv.zip https://github.com/Itseez/opencv/archive/4.0.1.zip
 unzip opencv.zip
 
@@ -35,14 +35,17 @@ wget -O opencv_contrib.zip https://github.com/Itseez/opencv_contrib/archive/4.0.
 unzip opencv_contrib.zip
 
 cd opencv
-mkdir build
-cd build
+mkdir build && cd build
 
 cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D BUILD_opencv_python2=OFF -D BUILD_opencv_python3=OFF -D INSTALL_PYTHON_EXAMPLES=OFF -DBUILD_opencv_java=OFF -D INSTALL_C_EXAMPLES=ON -D WITH_OPENGL=ON -D OPENCV_EXTRA_MODULES_PATH=$HOME/opencv_contrib/modules -D -BUILD_EXAMPLES=ON ..
 
 make -j6
 sudo make install
 sudo ldconfig
+
+**NOTE**
+Use python in root environment, do NOT use python with virtual environment, such as Anaconda, virtualenv etc
+"-D BUILD_opencv_python2=OFF -D BUILD_opencv_python3=OFF" flag is necessary, we will use pip3 to install compatible version opencv.
 ```
 
 - Install Pylon 5 SDK
@@ -50,7 +53,7 @@ sudo ldconfig
 ```
 The SDK installation file is in (GTS SHARE FOLDER/Software/Vision/Pylon/pylon_5.1.0.12682-deb0_amd64.deb).
 Copy it to local disk, run "chmod +x pylon_5.1.0.12682-deb0_amd64.deb", make it excutable.
-Double click the deb file, follow the guide to install by default.
+Double click the deb file, follow the guide to install it by default.
 ```
 
 - Install Qt (5.12.0 or newer)
@@ -79,7 +82,7 @@ mkdir build && cd build
 
 make install
 
-###Finish to install qtmqtt
+###Finish to install qtmqtt###
 
 qtopcua(open62541 as backend):
 
@@ -95,12 +98,12 @@ mkdir build && cd build
 make
 sudo make install
 
-###Finish to install qtopcua
+###Finish to install qtopcua###
 
 ```
 - For RFID using, serial port ttyUSBx only can be accessed by root by default, you need to add your username to dialout group, and reboot.
 ```
-Put pylon_cv project folder to $HOME folder, can download it from gitlab for gts share folder.
+Put pylon_cv project folder to $HOME folder, can download it from gitlab or gts share folder.
 sudo cp ~/pylon_cv/lib/rfid_s8/libs8.so /lib/
 sudo usermod -a -G dialout $USER
 sudo reboot
@@ -120,7 +123,7 @@ sudo reboot
 - Use default compiler, wait configuration to be finished.
 - Click "Projects" in left panel of Qt Creator, change "Build directory" to $HOME/pylon_cv/build, this setting is very important, related to path setting in code.
 - Then build and run the program.
-- NOTE: It need longer time for first time using, program need to download model from internet.
+- NOTE: It need longer time for first time using, program need to download keras model from internet.
 You may need to change .pro setting file for some library upgrade.
   
 *15 Jan 2019*
