@@ -51,7 +51,7 @@ Use python in root environment, do NOT use python with virtual environment, such
 - Install Pylon 5 SDK
 
 ```
-The SDK installation file is in (GTS SHARE FOLDER/Software/Vision/Pylon/pylon_5.1.0.12682-deb0_amd64.deb).
+Download Sdk pylon_5.1.0.12682-deb0_amd64.deb.
 Copy it to local disk, run "chmod +x pylon_5.1.0.12682-deb0_amd64.deb", make it excutable.
 Double click the deb file, follow the guide to install it by default.
 ```
